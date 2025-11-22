@@ -1,19 +1,39 @@
+using Microsoft.Extensions.DependencyInjection;
+using MusicRecognitionApp.Controls;
 using MusicRecognitionApp.Forms;
+using MusicRecognitionApp.Services;
+using MusicRecognitionApp.Services.Interfaces;
 
 namespace MusicRecognitionApp
 {
     internal static class Program
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new MainForm());
+            
+            var serviceProvider = ConfigureServices();
+
+            //add db context
+
+            MainForm mainForm = serviceProvider.GetRequiredService<MainForm>();
+            Application.Run(mainForm); 
+        }
+
+        private static ServiceProvider ConfigureServices()
+        {
+            var services = new ServiceCollection();
+
+            //connectionstring = ...
+            //adddbcontext...
+
+            services.AddSingleton<IMessageBox, MessageBoxService>();
+
+            services.AddSingleton<IStateRegistry, StateRegistryService>()
+                    .AddTransient<MainForm>();
+
+            return services.BuildServiceProvider();
         }
     }
 }

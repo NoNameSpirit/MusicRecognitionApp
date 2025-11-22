@@ -3,10 +3,10 @@
     public enum AppState
     {
         Ready,
-        Recording,
+        Recording,  
         Analyzing,
-        Result,
-        Library,
-        Settings
+        Result,   
+        Library,  
+        Settings  
     }
 }

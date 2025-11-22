@@ -1,10 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "ZQJ0ApJVuDaU+ygMxw39u0ls0ewOCyAtRUTgANIViMfIPX3ioI/Bfltj/le29Hv+kFDvhZlOuwk7sHX43qUTpg==",
+  "dgSpecHash": "VTjoGD7ctizV2JapvxxV1I8k7XH+Ocpy3mqFvMRbaazSvhHMovosh+8DA604t/zM0p2d4e95GV2qqYnJ5iq6Qw==",
   "success": true,
   "projectFilePath": "D:\\########University########\\3 курс\\Shazam\\MusicRecognizionApp\\MusicRecognitionApp.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\user\\.nuget\\packages\\materialskin.2\\2.3.1\\materialskin.2.2.3.1.nupkg.sha512"
+    "C:\\Users\\user\\.nuget\\packages\\materialskin.2\\2.3.1\\materialskin.2.2.3.1.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\10.0.0\\microsoft.extensions.dependencyinjection.10.0.0.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.0\\microsoft.extensions.dependencyinjection.abstractions.10.0.0.nupkg.sha512"
   ],
   "logs": []
 }

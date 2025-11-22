@@ -96,13 +96,13 @@
             BtnLibrary.UseVisualStyleBackColor = true;
             BtnLibrary.Click += BtnLibrary_Click;
             // 
-            // WaitingForm
+            // ReadyStateControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             ClientSize = new Size(600, 650);
             Controls.Add(PanelMain);
-            Name = "WaitingForm";
-            Text = "WaitingForm";
+            Name = "ReadyStateControl";
+            Text = "ReadyStateControl";
             PanelMain.ResumeLayout(false);
             PanelMain.PerformLayout();
             ResumeLayout(false);

@@ -28,7 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.Text = "MainForm";
+            SuspendLayout();
+            // 
+            // MainForm
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            ClientSize = new Size(600, 650);
+            Name = "MainForm";
+            Text = "MainForm";
+            FormClosing += MainForm_FormClosing;
+            ResumeLayout(false);
         }
 
         #endregion
