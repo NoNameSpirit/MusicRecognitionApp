@@ -10,9 +10,10 @@ namespace MusicRecognitionApp.Services
     public class StateRegistryService : IStateRegistry
     {
         private readonly ICardService cardService;
-
-        public StateRegistryService()
+        private readonly IServiceProvider _serviceProvider;
+        public StateRegistryService(IServiceProvider serviceProvider)
         {
+            _serviceProvider = serviceProvider;
         }
 
         public UserControl CreateStateControl(MainForm mainForm, AppState state)
@@ -23,7 +24,7 @@ namespace MusicRecognitionApp.Services
                 AppState.Recording => new RecordingStateControl(mainForm),
                 AppState.Analyzing => new AnalyzingStateControl(mainForm),
                 AppState.Result    => new ResultStateControl(mainForm),
-                AppState.Library   => new LibraryStateControl(mainForm),
+                AppState.Library   => new LibraryStateControl(mainForm, _serviceProvider),
                 AppState.Settings  => new SettingsStateControl(mainForm),
                 _                  => throw new Exception($"Don't have this factory for {state}")
             };

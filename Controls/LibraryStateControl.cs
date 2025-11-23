@@ -4,20 +4,24 @@ using MusicRecognitionApp.Forms;
 using MusicRecognitionApp.Model.Enums;
 using MusicRecognitionApp.Services;
 using MusicRecognitionApp.Services.Interfaces;
+using System;
 
 namespace MusicRecognitionApp.Controls
 {
     public partial class LibraryStateControl : UserControl
     {
+        private readonly IServiceProvider _serviceProvider;
         private readonly MainForm _mainForm;
         private readonly ICardService _cardService;
 
-        public LibraryStateControl(MainForm mainForm)
+        public LibraryStateControl(MainForm mainForm, IServiceProvider serviceProvider)
         {
             InitializeComponent();
 
+            _serviceProvider = serviceProvider;
             _mainForm = mainForm;
-            _cardService = new CardService(BtnSongs, BtnAuthors, FLPanelOfCards); // UI components, didn't use DI 
+            _cardService = _serviceProvider.GetRequiredService<ICardService>();
+            _cardService.Initialize(BtnSongs, BtnAuthors, FLPanelOfCards);
 
             _cardService.ShowSongs();
         }

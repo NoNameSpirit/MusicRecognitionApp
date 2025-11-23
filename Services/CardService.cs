@@ -6,11 +6,13 @@ namespace MusicRecognitionApp.Services
 {
     public class CardService : ICardService
     {
-        private readonly MaterialButton _btnSongs;
-        private readonly MaterialButton _btnAuthors;
-        private readonly FlowLayoutPanel _panelOfCards;
+        private MaterialButton _btnSongs;
+        private MaterialButton _btnAuthors;
+        private FlowLayoutPanel _panelOfCards;
 
-        public CardService(MaterialButton BtnSongs, MaterialButton BtnAuthors, FlowLayoutPanel FLPanelOfCards) 
+        public CardService() { }
+
+        public void Initialize(MaterialButton BtnSongs, MaterialButton BtnAuthors, FlowLayoutPanel FLPanelOfCards)
         {
             _btnSongs = BtnSongs;
             _btnAuthors = BtnAuthors;

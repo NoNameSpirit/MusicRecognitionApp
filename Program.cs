@@ -28,7 +28,8 @@ namespace MusicRecognitionApp
             //connectionstring = ...
             //adddbcontext...
 
-            services.AddSingleton<IMessageBox, MessageBoxService>();
+            services.AddSingleton<IMessageBox, MessageBoxService>()
+                    .AddScoped<ICardService, CardService>();
 
             services.AddSingleton<IStateRegistry, StateRegistryService>()
                     .AddTransient<MainForm>();
