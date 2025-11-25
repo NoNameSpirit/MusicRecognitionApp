@@ -34,6 +34,10 @@ namespace MusicRecognitionApp
             services.AddSingleton<IStateRegistry, StateRegistryService>()
                     .AddTransient<MainForm>();
 
+            services.AddScoped<IAudioDatabase, AudioDatabaseService>()
+                    .AddScoped<IAudioRecognition, AudioRecognitionService>()
+                    .AddScoped<IAudioRecorder, AudioRecorderService>();
+
             return services.BuildServiceProvider();
         }
     }
