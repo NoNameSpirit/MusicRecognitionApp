@@ -5,6 +5,7 @@ using MusicRecognitionApp.Services;
 using MusicRecognitionApp.Services.Audio;
 using MusicRecognitionApp.Services.Audio.Interfaces;
 using MusicRecognitionApp.Services.Interfaces;
+using MusicRecognitionApp.Extensions;
 
 namespace MusicRecognitionApp
 {
@@ -17,8 +18,6 @@ namespace MusicRecognitionApp
             
             var serviceProvider = ConfigureServices();
 
-            //add db context
-
             MainForm mainForm = serviceProvider.GetRequiredService<MainForm>();
             Application.Run(mainForm); 
         }
@@ -27,22 +26,9 @@ namespace MusicRecognitionApp
         {
             var services = new ServiceCollection();
 
-            //connectionstring = ...
-            //adddbcontext...
-
-            services.AddSingleton<IMessageBox, MessageBoxService>()
-                    .AddScoped<ICardService, CardService>();
-
-            services.AddSingleton<IStateRegistry, StateRegistryService>()
-                    .AddTransient<MainForm>();
-
-            services.AddScoped<IAudioHashGenerator, AudioHashGenerator>()
-                    .AddScoped<IAudioProcessor, AudioProcessor>()
-                    .AddScoped<IPeakDetector, PeakDetector>()
-                    .AddScoped<ISpectrogramBuilder, SpectrogramBuilder>()
-                    .AddScoped<IAudioDatabase, AudioDatabaseService>()
-                    .AddScoped<IAudioRecognition, AudioRecognitionService>()
-                    .AddScoped<IAudioRecorder, AudioRecorderService>();
+            services.AddAudioServices()
+                    .AddUIServices()
+                    .AddFormServices();
 
             return services.BuildServiceProvider();
         }
