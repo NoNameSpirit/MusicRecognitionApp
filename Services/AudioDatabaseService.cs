@@ -8,23 +8,18 @@ namespace MusicRecognitionApp.Services
 {
     public class AudioDatabaseService : IAudioDatabase
     {
-        private readonly string _exeDirectory;
-        private readonly string _databasePath;
-
         private readonly string _connectionString;
 
-        public AudioDatabaseService()
+        public AudioDatabaseService(string connectionString)
         {
-            _exeDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            _databasePath = Path.Combine(_exeDirectory, "ShazamDB.sqlite");
-
-            _connectionString = $"Data Source={_databasePath};Version=3;";
-
+            _connectionString = connectionString;
             InitializeDatabase();
         }
 
         private void InitializeDatabase()
         {
+            string _databasePath = _connectionString.Replace("Data Source=", "").Split(";")[0];
+
             if (!File.Exists(_databasePath))
             {
                 SQLiteConnection.CreateFile(_databasePath);
