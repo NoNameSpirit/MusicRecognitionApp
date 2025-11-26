@@ -1,8 +1,9 @@
 ﻿using MusicRecognitionApp.Data;
+using MusicRecognitionApp.Services.Audio.Interfaces;
 
 namespace MusicRecognitionApp.Services.Audio
 {
-    public class PeakDetector
+    public class PeakDetector : IPeakDetector
     {
         public List<Peak> ProcessPeekDetector(SpectrogramData spectrogramData)
         {

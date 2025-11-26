@@ -2,6 +2,8 @@ using Microsoft.Extensions.DependencyInjection;
 using MusicRecognitionApp.Controls;
 using MusicRecognitionApp.Forms;
 using MusicRecognitionApp.Services;
+using MusicRecognitionApp.Services.Audio;
+using MusicRecognitionApp.Services.Audio.Interfaces;
 using MusicRecognitionApp.Services.Interfaces;
 
 namespace MusicRecognitionApp
@@ -34,7 +36,11 @@ namespace MusicRecognitionApp
             services.AddSingleton<IStateRegistry, StateRegistryService>()
                     .AddTransient<MainForm>();
 
-            services.AddScoped<IAudioDatabase, AudioDatabaseService>()
+            services.AddScoped<IAudioHashGenerator, AudioHashGenerator>()
+                    .AddScoped<IAudioProcessor, AudioProcessor>()
+                    .AddScoped<IPeakDetector, PeakDetector>()
+                    .AddScoped<ISpectrogramBuilder, SpectrogramBuilder>()
+                    .AddScoped<IAudioDatabase, AudioDatabaseService>()
                     .AddScoped<IAudioRecognition, AudioRecognitionService>()
                     .AddScoped<IAudioRecorder, AudioRecorderService>();
 

@@ -27,3 +27,16 @@ D:\########University########\3 курс\Shazam\MusicRecognizionApp\obj\Debug\ne
 D:\########University########\3 курс\Shazam\MusicRecognizionApp\obj\Debug\net7.0-windows\MusicRecognitionApp.Controls.SettingsStateControl.resources
 D:\########University########\3 курс\Shazam\MusicRecognizionApp\bin\Debug\net7.0-windows\Microsoft.Extensions.DependencyInjection.dll
 D:\########University########\3 курс\Shazam\MusicRecognizionApp\bin\Debug\net7.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\########University########\3 курс\Shazam\MusicRecognizionApp\bin\Debug\net7.0-windows\FftSharp.dll
+D:\########University########\3 курс\Shazam\MusicRecognizionApp\bin\Debug\net7.0-windows\NAudio.dll
+D:\########University########\3 курс\Shazam\MusicRecognizionApp\bin\Debug\net7.0-windows\NAudio.Asio.dll
+D:\########University########\3 курс\Shazam\MusicRecognizionApp\bin\Debug\net7.0-windows\NAudio.Core.dll
+D:\########University########\3 курс\Shazam\MusicRecognizionApp\bin\Debug\net7.0-windows\NAudio.Midi.dll
+D:\########University########\3 курс\Shazam\MusicRecognizionApp\bin\Debug\net7.0-windows\NAudio.Wasapi.dll
+D:\########University########\3 курс\Shazam\MusicRecognizionApp\bin\Debug\net7.0-windows\NAudio.WinForms.dll
+D:\########University########\3 курс\Shazam\MusicRecognizionApp\bin\Debug\net7.0-windows\NAudio.WinMM.dll
+D:\########University########\3 курс\Shazam\MusicRecognizionApp\bin\Debug\net7.0-windows\System.Data.SQLite.dll
+D:\########University########\3 курс\Shazam\MusicRecognizionApp\bin\Debug\net7.0-windows\runtimes\linux-x64\native\SQLite.Interop.dll
+D:\########University########\3 курс\Shazam\MusicRecognizionApp\bin\Debug\net7.0-windows\runtimes\osx-x64\native\SQLite.Interop.dll
+D:\########University########\3 курс\Shazam\MusicRecognizionApp\bin\Debug\net7.0-windows\runtimes\win-x64\native\SQLite.Interop.dll
+D:\########University########\3 курс\Shazam\MusicRecognizionApp\bin\Debug\net7.0-windows\runtimes\win-x86\native\SQLite.Interop.dll

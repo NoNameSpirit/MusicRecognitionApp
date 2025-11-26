@@ -1,8 +1,9 @@
 ﻿using MusicRecognitionApp.Data;
+using MusicRecognitionApp.Services.Audio.Interfaces;
 
 namespace MusicRecognitionApp.Services.Audio
 {
-    public class AudioHashGenerator
+    public class AudioHashGenerator : IAudioHashGenerator
     {
         private const int MaxPairs = 15;
         private const double MinTimeDelta = 0.02;
@@ -28,6 +29,74 @@ namespace MusicRecognitionApp.Services.Audio
             }
             
             return hashes;
+        }
+
+        public List<(int songId, int matches, double confidence)> FindMatches(List<AudioHash> queryHashes, Dictionary<uint, List<AudioHash>> database)
+        {
+            Dictionary<int, List<(double queryTime, double dbTime)>> songMatches = new Dictionary<int, List<(double, double)>>();
+
+            foreach (var queryHash in queryHashes)
+            {
+                if (database.ContainsKey(queryHash.Hash))
+                {
+                    foreach (var dbHash in database[queryHash.Hash])
+                    {
+                        if (!songMatches.ContainsKey(dbHash.SongId))
+                            songMatches[dbHash.SongId] = new List<(double, double)>();
+
+                        songMatches[dbHash.SongId].Add((queryHash.TimeOffset, dbHash.TimeOffset));
+                    }
+                }
+            }
+
+            var results = new List<(int songId, int consistentMatches, double confidence)>();
+
+            foreach (var songMatch in songMatches)
+            {
+                int songId = songMatch.Key;
+                var matches = songMatch.Value;
+
+                int minMatches = Math.Max(2, Math.Min(queryHashes.Count / 15, 6));
+
+                if (matches.Count < minMatches)
+                    continue;
+
+                Dictionary<int, int> offsetCounts = new Dictionary<int, int>();
+
+                var exactOffsetCounts = new Dictionary<double, int>();
+                double threshold = 0.1;
+
+                foreach (var match in matches)
+                {
+                    double exactOffset = match.dbTime - match.queryTime;
+                    var existingKey = exactOffsetCounts.Keys
+                        .FirstOrDefault(k => Math.Abs(k - exactOffset) <= threshold);
+
+                    if (existingKey != 0.0)
+                        exactOffsetCounts[existingKey]++;
+                    else
+                        exactOffsetCounts[exactOffset] = 1;
+                }
+
+                foreach (var kvp in exactOffsetCounts)
+                {
+                    int roundedOffset = (int)Math.Round(kvp.Key);
+                    if (!offsetCounts.ContainsKey(roundedOffset))
+                        offsetCounts[roundedOffset] = 0;
+                    offsetCounts[roundedOffset] += kvp.Value;
+                }
+
+                var bestOffset = offsetCounts.OrderByDescending(kvp => kvp.Value).First();
+                int consistentMatches = bestOffset.Value;
+                double confidence = (double)consistentMatches / matches.Count;
+
+                if (IsAcceptable(confidence, consistentMatches))
+                {
+                    results.Add((songId, consistentMatches, confidence));
+                }
+            }
+
+            return results;
         }
 
         private List<Peak> FindTargetPeaks(List<Peak> sortedPeaks, int anchorIndex, Peak anchorPeak)
@@ -74,73 +143,6 @@ namespace MusicRecognitionApp.Services.Audio
             return hash;
         }
 
-        public List<(int songId, int matches, double confidence)> FindMatches(List<AudioHash> queryHashes, Dictionary<uint, List<AudioHash>> database)
-        {
-            Dictionary<int, List<(double queryTime, double dbTime)>> songMatches = new Dictionary<int, List<(double, double)>>();
-
-            foreach (var queryHash in queryHashes)
-            {
-                if (database.ContainsKey(queryHash.Hash))
-                {
-                    foreach (var dbHash in database[queryHash.Hash])
-                    {
-                        if (!songMatches.ContainsKey(dbHash.SongId))
-                            songMatches[dbHash.SongId] = new List<(double, double)>();
-
-                        songMatches[dbHash.SongId].Add((queryHash.TimeOffset, dbHash.TimeOffset));
-                    }
-                }
-            }
-
-            var results = new List<(int songId, int consistentMatches, double confidence)>();
-            
-            foreach (var songMatch in songMatches)
-            {
-                int songId = songMatch.Key;
-                var matches = songMatch.Value;
-
-                int minMatches = Math.Max(2, Math.Min(queryHashes.Count / 15, 6));
-
-                if (matches.Count < minMatches)
-                    continue;
-
-                Dictionary<int, int> offsetCounts = new Dictionary<int, int>();
-
-                var exactOffsetCounts = new Dictionary<double, int>();
-                double threshold = 0.1; 
-
-                foreach (var match in matches)
-                {
-                    double exactOffset = match.dbTime - match.queryTime;
-                    var existingKey = exactOffsetCounts.Keys
-                        .FirstOrDefault(k => Math.Abs(k - exactOffset) <= threshold);
-
-                    if (existingKey != 0.0)
-                        exactOffsetCounts[existingKey]++;
-                    else
-                        exactOffsetCounts[exactOffset] = 1;
-                }
-
-                foreach (var kvp in exactOffsetCounts)
-                {
-                    int roundedOffset = (int)Math.Round(kvp.Key);
-                    if (!offsetCounts.ContainsKey(roundedOffset))
-                        offsetCounts[roundedOffset] = 0;
-                    offsetCounts[roundedOffset] += kvp.Value;
-                }
-
-                var bestOffset = offsetCounts.OrderByDescending(kvp => kvp.Value).First();
-                int consistentMatches = bestOffset.Value;
-                double confidence = (double)consistentMatches / matches.Count;
-
-                if (IsAcceptable(confidence, consistentMatches))
-                {
-                    results.Add((songId, consistentMatches, confidence));
-                }
-            }
-
-            return results;
-        }
         private bool IsAcceptable(double confidence, int consistentMatches)
         {
             if (confidence > 0.10) return true;

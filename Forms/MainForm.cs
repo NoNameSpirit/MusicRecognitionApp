@@ -10,6 +10,7 @@ namespace MusicRecognitionApp.Forms
     {
         private AppState _currentState;
         private Dictionary<AppState, UserControl> _states = new();
+        private List<(int songId, string title, string artist, int matches, double confidence)> _lastResults;
 
         private readonly IMessageBox _messageBoxService;
         private readonly IStateRegistry _stateRegistryService;
@@ -58,6 +59,16 @@ namespace MusicRecognitionApp.Forms
             {
                 e.Cancel = true;
             }
+        }
+
+        public void SetRecognitionResults(List<(int songId, string title, string artist, int matches, double confidence)> results)
+        {
+            _lastResults = results;
+        }
+
+        public List<(int songId, string title, string artist, int matches, double confidence)> GetRecognitionResults()
+        {
+            return _lastResults;
         }
     }
 }

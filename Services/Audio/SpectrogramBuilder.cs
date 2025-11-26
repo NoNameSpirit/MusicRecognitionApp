@@ -1,8 +1,9 @@
 ﻿using MusicRecognitionApp.Data;
+using MusicRecognitionApp.Services.Audio.Interfaces;
 
 namespace MusicRecognitionApp.Services.Audio
 {
-    public class SpectrogramBuilder
+    public class SpectrogramBuilder : ISpectrogramBuilder
     {
         private const int WindowSize = 4096;
         private const int WindowGap = 2048;

@@ -30,12 +30,18 @@
         {
             PanelMain = new Panel();
             BtnStopRecognition = new MaterialSkin.Controls.MaterialButton();
+            ProgressBarAnalyzing = new MaterialSkin.Controls.MaterialProgressBar();
+            LblAnalyzingStatus = new MaterialSkin.Controls.MaterialLabel();
+            LblProgressPercent = new MaterialSkin.Controls.MaterialLabel();
             PanelMain.SuspendLayout();
             SuspendLayout();
             // 
             // PanelMain
             // 
             PanelMain.BackColor = Color.AliceBlue;
+            PanelMain.Controls.Add(LblProgressPercent);
+            PanelMain.Controls.Add(LblAnalyzingStatus);
+            PanelMain.Controls.Add(ProgressBarAnalyzing);
             PanelMain.Controls.Add(BtnStopRecognition);
             PanelMain.Dock = DockStyle.Fill;
             PanelMain.Location = new Point(0, 0);
@@ -66,6 +72,39 @@
             BtnStopRecognition.UseVisualStyleBackColor = true;
             BtnStopRecognition.Click += BtnStopRecognition_Click;
             // 
+            // ProgressBarAnalyzing
+            // 
+            ProgressBarAnalyzing.Depth = 0;
+            ProgressBarAnalyzing.Location = new Point(418, 401);
+            ProgressBarAnalyzing.MouseState = MaterialSkin.MouseState.HOVER;
+            ProgressBarAnalyzing.Name = "ProgressBarAnalyzing";
+            ProgressBarAnalyzing.Size = new Size(125, 5);
+            ProgressBarAnalyzing.TabIndex = 1;
+            // 
+            // LblAnalyzingStatus
+            // 
+            LblAnalyzingStatus.AutoSize = true;
+            LblAnalyzingStatus.Depth = 0;
+            LblAnalyzingStatus.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
+            LblAnalyzingStatus.Location = new Point(364, 299);
+            LblAnalyzingStatus.MouseState = MaterialSkin.MouseState.HOVER;
+            LblAnalyzingStatus.Name = "LblAnalyzingStatus";
+            LblAnalyzingStatus.Size = new Size(107, 19);
+            LblAnalyzingStatus.TabIndex = 2;
+            LblAnalyzingStatus.Text = "materialLabel1";
+            // 
+            // LblProgressPercent
+            // 
+            LblProgressPercent.AutoSize = true;
+            LblProgressPercent.Depth = 0;
+            LblProgressPercent.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
+            LblProgressPercent.Location = new Point(446, 337);
+            LblProgressPercent.MouseState = MaterialSkin.MouseState.HOVER;
+            LblProgressPercent.Name = "LblProgressPercent";
+            LblProgressPercent.Size = new Size(107, 19);
+            LblProgressPercent.TabIndex = 3;
+            LblProgressPercent.Text = "materialLabel1";
+            // 
             // AnalyzingStateControl
             // 
             Controls.Add(PanelMain);
@@ -80,5 +119,8 @@
 
         private Panel PanelMain;
         private MaterialSkin.Controls.MaterialButton BtnStopRecognition;
+        private MaterialSkin.Controls.MaterialLabel LblProgressPercent;
+        private MaterialSkin.Controls.MaterialLabel LblAnalyzingStatus;
+        private MaterialSkin.Controls.MaterialProgressBar ProgressBarAnalyzing;
     }
 }

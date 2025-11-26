@@ -94,7 +94,7 @@ namespace MusicRecognitionApp.Services
             var query = $@"
                 SELECT Hash, TimeOffset, SongId 
                 FROM AudioHashes 
-                WHERE Hash IN ({string.Join(",", parameters)})"; // совпадение хотя бы с одним параметром
+                WHERE Hash IN ({string.Join(",", parameters)})"; 
 
             using (var connection = new SQLiteConnection(_connectionString))
             {

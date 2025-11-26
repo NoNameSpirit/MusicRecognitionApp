@@ -11,22 +11,31 @@ namespace MusicRecognitionApp.Services
     {
         private readonly ICardService cardService;
         private readonly IServiceProvider _serviceProvider;
-        public StateRegistryService(IServiceProvider serviceProvider)
+        private readonly IAudioRecognition _audioRecognitionService;
+        private readonly IAudioRecorder _audioRecorderService;
+        
+            
+        public StateRegistryService(
+            IServiceProvider serviceProvider,
+            IAudioRecognition audioRecognitionService,
+            IAudioRecorder audioRecorderService)
         {
             _serviceProvider = serviceProvider;
+            _audioRecognitionService = audioRecognitionService;
+            _audioRecorderService = audioRecorderService;
         }
 
         public UserControl CreateStateControl(MainForm mainForm, AppState state)
         {
             return state switch
             {
-                AppState.Ready     => new ReadyStateControl(mainForm),
+                AppState.Ready => new ReadyStateControl(mainForm, _audioRecognitionService),
                 AppState.Recording => new RecordingStateControl(mainForm),
-                AppState.Analyzing => new AnalyzingStateControl(mainForm),
-                AppState.Result    => new ResultStateControl(mainForm),
-                AppState.Library   => new LibraryStateControl(mainForm, _serviceProvider),
-                AppState.Settings  => new SettingsStateControl(mainForm),
-                _                  => throw new Exception($"Don't have this factory for {state}")
+                AppState.Analyzing => new AnalyzingStateControl(mainForm, _audioRecorderService),
+                AppState.Result => new ResultStateControl(mainForm),
+                AppState.Library => new LibraryStateControl(mainForm, _serviceProvider),
+                AppState.Settings => new SettingsStateControl(mainForm),
+                _ => throw new Exception($"Don't have this factory for {state}")
             };
         }
 

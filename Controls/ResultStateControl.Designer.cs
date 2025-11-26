@@ -29,6 +29,9 @@
         private void InitializeComponent()
         {
             PanelMain = new Panel();
+            BtnBackToReady = new MaterialSkin.Controls.MaterialButton();
+            PanelResults = new FlowLayoutPanel();
+            LblResultTitle = new MaterialSkin.Controls.MaterialLabel();
             FABtnSettings = new MaterialSkin.Controls.MaterialFloatingActionButton();
             FABtnLibrary = new MaterialSkin.Controls.MaterialFloatingActionButton();
             BtnLibrary = new MaterialSkin.Controls.MaterialButton();
@@ -38,6 +41,9 @@
             // PanelMain
             // 
             PanelMain.BackColor = Color.AliceBlue;
+            PanelMain.Controls.Add(BtnBackToReady);
+            PanelMain.Controls.Add(PanelResults);
+            PanelMain.Controls.Add(LblResultTitle);
             PanelMain.Controls.Add(FABtnSettings);
             PanelMain.Controls.Add(FABtnLibrary);
             PanelMain.Controls.Add(BtnLibrary);
@@ -48,6 +54,49 @@
             PanelMain.Padding = new Padding(14);
             PanelMain.Size = new Size(600, 650);
             PanelMain.TabIndex = 0;
+            // 
+            // BtnBackToReady
+            // 
+            BtnBackToReady.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            BtnBackToReady.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            BtnBackToReady.Depth = 0;
+            BtnBackToReady.HighEmphasis = true;
+            BtnBackToReady.Icon = null;
+            BtnBackToReady.Location = new Point(245, 530);
+            BtnBackToReady.Margin = new Padding(4, 6, 4, 6);
+            BtnBackToReady.MouseState = MaterialSkin.MouseState.HOVER;
+            BtnBackToReady.Name = "BtnBackToReady";
+            BtnBackToReady.NoAccentTextColor = Color.Empty;
+            BtnBackToReady.Size = new Size(71, 36);
+            BtnBackToReady.TabIndex = 4;
+            BtnBackToReady.Text = "НАЗАД";
+            BtnBackToReady.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Outlined;
+            BtnBackToReady.UseAccentColor = false;
+            BtnBackToReady.UseVisualStyleBackColor = true;
+            BtnBackToReady.Click += BtnBackToReady_Click;
+            // 
+            // PanelResults
+            // 
+            PanelResults.AutoScroll = true;
+            PanelResults.FlowDirection = FlowDirection.TopDown;
+            PanelResults.Location = new Point(40, 160);
+            PanelResults.Name = "PanelResults";
+            PanelResults.Size = new Size(520, 350);
+            PanelResults.TabIndex = 5;
+            PanelResults.WrapContents = false;
+            // 
+            // LblResultTitle
+            // 
+            LblResultTitle.Depth = 0;
+            LblResultTitle.Font = new Font("Roboto", 34F, FontStyle.Bold, GraphicsUnit.Pixel);
+            LblResultTitle.FontType = MaterialSkin.MaterialSkinManager.fontType.H4;
+            LblResultTitle.Location = new Point(50, 100);
+            LblResultTitle.MouseState = MaterialSkin.MouseState.HOVER;
+            LblResultTitle.Name = "LblResultTitle";
+            LblResultTitle.Size = new Size(500, 41);
+            LblResultTitle.TabIndex = 3;
+            LblResultTitle.Text = "Результат распознавания";
+            LblResultTitle.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // FABtnSettings
             // 
@@ -112,5 +161,8 @@
         private MaterialSkin.Controls.MaterialFloatingActionButton FABtnLibrary;
         private MaterialSkin.Controls.MaterialButton BtnLibrary;
         private MaterialSkin.Controls.MaterialFloatingActionButton FABtnSettings;
+        private MaterialSkin.Controls.MaterialButton BtnBackToReady;
+        private FlowLayoutPanel PanelResults;
+        private MaterialSkin.Controls.MaterialLabel LblResultTitle;
     }
 }

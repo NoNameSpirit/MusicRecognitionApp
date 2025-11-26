@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             PanelMain = new Panel();
+            BtnStartRecognition = new MaterialSkin.Controls.MaterialButton();
             FABtnSettings = new MaterialSkin.Controls.MaterialFloatingActionButton();
             FABtnLibrary = new MaterialSkin.Controls.MaterialFloatingActionButton();
             BtnLibrary = new MaterialSkin.Controls.MaterialButton();
@@ -38,16 +39,37 @@
             // PanelMain
             // 
             PanelMain.BackColor = Color.AliceBlue;
+            PanelMain.Controls.Add(BtnStartRecognition);
             PanelMain.Controls.Add(FABtnSettings);
             PanelMain.Controls.Add(FABtnLibrary);
             PanelMain.Controls.Add(BtnLibrary);
             PanelMain.Dock = DockStyle.Fill;
-            PanelMain.Location = new Point(3, 24);
+            PanelMain.Location = new Point(0, 0);
             PanelMain.Margin = new Padding(14);
             PanelMain.Name = "PanelMain";
             PanelMain.Padding = new Padding(14);
-            PanelMain.Size = new Size(594, 623);
+            PanelMain.Size = new Size(600, 650);
             PanelMain.TabIndex = 0;
+            // 
+            // BtnStartRecognition
+            // 
+            BtnStartRecognition.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            BtnStartRecognition.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            BtnStartRecognition.Depth = 0;
+            BtnStartRecognition.HighEmphasis = true;
+            BtnStartRecognition.Icon = null;
+            BtnStartRecognition.Location = new Point(195, 300);
+            BtnStartRecognition.Margin = new Padding(4, 6, 4, 6);
+            BtnStartRecognition.MouseState = MaterialSkin.MouseState.HOVER;
+            BtnStartRecognition.Name = "BtnStartRecognition";
+            BtnStartRecognition.NoAccentTextColor = Color.Empty;
+            BtnStartRecognition.Size = new Size(210, 36);
+            BtnStartRecognition.TabIndex = 3;
+            BtnStartRecognition.Text = "НАЧАТЬ РАСПОЗНАВАНИЕ";
+            BtnStartRecognition.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            BtnStartRecognition.UseAccentColor = true;
+            BtnStartRecognition.UseVisualStyleBackColor = true;
+            BtnStartRecognition.Click += BtnStartRecognition_Click;
             // 
             // FABtnSettings
             // 
@@ -83,12 +105,12 @@
             BtnLibrary.Dock = DockStyle.Bottom;
             BtnLibrary.HighEmphasis = true;
             BtnLibrary.Icon = null;
-            BtnLibrary.Location = new Point(14, 573);
+            BtnLibrary.Location = new Point(14, 600);
             BtnLibrary.Margin = new Padding(4, 6, 4, 6);
             BtnLibrary.MouseState = MaterialSkin.MouseState.HOVER;
             BtnLibrary.Name = "BtnLibrary";
             BtnLibrary.NoAccentTextColor = Color.Empty;
-            BtnLibrary.Size = new Size(566, 36);
+            BtnLibrary.Size = new Size(572, 36);
             BtnLibrary.TabIndex = 0;
             BtnLibrary.Text = "Library";
             BtnLibrary.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
@@ -98,11 +120,9 @@
             // 
             // ReadyStateControl
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
-            ClientSize = new Size(600, 650);
             Controls.Add(PanelMain);
             Name = "ReadyStateControl";
-            Text = "ReadyStateControl";
+            Size = new Size(600, 650);
             PanelMain.ResumeLayout(false);
             PanelMain.PerformLayout();
             ResumeLayout(false);
@@ -114,5 +134,6 @@
         private MaterialSkin.Controls.MaterialFloatingActionButton FABtnLibrary;
         private MaterialSkin.Controls.MaterialButton BtnLibrary;
         private MaterialSkin.Controls.MaterialFloatingActionButton FABtnSettings;
+        private MaterialSkin.Controls.MaterialButton BtnStartRecognition;
     }
 }

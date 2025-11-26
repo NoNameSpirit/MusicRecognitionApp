@@ -1,9 +1,10 @@
-﻿using NAudio.Dsp;
+﻿using MusicRecognitionApp.Services.Audio.Interfaces;
+using NAudio.Dsp;
 using NAudio.Wave;
 
 namespace MusicRecognitionApp.Services.Audio
 {
-    public class AudioProcessor
+    public class AudioProcessor : IAudioProcessor
     {
         private float[] audioSamples; 
         private int sampleRate;       

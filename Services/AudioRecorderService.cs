@@ -1,5 +1,6 @@
 ﻿using MusicRecognitionApp.Services.Interfaces;
 using NAudio.Wave;
+using System.Reflection;
 
 namespace MusicRecognitionApp.Services
 {
@@ -13,7 +14,8 @@ namespace MusicRecognitionApp.Services
             IsRecording = true;
             try
             {
-                var outputFilePath = @"D:\NewShazam\recorded.wav";
+                var exeDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                var outputFilePath = Path.Combine(exeDirectory, "recorded_audio.wav"); 
                 int deviceNumber = 0;
 
                 var sourceStream = new WaveInEvent();
@@ -40,7 +42,7 @@ namespace MusicRecognitionApp.Services
 
                     int amountOfProgress = (i + 1) * 100 / durationSeconds;
                     int progress = amountOfProgress > 100 ? 100 : amountOfProgress;
-                    RecordingProgress(progress);
+                    RecordingProgress?.Invoke(progress);
                 }
 
                 sourceStream.StopRecording();

@@ -30,12 +30,18 @@
         {
             PanelMain = new Panel();
             BtnStopRecognition = new MaterialSkin.Controls.MaterialButton();
+            LblRecordingStatus = new MaterialSkin.Controls.MaterialLabel();
+            ProgressBarRecording = new MaterialSkin.Controls.MaterialProgressBar();
+            LblTimer = new MaterialSkin.Controls.MaterialLabel();
             PanelMain.SuspendLayout();
             SuspendLayout();
             // 
             // PanelMain
             // 
             PanelMain.BackColor = Color.AliceBlue;
+            PanelMain.Controls.Add(LblTimer);
+            PanelMain.Controls.Add(ProgressBarRecording);
+            PanelMain.Controls.Add(LblRecordingStatus);
             PanelMain.Controls.Add(BtnStopRecognition);
             PanelMain.Dock = DockStyle.Fill;
             PanelMain.Location = new Point(0, 0);
@@ -66,6 +72,41 @@
             BtnStopRecognition.UseVisualStyleBackColor = true;
             BtnStopRecognition.Click += BtnStopRecognition_Click;
             // 
+            // LblRecordingStatus
+            // 
+            LblRecordingStatus.Depth = 0;
+            LblRecordingStatus.Font = new Font("Roboto", 24F, FontStyle.Bold, GraphicsUnit.Pixel);
+            LblRecordingStatus.FontType = MaterialSkin.MaterialSkinManager.fontType.H5;
+            LblRecordingStatus.Location = new Point(50, 250);
+            LblRecordingStatus.MouseState = MaterialSkin.MouseState.HOVER;
+            LblRecordingStatus.Name = "LblRecordingStatus";
+            LblRecordingStatus.Size = new Size(500, 29);
+            LblRecordingStatus.TabIndex = 1;
+            LblRecordingStatus.Text = "Записываем аудио...";
+            LblRecordingStatus.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // ProgressBarRecording
+            // 
+            ProgressBarRecording.Depth = 0;
+            ProgressBarRecording.Location = new Point(50, 300);
+            ProgressBarRecording.MouseState = MaterialSkin.MouseState.HOVER;
+            ProgressBarRecording.Name = "ProgressBarRecording";
+            ProgressBarRecording.Size = new Size(500, 5);
+            ProgressBarRecording.TabIndex = 2;
+            // 
+            // LblTimer
+            // 
+            LblTimer.Depth = 0;
+            LblTimer.Font = new Font("Roboto", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
+            LblTimer.FontType = MaterialSkin.MaterialSkinManager.fontType.Subtitle1;
+            LblTimer.Location = new Point(50, 320);
+            LblTimer.MouseState = MaterialSkin.MouseState.HOVER;
+            LblTimer.Name = "LblTimer";
+            LblTimer.Size = new Size(500, 19);
+            LblTimer.TabIndex = 3;
+            LblTimer.Text = "00:15";
+            LblTimer.TextAlign = ContentAlignment.MiddleCenter;
+            // 
             // RecordingStateControl
             // 
             Controls.Add(PanelMain);
@@ -80,5 +121,8 @@
 
         private Panel PanelMain;
         private MaterialSkin.Controls.MaterialButton BtnStopRecognition;
+        private MaterialSkin.Controls.MaterialLabel LblTimer;
+        private MaterialSkin.Controls.MaterialProgressBar ProgressBarRecording;
+        private MaterialSkin.Controls.MaterialLabel LblRecordingStatus;
     }
 }
