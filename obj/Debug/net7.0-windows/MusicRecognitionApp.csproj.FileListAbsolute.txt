@@ -24,7 +24,6 @@ D:\########University########\3 курс\Shazam\MusicRecognizionApp\obj\Debug\ne
 D:\########University########\3 курс\Shazam\MusicRecognizionApp\obj\Debug\net7.0-windows\MusicRecognitionApp.Controls.LibraryStateControl.resources
 D:\########University########\3 курс\Shazam\MusicRecognizionApp\obj\Debug\net7.0-windows\MusicRecognitionApp.Controls.RecordingStateControl.resources
 D:\########University########\3 курс\Shazam\MusicRecognizionApp\obj\Debug\net7.0-windows\MusicRecognitionApp.Controls.ResultStateControl.resources
-D:\########University########\3 курс\Shazam\MusicRecognizionApp\obj\Debug\net7.0-windows\MusicRecognitionApp.Controls.SettingsStateControl.resources
 D:\########University########\3 курс\Shazam\MusicRecognizionApp\bin\Debug\net7.0-windows\Microsoft.Extensions.DependencyInjection.dll
 D:\########University########\3 курс\Shazam\MusicRecognizionApp\bin\Debug\net7.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 D:\########University########\3 курс\Shazam\MusicRecognizionApp\bin\Debug\net7.0-windows\FftSharp.dll

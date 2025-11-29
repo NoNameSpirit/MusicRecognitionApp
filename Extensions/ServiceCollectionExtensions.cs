@@ -1,9 +1,11 @@
 ﻿using MusicRecognitionApp.Services.Audio.Interfaces;
 using MusicRecognitionApp.Services.Audio;
-using MusicRecognitionApp.Services.Interfaces;
 using MusicRecognitionApp.Services;
 using Microsoft.Extensions.DependencyInjection;
 using MusicRecognitionApp.Forms;
+using MusicRecognitionApp.Services.Interfaces;
+using MusicRecognitionApp.Services.UI.Interfaces;
+using MusicRecognitionApp.Services.UI;
 
 namespace MusicRecognitionApp.Extensions
 {
@@ -30,7 +32,9 @@ namespace MusicRecognitionApp.Extensions
         {
             services.AddSingleton<IStateRegistry, StateRegistryService>()
                     .AddSingleton<IMessageBox, MessageBoxService>()
-                    .AddScoped<ICardService, CardService>();
+                    .AddScoped<ICardService, CardService>()
+                    .AddScoped<IAnimationService, AnimationService>()
+                    .AddScoped<IResultCardBuilder, ResultCardBuilder>();
 
             return services;
         }

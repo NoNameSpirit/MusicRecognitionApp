@@ -63,6 +63,16 @@ namespace MusicRecognitionApp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap musical_note {
+            get {
+                object obj = ResourceManager.GetObject("musical_note", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap next_arrow {
             get {
                 object obj = ResourceManager.GetObject("next_arrow", resourceCulture);
@@ -76,6 +86,56 @@ namespace MusicRecognitionApp.Properties {
         internal static System.Drawing.Bitmap prev_arrow {
             get {
                 object obj = ResourceManager.GetObject("prev_arrow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap rimuru {
+            get {
+                object obj = ResourceManager.GetObject("rimuru", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap rimuruHasResults {
+            get {
+                object obj = ResourceManager.GetObject("rimuruHasResults", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap rimuruNoResult {
+            get {
+                object obj = ResourceManager.GetObject("rimuruNoResult", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap rimuruStatic {
+            get {
+                object obj = ResourceManager.GetObject("rimuruStatic", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap vinyl {
+            get {
+                object obj = ResourceManager.GetObject("vinyl", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
