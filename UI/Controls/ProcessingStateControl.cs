@@ -2,15 +2,17 @@
 using MusicRecognitionApp.Model.Enums;
 using MusicRecognitionApp.Services;
 using MusicRecognitionApp.Services.Interfaces;
+using System.Threading;
 
 namespace MusicRecognitionApp.Controls
 {
-    public partial class AnalyzingStateControl : UserControl
+    public partial class ProcessingStateControl : UserControl
     {
         private readonly MainForm _mainForm;
         private readonly IAudioRecognition _recognitionService;
+        private CancellationTokenSource _cancellationTokenSource;
 
-        public AnalyzingStateControl(
+        public ProcessingStateControl(
             MainForm mainForm,
             IAudioRecognition recognitionService)
         {
@@ -18,7 +20,7 @@ namespace MusicRecognitionApp.Controls
             _mainForm = mainForm;
 
             _recognitionService = recognitionService;
-            _recognitionService.AnalysisProgress += UpdateProgress;
+            _recognitionService.ImportProgress += UpdateProgress;
         }
 
         public void UpdateProgress(int progress)

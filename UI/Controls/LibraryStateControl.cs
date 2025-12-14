@@ -24,8 +24,16 @@ namespace MusicRecognitionApp.Controls
             _mainForm = mainForm;
             _cardService = _serviceProvider.GetRequiredService<ICardService>();
             _cardService.Initialize(BtnSongs, BtnAuthors, FLPanelOfCards);
+        }
 
-            _cardService.ShowSongs();
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+
+            if (Visible)
+            {
+                _cardService.ShowSongs();
+            }
         }
 
         private void BtnSongs_Click(object sender, EventArgs e)

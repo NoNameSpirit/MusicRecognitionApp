@@ -31,7 +31,9 @@ namespace MusicRecognitionApp.Services.Audio
             return hashes;
         }
 
-        public List<(int songId, int matches, double confidence)> FindMatches(List<AudioHash> queryHashes, Dictionary<uint, List<AudioHash>> database)
+        public List<(int songId, int matches, double confidence)> FindMatches(
+            List<AudioHash> queryHashes, 
+            Dictionary<uint, List<AudioHash>> database)
         {
             Dictionary<int, List<(double queryTime, double dbTime)>> songMatches = new Dictionary<int, List<(double, double)>>();
 

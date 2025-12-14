@@ -1,9 +1,12 @@
 ﻿using MaterialSkin.Controls;
+using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Forms;
 using MusicRecognitionApp.Model.Enums;
+using MusicRecognitionApp.Services.Data.Interfaces;
 using MusicRecognitionApp.Services.Interfaces;
 using MusicRecognitionApp.Services.UI;
 using MusicRecognitionApp.Services.UI.Interfaces;
+using System.DirectoryServices;
 
 namespace MusicRecognitionApp.Controls
 {
@@ -65,9 +68,10 @@ namespace MusicRecognitionApp.Controls
             }
 
             var bestResult = results.FirstOrDefault();
-            if (bestResult.matches > 0)
+            if (bestResult.Matches > 0)
             {
-                SaveRecognizedSong(bestResult);
+                //Don't wait
+                _ = SaveRecognizedSong(bestResult);
             }
 
             ShowResult(bestResult);
@@ -80,19 +84,19 @@ namespace MusicRecognitionApp.Controls
             PanelResults.Controls.Add(card);
         }
 
-        private void ShowResult((int songId, string title, string artist, int matches, double confidence) result)
+        private void ShowResult(SearchResultModel result)
         {
             var card = _resultCardBuilder.CreateResultCard(result); 
             PicRecordingGif.Image = Properties.Resources.rimuruHasResults;
             PanelResults.Controls.Add(card);
         }
 
-        private void SaveRecognizedSong((int songId, string title, string artist, int matches, double confidence) result)
+        private async Task SaveRecognizedSong(SearchResultModel result)
         {
             try
             {
-                _databaseService
-                    .SaveRecognizedSongs(result.songId, result.title, result.artist, result.matches);
+                await _databaseService
+                    .SaveRecognizedSongsAsync(result.Song.Id, result.Matches);
             }
             catch (Exception ex)
             {

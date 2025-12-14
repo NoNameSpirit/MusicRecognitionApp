@@ -1,6 +1,8 @@
 ﻿using MaterialSkin.Controls;
+using MusicRecognitionApp.Core.Models.Business;
+using MusicRecognitionApp.Services.Data.Interfaces;
 using MusicRecognitionApp.Services.Interfaces;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Windows.Forms;
 
 namespace MusicRecognitionApp.Services
 {
@@ -59,9 +61,9 @@ namespace MusicRecognitionApp.Services
                 return;
             }
 
-            foreach (var song in recognizedSongs)
+            foreach (var recognizedSong in recognizedSongs)
             {
-                var songCard = CreateSongCard(song);
+                var songCard = CreateSongCard(recognizedSong);
                 _panelOfCards.Controls.Add(songCard);
             }
         }
@@ -83,33 +85,45 @@ namespace MusicRecognitionApp.Services
             }
         }
 
-        private MaterialCard CreateSongCard((int songId, string title, string artist, int matches, DateTime recognitionDate) song)
+        private MaterialCard CreateSongCard(RecognizedSongModel recognizedSong)
         {
             var songCard = new MaterialCard()
             {
-                Size = new Size(520, 80),
+                Size = new Size(520, 100),
                 Margin = new Padding(0, 0, 0, 10)
             };
 
             var lblTitle = new MaterialLabel()
             {
-                Text = song.title,
-                Font = new Font("Roboto", 12, FontStyle.Bold),
+                Text = TruncateText(recognizedSong.Song.Title, 65),
+                Tag = recognizedSong.Song.Title,
                 Location = new Point(15, 15),
-                AutoSize = true
+                AutoSize = true,
             };
 
             var lblArtist = new MaterialLabel()
             {
-                Text = song.artist,
-                Location = new Point(15, 40),
+                Text = TruncateText(recognizedSong.Song.Artist, 30),
+                Tag = recognizedSong.Song.Artist,
+                Location = new Point(15, 60),
                 AutoSize = true
             };
 
+            var toolTip = new ToolTip()
+            {
+                AutoPopDelay = 5000,
+                InitialDelay = 500,
+                ReshowDelay = 500,
+                ShowAlways = true,
+            };
+
+            toolTip.SetToolTip(lblTitle, recognizedSong.Song.Title);
+            toolTip.SetToolTip(lblArtist, recognizedSong.Song.Artist);
+
             var lblMatches = new MaterialLabel()
             {
-                Text = $"Совпадений: {song.matches}",
-                Location = new Point(350, 30),
+                Text = $"Совпадений: {recognizedSong.Matches}",
+                Location = new Point(360, 60),
                 AutoSize = true
             };
 
@@ -124,7 +138,7 @@ namespace MusicRecognitionApp.Services
             return songCard;
         }
 
-        private MaterialCard CreateAuthorCard((string artist, int songCount) artistInfo)
+        private MaterialCard CreateAuthorCard(ArtistStatisticModel artistStatistic)
         {
             var authorCard = new MaterialCard()
             {
@@ -132,20 +146,33 @@ namespace MusicRecognitionApp.Services
                 Margin = new Padding(0, 0, 0, 10)
             };
 
-            var lblName = new MaterialLabel()
+            string songsText = $"{artistStatistic.SongCount} {(artistStatistic.SongCount == 1 ? "трек распознан" : "треков распознано")}";
+            var lblSongs = new MaterialLabel()
             {
-                Text = artistInfo.artist,
-                Font = new Font("Roboto", 12, FontStyle.Bold),
+                Text = TruncateText(songsText, 50),
+                Tag = songsText,
+                Location = new Point(15, 60),
+                AutoSize = true
+            };
+
+            var lblArtist = new MaterialLabel()
+            {
+                Text = TruncateText(artistStatistic.Artist, 30),
+                Tag = artistStatistic.Artist,
                 Location = new Point(15, 15),
                 AutoSize = true
             };
 
-            var lblSongs = new MaterialLabel()
+            var toolTip = new ToolTip()
             {
-                Text = $"{artistInfo.songCount} {(artistInfo.songCount == 1 ? "трек распознан" : "треков распознано")}",
-                Location = new Point(15, 40),
-                AutoSize = true
+                AutoPopDelay = 5000,
+                InitialDelay = 500,
+                ReshowDelay = 500,
+                ShowAlways = true,
             };
+
+            toolTip.SetToolTip(lblSongs, songsText);
+            toolTip.SetToolTip(lblArtist, artistStatistic.Artist);
 
             var divider = new MaterialDivider()
             {
@@ -153,7 +180,7 @@ namespace MusicRecognitionApp.Services
                 Dock = DockStyle.Bottom
             };
 
-            authorCard.Controls.AddRange(new Control[] { lblName, lblSongs, divider });
+            authorCard.Controls.AddRange(new Control[] { lblArtist, lblSongs, divider });
 
             return authorCard;
         }
@@ -169,7 +196,6 @@ namespace MusicRecognitionApp.Services
             var lblMessage = new MaterialLabel()
             {
                 Text = "Нет распознанных треков",
-                Font = new Font("Roboto", 12, FontStyle.Regular),
                 Location = new Point(15, 20),
                 AutoSize = true
             };
@@ -189,13 +215,20 @@ namespace MusicRecognitionApp.Services
             var lblMessage = new MaterialLabel()
             {
                 Text = "Нет распознанных исполнителей",
-                Font = new Font("Roboto", 12, FontStyle.Regular),
                 Location = new Point(15, 20),
                 AutoSize = true
             };
 
             messageCard.Controls.Add(lblMessage);
             _panelOfCards.Controls.Add(messageCard);
+        }
+
+        private string TruncateText(string text, int maxLength)
+        {
+            if (string.IsNullOrEmpty(text) || text.Length <= maxLength)
+                return text;
+
+            return text.Substring(0, maxLength-3) + "...";
         }
     }
 }

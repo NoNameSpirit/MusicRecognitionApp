@@ -2,6 +2,7 @@
 using MusicRecognitionApp.Controls;
 using MusicRecognitionApp.Forms;
 using MusicRecognitionApp.Model.Enums;
+using MusicRecognitionApp.Services.Data.Interfaces;
 using MusicRecognitionApp.Services.Interfaces;
 using MusicRecognitionApp.Services.UI;
 using MusicRecognitionApp.Services.UI.Interfaces;
@@ -42,7 +43,7 @@ namespace MusicRecognitionApp.Services
         {
             return state switch
             {
-                AppState.Ready => new ReadyStateControl(mainForm, _recognitionService, _animationService),
+                AppState.Ready => new ReadyStateControl(mainForm, _recognitionService, _animationService, _messageBoxService),
                 
                 AppState.Recording => new RecordingStateControl(mainForm, _recorderService),
                 
@@ -52,12 +53,14 @@ namespace MusicRecognitionApp.Services
                 
                 AppState.Library => new LibraryStateControl(mainForm, _serviceProvider),
                 
+                AppState.Processing => new ProcessingStateControl(mainForm, _recognitionService),
+
                 _ => throw new Exception($"Don't have this factory for {state}")
             };
         }
 
         public IEnumerable<AppState> GetStatesControls()
             => new[] { AppState.Ready, AppState.Recording, AppState.Analyzing,
-                   AppState.Result, AppState.Library, AppState.Settings };
+                   AppState.Result, AppState.Library, AppState.Processing };
     }
 }

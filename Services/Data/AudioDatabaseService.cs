@@ -1,281 +1,184 @@
-﻿using MusicRecognitionApp.Data;
+﻿using MusicRecognitionApp.Core.Models.Business;
+using MusicRecognitionApp.Core.Models.Entities;
+using MusicRecognitionApp.Data;
 using MusicRecognitionApp.Services.Audio;
+using MusicRecognitionApp.Services.Data.Interfaces;
+using MusicRecognitionApp.Services.Data.Mappers;
 using MusicRecognitionApp.Services.Interfaces;
 using NAudio.Wave;
 using System.Data.SQLite;
+using System.Diagnostics;
 
 namespace MusicRecognitionApp.Services
 {
     public class AudioDatabaseService : IAudioDatabase
     {
-        private readonly string _connectionString;
+        private readonly MusicRecognitionContext _context;
+        private readonly ISongRepository _songRepository;
+        private readonly IAudioHashRepository _audioHashRepository;
+        private readonly IRecognizedSongRepository _recognizedSongRepository;
 
-        public AudioDatabaseService(string connectionString)
+        public AudioDatabaseService(
+            MusicRecognitionContext context,
+            ISongRepository songRepository,
+            IAudioHashRepository audioHashRepository,
+            IRecognizedSongRepository recognizedSongRepository)
         {
-            _connectionString = connectionString;
-            InitializeDatabase();
-        }
+            _context = context;
+            _songRepository = songRepository;
+            _audioHashRepository = audioHashRepository;
+            _recognizedSongRepository = recognizedSongRepository;
 
-        private void InitializeDatabase()
-        {
-            string _databasePath = _connectionString.Replace("Data Source=", "").Split(";")[0];
+            _context.Database.EnsureCreated();
 
-            if (!File.Exists(_databasePath))
+            if (!TestConnection())
             {
-                SQLiteConnection.CreateFile(_databasePath);
-                Console.WriteLine("Создана новая база данных SQLite");
+                Debug.WriteLine("[ERROR] Can't connect to the Db");
             }
-
-            using (var connection = new SQLiteConnection(_connectionString))
+            else
             {
-                connection.Open();
-
-                const string createSongsTable = @"
-                    CREATE TABLE IF NOT EXISTS Songs (
-                        SongId INTEGER PRIMARY KEY AUTOINCREMENT,
-                        Title TEXT NOT NULL,
-                        Artist TEXT NOT NULL,
-                        UNIQUE(Title, Artist)
-                    )";
-
-                const string createAudioHashesTable = @"
-                    CREATE TABLE IF NOT EXISTS AudioHashes (
-                        Hash INTEGER NOT NULL,
-                        TimeOffset REAL NOT NULL,
-                        SongId INTEGER NOT NULL,
-                        FOREIGN KEY (SongId) REFERENCES Songs(SongId)
-                    )";
-
-                const string createRecognizedSongsTable = @"
-                    CREATE TABLE IF NOT EXISTS RecognizedSongs (
-                        RecognitionId INTEGER PRIMARY KEY AUTOINCREMENT,
-                        SongId INTEGER NOT NULL,
-                        Title TEXT NOT NULL,
-                        Artist TEXT NOT NULL,
-                        RecognitionDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-                        Matches INTEGER NOT NULL,
-                        FOREIGN KEY (SongId) REFERENCES Songs(SongId)
-                    )";
-
-                const string createHashIndex = @"
-                    CREATE INDEX IF NOT EXISTS IX_AudioHashes_Hash 
-                    ON AudioHashes(Hash)";
-
-                const string createSongIndex = @"
-                    CREATE INDEX IF NOT EXISTS IX_AudioHashes_SongId 
-                    ON AudioHashes(SongId)";
-
-                using (var command = new SQLiteCommand(connection))
-                {
-                    command.CommandText = createSongsTable;
-                    command.ExecuteNonQuery();
-
-                    command.CommandText = createAudioHashesTable;
-                    command.ExecuteNonQuery();
-
-                    command.CommandText = createRecognizedSongsTable;
-                    command.ExecuteNonQuery();
-
-                    command.CommandText = createHashIndex;
-                    command.ExecuteNonQuery();
-
-                    command.CommandText = createSongIndex;
-                    command.ExecuteNonQuery();
-                }
+                Debug.WriteLine("[INFO] Connection to the db success");
             }
         }
 
-        private Dictionary<uint, List<AudioHash>> FindMatchingHashes(List<uint> queryHashes)
+        public List<SearchResultModel> SearchSong(List<AudioHash> queryHashes)
         {
-            var results = new Dictionary<uint, List<AudioHash>>();
-
             if (queryHashes == null || queryHashes.Count == 0)
-                return results;
+                return new List<SearchResultModel>();
 
-            var parameters = new List<string>();
-            for (int i = 0; i < queryHashes.Count; i++)
+            try
             {
-                parameters.Add($"@hash{i}");
-            }
+                var hashGenerator = new AudioHashGenerator();
+                var hashValues = queryHashes
+                    .Select(h => h.Hash)
+                    .ToList();
 
-            var query = $@"
-                SELECT Hash, TimeOffset, SongId 
-                FROM AudioHashes 
-                WHERE Hash IN ({string.Join(",", parameters)})";
+                var matchingHashes = _audioHashRepository.GetByHashes(hashValues, "Song");
 
-            using (var connection = new SQLiteConnection(_connectionString))
-            {
-                connection.Open();
-                using (var command = new SQLiteCommand(query, connection))
+                var convertedHashes = matchingHashes
+                    .Select(EntityToModel.ToAudioHash)
+                    .ToList();
+
+                var databaseDict = convertedHashes
+                    .GroupBy(h => h.Hash)
+                    .ToDictionary(g => g.Key, g => g.ToList());
+
+                var matches = hashGenerator.FindMatches(queryHashes, databaseDict);
+                var results = new List<SearchResultModel>();
+
+                foreach (var match in matches)
                 {
-                    for (int i = 0; i < queryHashes.Count; i++)
+                    var songEntity = _songRepository.GetByIdAsync(match.songId).Result;
+                    
+                    if (songEntity != null)
                     {
-                        command.Parameters.AddWithValue($"@hash{i}", queryHashes[i]);
-                    }
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var hash = (uint)Convert.ToInt64(reader["Hash"]);
-                            var timeOffset = Convert.ToDouble(reader["TimeOffset"]);
-                            var songId = Convert.ToInt32(reader["SongId"]);
-
-                            var audioHash = new AudioHash(hash, timeOffset, songId);
-
-                            if (!results.ContainsKey(hash))
-                                results[hash] = new List<AudioHash>();
-
-                            results[hash].Add(audioHash);
-                        }
+                        var songModel = EntityToModel.ToSearchResultModel(songEntity, match.matches, match.confidence);
+                        results.Add(songModel);
                     }
                 }
+
+                return results.OrderByDescending(r => r.Matches)
+                       .ThenByDescending(r => r.Confidence)
+                       .ToList();
             }
-
-            return results;
-        }
-
-        private (string title, string artist) GetSongInfo(int songId)
-        {
-            const string query = @"
-                SELECT Title, Artist 
-                FROM Songs 
-                WHERE SongId = @songId";
-
-            using (var connection = new SQLiteConnection(_connectionString))
+            catch (Exception ex)
             {
-                connection.Open();
-                using (var command = new SQLiteCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@songId", songId);
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                            return (reader["Title"].ToString(), reader["Artist"].ToString());
-                    }
-                }
-            }
-            return ("Unknown", "Unknown");
-        }
-
-        public List<(int songId, string title, string artist, int matches, double confidence)> SearchSong(List<AudioHash> queryHashes)
-        {
-            var hashGenerator = new AudioHashGenerator();
-            var hashValues = queryHashes.ConvertAll(h => h.Hash);
-            var matchingHashes = FindMatchingHashes(hashValues);
-
-            var database = new Dictionary<uint, List<AudioHash>>(matchingHashes);
-
-            var matches = hashGenerator.FindMatches(queryHashes, database);
-            var results = new List<(int songId, string title, string artist, int matches, double confidence)>();
-
-            foreach (var match in matches)
-            {
-                var songInfo = GetSongInfo(match.songId);
-                results.Add((match.songId, songInfo.title, songInfo.artist, match.matches, match.confidence));
-            }
-
-            return results.OrderByDescending(r => r.matches)
-                   .ThenByDescending(r => r.confidence)
-                   .ToList();
-        }
-
-        public void SaveRecognizedSongs(int songId, string title, string artist, int matches)
-        {
-            const string query = @"
-                INSERT INTO RecognizedSongs (SongId, Title, Artist, Matches)
-                VALUES (@songId, @title, @artist, @matches)";
-
-            using (var connection = new SQLiteConnection(_connectionString))
-            {
-                connection.Open();
-                using (var command = new SQLiteCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@songId", songId);
-                    command.Parameters.AddWithValue("@title", title);
-                    command.Parameters.AddWithValue("@artist", artist);
-                    command.Parameters.AddWithValue("@matches", matches);
-                    command.ExecuteNonQuery();
-                }
+                Debug.WriteLine($"[ERROR] Exception while searching a song: {ex.Message}");
+                return new List<SearchResultModel>();
             }
         }
 
-        public List<(int songId, string title, string artist, int matches, DateTime recognitionDate)> GetRecognizedSongs()
+        public async Task SaveRecognizedSongsAsync(int songId, int matches)
         {
-            var results = new List<(int songId, string title, string artist, int matches, DateTime recognitionDate)>();
-
-            const string query = @"
-                SELECT SongId, Title, Artist, Matches, RecognitionDate
-                FROM RecognizedSongs
-                ORDER BY RecognitionDate DESC";
-
-            using (var connection = new SQLiteConnection(_connectionString))
+            try
             {
-                connection.Open();
-                using (var command = new SQLiteCommand(query, connection))
-                {
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var songId = Convert.ToInt32(reader["SongId"]);
-                            var title = reader["Title"].ToString();
-                            var artist = reader["Artist"].ToString();
-                            var matches = Convert.ToInt32(reader["Matches"]);
-                            var recognitionDate = Convert.ToDateTime(reader["RecognitionDate"]);
+                var recognizedSong = ModelToEntity.ToRecognizedSongEntity(songId, matches);
 
-                            results.Add((songId, title, artist, matches, recognitionDate));
-                        }
-                    }
-                }
+                await _recognizedSongRepository.InsertAsync(recognizedSong);
+                await _recognizedSongRepository.SaveChangesAsync();
             }
-
-            return results;
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ERROR] Exception while saving: {ex.Message}");
+            }
         }
 
-        public List<(string artist, int songCount)> GetRecognizedArtists()
+        public List<RecognizedSongModel> GetRecognizedSongs()
         {
-            var results = new List<(string artist, int songCount)>();
-
-            const string query = @"
-                SELECT Artist, COUNT(*) as SongCount
-                FROM RecognizedSongs
-                GROUP BY Artist
-                ORDER BY SongCount DESC";
-
-            using (var connection = new SQLiteConnection(_connectionString))
+            try
             {
-                connection.Open();
-                using (var command = new SQLiteCommand(query, connection))
-                {
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var artist = reader["Artist"].ToString();
-                            var songCount = Convert.ToInt32(reader["SongCount"]);
-
-                            results.Add((artist, songCount));
-                        }
-                    }
-                }
+                return _recognizedSongRepository.GetAllOrderedByDate()
+                    .Select(EntityToModel.ToRecognizedSongModel)
+                    .ToList();
             }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ERROR] Exception while getting recognized songs: {ex.Message}");
+                return new List<RecognizedSongModel>();
+            }
+        }
 
-            return results;
+        public List<ArtistStatisticModel> GetRecognizedArtists()
+        {
+            try
+            {
+                return _recognizedSongRepository.GetArtistsStatistics()
+                    .Select(EntityToModel.ToArtistStatisticModel)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ERROR] Ошибка при получении статистики артистов: {ex.Message}");
+                return new List<ArtistStatisticModel>();
+            }
+        }
+
+        public async Task AddSongWithHashesAsync(string title, string artist, List<AudioHash> hashes)
+        {
+            try
+            {
+                var song = await _songRepository.GetSongByTitleAndArtistAsync(title, artist);
+                
+                if (song != null)
+                {
+                    Debug.WriteLine($"[ERROR] This song already exist in Database!");
+                    return;
+                }
+
+                var newSong = new SongEntity
+                {
+                    Title = title,
+                    Artist = artist,
+                };
+
+                await _songRepository.InsertAsync(newSong);
+                await _songRepository.SaveChangesAsync();
+
+                foreach (var hash in hashes)
+                {
+                    var audioHashEntity = EntityToModel.ToAudioHashEntity(hash, newSong.Id);
+
+                    await _audioHashRepository.InsertAsync(audioHashEntity);
+                }
+
+                await _audioHashRepository.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ERROR] Exception while adding track: {ex}");
+                throw;
+            }
         }
 
         public bool TestConnection()
         {
             try
             {
-                using (var connection = new SQLiteConnection(_connectionString))
-                {
-                    connection.Open();
-                    return true;
-                }
+                return _context.Database.CanConnect();
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine($"[ERROR] Ошибка подключения к БД: {ex.Message}");
                 return false;
             }
         }

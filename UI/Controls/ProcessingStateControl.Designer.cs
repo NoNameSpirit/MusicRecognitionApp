@@ -1,6 +1,6 @@
 ﻿namespace MusicRecognitionApp.Controls
 {
-    partial class AnalyzingStateControl
+    partial class ProcessingStateControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -72,7 +72,7 @@
             LblAnalyzingStatus.Name = "LblAnalyzingStatus";
             LblAnalyzingStatus.Size = new Size(500, 29);
             LblAnalyzingStatus.TabIndex = 2;
-            LblAnalyzingStatus.Text = "Analyzing audio...";
+            LblAnalyzingStatus.Text = "Processing tracks...";
             LblAnalyzingStatus.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // ProgressBarAnalyzing
@@ -95,11 +95,11 @@
             PicRecordingGif.TabIndex = 4;
             PicRecordingGif.TabStop = false;
             // 
-            // AnalyzingStateControl
+            // ProcessingStateControl
             // 
             Controls.Add(PicRecordingGif);
             Controls.Add(PanelMain);
-            Name = "AnalyzingStateControl";
+            Name = "ProcessingStateControl";
             Size = new Size(600, 650);
             PanelMain.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)PicRecordingGif).EndInit();

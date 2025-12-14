@@ -1,11 +1,17 @@
-﻿namespace MusicRecognitionApp.Services.Interfaces
+﻿using MusicRecognitionApp.Core.Models.Business;
+
+namespace MusicRecognitionApp.Services.Interfaces
 {
     public interface IAudioRecognition
     {
+        event Action<int> AnalysisProgress;
+
+        event Action<int> ImportProgress;
+
         Task<string> RecordAudioAsync(int durationTime = 15, CancellationToken cancellationToken = default);
 
-        Task<List<(int songId, string title, string artist, int matches, double confidence)>> RecognizeFromMicrophoneAsync(string audioFilePath);
+        Task<List<SearchResultModel>> RecognizeFromMicrophoneAsync(string audioFilePath);
 
-        event Action<int> AnalysisProgress;
+        Task<(int added, int failed, List<string> errors)> AddTracksFromFolderAsync(string folderPath);
     }
 }

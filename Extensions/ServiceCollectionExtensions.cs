@@ -6,18 +6,32 @@ using MusicRecognitionApp.Forms;
 using MusicRecognitionApp.Services.Interfaces;
 using MusicRecognitionApp.Services.UI.Interfaces;
 using MusicRecognitionApp.Services.UI;
+using Microsoft.EntityFrameworkCore;
+using MusicRecognitionApp.Services.Data.Interfaces;
+using MusicRecognitionApp.Services.Data.Repositories;
 
 namespace MusicRecognitionApp.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddAudioServices(this IServiceCollection services)
+        public static IServiceCollection AddDatabaseServices(this IServiceCollection services) 
         {
             var exeDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ShazamDB.sqlite");
-            var connectionString = $"Data Source={exeDirectory};Version=3;";
+            var connectionString = $"Data Source={exeDirectory};";
 
-            services.AddSingleton(connectionString)
-                    .AddScoped<IAudioHashGenerator, AudioHashGenerator>()
+            services.AddDbContext<MusicRecognitionContext>(options =>
+                options.UseSqlite(connectionString));
+
+            services.AddScoped<ISongRepository, SongRepository>()
+                    .AddScoped<IAudioHashRepository, AudioHashRepository>()
+                    .AddScoped<IRecognizedSongRepository, RecognizedSongRepository>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddAudioServices(this IServiceCollection services)
+        {
+            services.AddScoped<IAudioHashGenerator, AudioHashGenerator>()
                     .AddScoped<IAudioProcessor, AudioProcessor>()
                     .AddScoped<IPeakDetector, PeakDetector>()
                     .AddScoped<ISpectrogramBuilder, SpectrogramBuilder>()

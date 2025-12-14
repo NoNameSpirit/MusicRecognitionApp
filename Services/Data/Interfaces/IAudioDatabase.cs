@@ -1,17 +1,22 @@
-﻿using MusicRecognitionApp.Data;
+﻿using MusicRecognitionApp.Core.Models.Business;
+using MusicRecognitionApp.Data;
+using MusicRecognitionApp.Services.Audio;
+using System.Diagnostics;
 
-namespace MusicRecognitionApp.Services.Interfaces
+namespace MusicRecognitionApp.Services.Data.Interfaces
 {
     public interface IAudioDatabase
     {
-        List<(int songId, string title, string artist, int matches, double confidence)> SearchSong(List<AudioHash> queryHashes);
+        List<SearchResultModel> SearchSong(List<AudioHash> queryHashes);
+
+        Task SaveRecognizedSongsAsync(int songId, int matches);
+
+        List<RecognizedSongModel> GetRecognizedSongs();
+        
+        List<ArtistStatisticModel> GetRecognizedArtists();
+
+        Task AddSongWithHashesAsync(string title, string artist, List<AudioHash> hashes);
 
         bool TestConnection();
-
-        void SaveRecognizedSongs(int songId, string title, string artist, int matches);
-
-        List<(int songId, string title, string artist, int matches, DateTime recognitionDate)> GetRecognizedSongs();
-        
-        List<(string artist, int songCount)> GetRecognizedArtists();
     }
 }

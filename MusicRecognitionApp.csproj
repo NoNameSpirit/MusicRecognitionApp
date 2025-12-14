@@ -11,13 +11,12 @@
   <ItemGroup>
     <PackageReference Include="FftSharp" Version="2.2.0" />
     <PackageReference Include="MaterialSkin.2" Version="2.3.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Core\Models\Entities\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +24,9 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Controls\ProcessingStateControl.cs">
+      <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>
 

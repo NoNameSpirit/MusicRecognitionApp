@@ -11,6 +11,8 @@ namespace MusicRecognitionApp
 {
     internal static class Program
     {
+        private const string ConnectionString = "ShzamDB";
+
         [STAThread]
         static void Main()
         {
@@ -26,7 +28,8 @@ namespace MusicRecognitionApp
         {
             var services = new ServiceCollection();
 
-            services.AddAudioServices()
+            services.AddDatabaseServices()
+                    .AddAudioServices()
                     .AddUIServices()
                     .AddFormServices();
 

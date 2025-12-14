@@ -1,5 +1,6 @@
 ﻿using MaterialSkin.Controls;
 using MusicRecognitionApp.Controls;
+using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Model.Enums;
 using MusicRecognitionApp.Services;
 using MusicRecognitionApp.Services.Interfaces;
@@ -8,12 +9,12 @@ namespace MusicRecognitionApp.Forms
 {
     public partial class MainForm : BaseForm
     {
-        private AppState _currentState;
+        private AppState _currentState ;
         private Dictionary<AppState, UserControl> _states = new();
         private string _recordedAudioFile; 
         private CancellationTokenSource _recordingCancellationTokenSource;
         
-        public List<(int songId, string title, string artist, int matches, double confidence)> RecognitionResults { get; set; }
+        public List<SearchResultModel> RecognitionResults { get; set; }
 
         private readonly IMessageBox _messageBoxService;
         private readonly IStateRegistry _stateRegistryService;
@@ -47,7 +48,7 @@ namespace MusicRecognitionApp.Forms
             }
         }
 
-        public async void SetStateAsync(AppState newState)
+        public async Task SetStateAsync(AppState newState)
         {
             if (_states.ContainsKey(_currentState))
                 _states[_currentState].Visible = false;
@@ -87,9 +88,8 @@ namespace MusicRecognitionApp.Forms
 
         private async Task StartAnalysisProcess()
         {
-            var results = await _recognitionService.RecognizeFromMicrophoneAsync(_recordedAudioFile);
-            RecognitionResults = results;
-
+            RecognitionResults = await _recognitionService.RecognizeFromMicrophoneAsync(_recordedAudioFile);
+            
             if (!string.IsNullOrEmpty(_recordedAudioFile) && File.Exists(_recordedAudioFile))
             {
                  File.Delete(_recordedAudioFile);
@@ -113,6 +113,11 @@ namespace MusicRecognitionApp.Forms
         public void StopRecording()
         {
             _recordingCancellationTokenSource?.Cancel(); 
+        }
+
+        public AppState GetCurrentControl()
+        {
+            return _currentState;
         }
     }
 }

@@ -1,39 +1,51 @@
 ﻿using MaterialSkin.Controls;
+using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Services.UI.Interfaces;
+using System.Windows.Forms;
 
 namespace MusicRecognitionApp.Services.UI
 {
     public class ResultCardBuilder : IResultCardBuilder
     {
-        public MaterialCard CreateResultCard((int songId, string title, string artist, int matches, double confidence) result)
+        public MaterialCard CreateResultCard(SearchResultModel searchResultModel)
         {
             var card = new MaterialCard()
             {
-                Size = new Size(500, 120),
+                Size = new Size(520, 120),
                 Margin = new Padding(0, 0, 0, 15)
             };
 
             var lblTitle = new MaterialLabel()
             {
-                Text = result.title,
-                Font = new Font("Roboto", 16F, FontStyle.Bold, GraphicsUnit.Pixel),
+                Text = TruncateText(searchResultModel.Song.Title, 65),
+                Tag = searchResultModel.Song.Title,
                 Location = new Point(20, 20),
                 AutoSize = true
             };
 
             var lblArtist = new MaterialLabel()
             {
-                Text = result.artist,
-                Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel),
-                Location = new Point(20, 45),
+                Text = TruncateText(searchResultModel.Song.Artist, 30),
+                Tag = searchResultModel.Song.Artist,
+                Location = new Point(20, 60),
                 AutoSize = true
             };
 
+            var toolTip = new ToolTip()
+            {
+                AutoPopDelay = 5000,
+                InitialDelay = 500,
+                ReshowDelay = 500,
+                ShowAlways = true,
+            };
+
+            toolTip.SetToolTip(lblTitle, searchResultModel.Song.Title);
+            toolTip.SetToolTip(lblArtist, searchResultModel.Song.Artist);
+
             var lblMatches = new MaterialLabel()
             {
-                Text = $"Совпадений: {result.matches}",
-                Font = new Font("Roboto", 12F, FontStyle.Regular, GraphicsUnit.Pixel),
-                Location = new Point(200, 70),
+                Text = $"Совпадений: {searchResultModel.Matches}",
+                Location = new Point(360, 60),
                 AutoSize = true
             };
 
@@ -58,7 +70,6 @@ namespace MusicRecognitionApp.Services.UI
             var noResultsLabel = new MaterialLabel()
             {
                 Text = $"Ничего не распознано {Environment.NewLine}Попробуйте еще раз",
-                Font = new Font("Roboto", 16F, FontStyle.Regular, GraphicsUnit.Pixel),
                 Location = new Point(20, 20),
                 Size = new Size(460, 80),
                 TextAlign = ContentAlignment.MiddleCenter
@@ -72,6 +83,14 @@ namespace MusicRecognitionApp.Services.UI
 
             card.Controls.AddRange(new Control[] { noResultsLabel, divider });
             return card;
+        }
+
+        private string TruncateText(string text, int maxLength)
+        {
+            if (string.IsNullOrEmpty(text) || text.Length <= maxLength)
+                return text;
+
+            return text.Substring(0, maxLength - 3) + "...";
         }
     }
 }

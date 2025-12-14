@@ -7,6 +7,6 @@
         Analyzing,
         Result,   
         Library,  
-        Settings  
+        Processing,  
     }
 }

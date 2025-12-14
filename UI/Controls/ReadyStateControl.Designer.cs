@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             PanelMain = new Panel();
+            FABtnAddingTracks = new MaterialSkin.Controls.MaterialFloatingActionButton();
             PicRecordingGif = new PictureBox();
             BtnStartRecognition = new MaterialSkin.Controls.MaterialButton();
             FABtnLibrary = new MaterialSkin.Controls.MaterialFloatingActionButton();
@@ -40,6 +41,7 @@
             // PanelMain
             // 
             PanelMain.BackColor = Color.AliceBlue;
+            PanelMain.Controls.Add(FABtnAddingTracks);
             PanelMain.Controls.Add(PicRecordingGif);
             PanelMain.Controls.Add(BtnStartRecognition);
             PanelMain.Controls.Add(FABtnLibrary);
@@ -51,6 +53,20 @@
             PanelMain.Padding = new Padding(14);
             PanelMain.Size = new Size(600, 650);
             PanelMain.TabIndex = 0;
+            // 
+            // FABtnAddingTracks
+            // 
+            FABtnAddingTracks.BackgroundImage = Properties.Resources.next_arrow;
+            FABtnAddingTracks.Depth = 0;
+            FABtnAddingTracks.Icon = null;
+            FABtnAddingTracks.Location = new Point(528, 17);
+            FABtnAddingTracks.MouseState = MaterialSkin.MouseState.HOVER;
+            FABtnAddingTracks.Name = "FABtnAddingTracks";
+            FABtnAddingTracks.Size = new Size(58, 58);
+            FABtnAddingTracks.TabIndex = 5;
+            FABtnAddingTracks.Text = "materialFloatingActionButton1";
+            FABtnAddingTracks.UseVisualStyleBackColor = true;
+            FABtnAddingTracks.Click += FABtnAddingTracks_Click;
             // 
             // PicRecordingGif
             // 
@@ -136,5 +152,6 @@
         private MaterialSkin.Controls.MaterialButton BtnLibrary;
         private MaterialSkin.Controls.MaterialButton BtnStartRecognition;
         private PictureBox PicRecordingGif;
+        private MaterialSkin.Controls.MaterialFloatingActionButton FABtnAddingTracks;
     }
 }
