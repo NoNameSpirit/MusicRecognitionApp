@@ -1,0 +1,10 @@
+.vs/
+*.suo
+*.user
+*.vsidx
+
+bin/
+obj/
+
+*.db
+*.sqlite
