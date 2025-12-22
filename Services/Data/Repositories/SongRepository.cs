@@ -15,8 +15,10 @@ namespace MusicRecognitionApp.Services.Data.Repositories
 
         public async Task<SongEntity?> GetSongByTitleAndArtistAsync(string title, string artist)
         {
-            return await Context.Set<SongEntity>()
-                                .FirstOrDefaultAsync(s => s.Title == title && s.Artist == artist);
+            var songs = Get(
+                filter: s => s.Title == title && s.Artist == artist);
+            
+            return songs.FirstOrDefault();
         }
     }
 }

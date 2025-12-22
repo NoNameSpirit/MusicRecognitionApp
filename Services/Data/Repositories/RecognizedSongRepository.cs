@@ -15,19 +15,17 @@ namespace MusicRecognitionApp.Services.Data.Repositories
 
         public IEnumerable<RecognizedSongEntity> GetRecent(int limit = 10)
         {
-            return Context.Set<RecognizedSongEntity>()
-                .Include(r => r.Song)
-                .OrderByDescending(r => r.RecognitionDate)
-                .Take(limit)
-                .ToList();
+            return Get(
+                orderBy: q => q.OrderByDescending(r => r.RecognitionDate),
+                take: limit,
+                includes: "Song");
         }
 
         public IEnumerable<RecognizedSongEntity> GetAllOrderedByDate()
         {
-            return Context.Set<RecognizedSongEntity>()
-                .Include(r => r.Song)
-                .OrderByDescending(r=>r.RecognitionDate)
-                .ToList();
+            return Get(
+                orderBy: q => q.OrderByDescending(r => r.RecognitionDate), 
+                includes: "Song");
         }
 
         public IEnumerable<(string Artist, int SongCount)> GetArtistsStatistics()

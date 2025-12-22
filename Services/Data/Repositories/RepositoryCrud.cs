@@ -37,7 +37,8 @@ namespace MusicRecognitionApp.Services.Data.Repositories
 
         public IEnumerable<TEntity> Get(
             Expression<Func<TEntity, bool>>? filter = null, 
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, 
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+            int? take = null,
             params string[] includes)
         {
             IQueryable<TEntity> query = _dbSet;
@@ -49,6 +50,9 @@ namespace MusicRecognitionApp.Services.Data.Repositories
 
             if (filter != null)
                 query = query.Where(filter);
+
+            if (take != null)
+                query.Take(take.Value);
 
             return orderBy != null ? orderBy(query).ToList() : query.ToList();
         }

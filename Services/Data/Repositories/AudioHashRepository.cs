@@ -15,15 +15,9 @@ namespace MusicRecognitionApp.Services.Data.Repositories
 
         public IEnumerable<AudioHashEntity> GetByHashes(IEnumerable<uint> hashes, params string[] includes)
         {
-            var query = Context.Set<AudioHashEntity>()
-                .Where(h => hashes.Contains(h.Hash));
-
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
-
-            return query.ToList();
+            return Get(
+                filter: h => hashes.Contains(h.Hash),
+                includes: includes);
         }
     }
 }

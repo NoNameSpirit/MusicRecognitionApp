@@ -13,6 +13,7 @@ namespace MusicRecognitionApp.Services.Data.Interfaces
         IEnumerable<TEntity> Get(
             Expression<Func<TEntity, bool>>? filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+            int? take = null,
             params string[] includes);
 
         Task<int> SaveChangesAsync();
