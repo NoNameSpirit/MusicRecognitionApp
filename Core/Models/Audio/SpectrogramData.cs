@@ -1,4 +1,4 @@
-﻿namespace MusicRecognitionApp.Data
+﻿namespace MusicRecognitionApp.Core.Models.Audio
 {
     public class SpectrogramData
     {

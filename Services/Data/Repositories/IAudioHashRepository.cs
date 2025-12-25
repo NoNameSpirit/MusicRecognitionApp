@@ -1,6 +1,7 @@
 ﻿using MusicRecognitionApp.Core.Models.Entities;
+using MusicRecognitionApp.Services.Data.Interfaces;
 
-namespace MusicRecognitionApp.Services.Data.Interfaces
+namespace MusicRecognitionApp.Services.Data.Repositories
 {
     public interface IAudioHashRepository : IRepositoryCrud<AudioHashEntity>
     {

@@ -1,5 +1,5 @@
-﻿using MusicRecognitionApp.Forms;
-using MusicRecognitionApp.Model.Enums;
+﻿using MusicRecognitionApp.Core.Enums;
+using MusicRecognitionApp.Forms;
 
 namespace MusicRecognitionApp.Services.Interfaces
 {

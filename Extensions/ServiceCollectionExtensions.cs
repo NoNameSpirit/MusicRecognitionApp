@@ -7,8 +7,13 @@ using MusicRecognitionApp.Services.Interfaces;
 using MusicRecognitionApp.Services.UI.Interfaces;
 using MusicRecognitionApp.Services.UI;
 using Microsoft.EntityFrameworkCore;
-using MusicRecognitionApp.Services.Data.Interfaces;
 using MusicRecognitionApp.Services.Data.Repositories;
+using MusicRecognitionApp.Services.Data.Interfaces;
+using MusicRecognitionApp.Services.Data;
+using MusicRecognitionApp.Services.Data.Import;
+using MusicRecognitionApp.Services.History;
+using MusicRecognitionApp.Services.Import;
+using MusicRecognitionApp.Services.Search;
 
 namespace MusicRecognitionApp.Extensions
 {
@@ -29,13 +34,32 @@ namespace MusicRecognitionApp.Extensions
             return services;
         }
 
+        public static IServiceCollection AddDataServices(this IServiceCollection services)
+        {
+            // (работа с БД, преобразование Entity <-> Model)
+            services.AddScoped<ISongService, SongService>()
+                    .AddScoped<IAudioHashService, AudioHashService>()
+                    .AddScoped<IRecognizedSongService, RecognizedSongService>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddBusinessServices(this IServiceCollection services)
+        {
+            // (бизнес-логика приложения)
+            services.AddScoped<ISongImportService, SongImportService>()
+                    .AddScoped<ISongSearchService, SongSearchService>()
+                    .AddScoped<IRecognitionSongService, RecognitionSongService>();
+
+            return services;
+        }
+
         public static IServiceCollection AddAudioServices(this IServiceCollection services)
         {
             services.AddScoped<IAudioHashGenerator, AudioHashGenerator>()
                     .AddScoped<IAudioProcessor, AudioProcessor>()
                     .AddScoped<IPeakDetector, PeakDetector>()
                     .AddScoped<ISpectrogramBuilder, SpectrogramBuilder>()
-                    .AddScoped<IAudioDatabase, AudioDatabaseService>()
                     .AddScoped<IAudioRecognition, AudioRecognitionService>()
                     .AddScoped<IAudioRecorder, AudioRecorderService>();
 

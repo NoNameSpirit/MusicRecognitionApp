@@ -20,6 +20,8 @@ namespace MusicRecognitionApp
             
             var serviceProvider = ConfigureServices();
 
+            EnsureDatabaseCreated(serviceProvider);
+
             MainForm mainForm = serviceProvider.GetRequiredService<MainForm>();
             Application.Run(mainForm); 
         }
@@ -28,12 +30,37 @@ namespace MusicRecognitionApp
         {
             var services = new ServiceCollection();
 
-            services.AddDatabaseServices()
-                    .AddAudioServices()
-                    .AddUIServices()
-                    .AddFormServices();
+            services
+                .AddDatabaseServices()
+                .AddDataServices()
+                .AddBusinessServices()
+                .AddAudioServices()
+                .AddUIServices()
+                .AddFormServices();
 
             return services.BuildServiceProvider();
+        }
+
+        private static void EnsureDatabaseCreated(ServiceProvider serviceProvider)
+        {
+            try
+            {
+                using var scope = serviceProvider.CreateScope();
+
+                var context = scope.ServiceProvider.GetRequiredService<MusicRecognitionContext>();
+
+                context.Database.EnsureCreated();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Ошибка запуска: {ex.Message}{Environment.NewLine}{Environment.NewLine}" +
+                    $"Закройте приложение и попробуйте снова.",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                Environment.Exit(1);
+            }
         }
     }
 }

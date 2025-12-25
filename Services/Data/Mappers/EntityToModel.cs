@@ -1,6 +1,6 @@
-﻿using MusicRecognitionApp.Core.Models.Business;
+﻿using MusicRecognitionApp.Core.Models.Audio;
+using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Core.Models.Entities;
-using MusicRecognitionApp.Data;
 
 namespace MusicRecognitionApp.Services.Data.Mappers
 {

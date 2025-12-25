@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MusicRecognitionApp.Core.Models.Entities;
 using MusicRecognitionApp.Services.Data;
-using MusicRecognitionApp.Services.Data.Interfaces;
 
 namespace MusicRecognitionApp.Services.Data.Repositories
 {

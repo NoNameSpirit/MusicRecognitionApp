@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using MusicRecognitionApp.Core.Models.Audio;
 using MusicRecognitionApp.Core.Models.Business;
-using MusicRecognitionApp.Data;
 using MusicRecognitionApp.Services.Audio;
 using MusicRecognitionApp.Services.Audio.Interfaces;
 using MusicRecognitionApp.Services.Data.Interfaces;
+using MusicRecognitionApp.Services.Import;
 using MusicRecognitionApp.Services.Interfaces;
+using MusicRecognitionApp.Services.Search;
 using System.Diagnostics;
 using System.DirectoryServices;
 using System.Threading;
@@ -13,12 +15,13 @@ namespace MusicRecognitionApp.Services
 {
     public class AudioRecognitionService : IAudioRecognition
     {
-        private readonly IAudioDatabase _databaseService;
         private readonly IAudioRecorder _recorderService;
         private readonly IAudioProcessor _audioProcessor;
         private readonly ISpectrogramBuilder _spectrogramBuilder;
         private readonly IPeakDetector _peakDetector;
         private readonly IAudioHashGenerator _hashGenerator;
+        private readonly ISongImportService _importService;
+        private readonly ISongSearchService _searchService;
 
         private readonly string[] AUDIO_EXTENSIONS = { ".mp3", ".wav" };
 
@@ -26,19 +29,21 @@ namespace MusicRecognitionApp.Services
         public event Action<int> ImportProgress;
 
         public AudioRecognitionService(
-            IAudioDatabase databaseService,
             IAudioRecorder recorderService,
             IAudioProcessor audioProcessor,
             ISpectrogramBuilder spectrogramBuilder,
             IPeakDetector peakDetector,
-            IAudioHashGenerator hashGenerator)
+            IAudioHashGenerator hashGenerator,
+            ISongImportService importService,
+            ISongSearchService searchService)
         {
-            _databaseService = databaseService;
             _recorderService = recorderService;
             _audioProcessor = audioProcessor;
             _spectrogramBuilder = spectrogramBuilder;
             _peakDetector = peakDetector;
             _hashGenerator = hashGenerator;
+            _importService = importService;
+            _searchService = searchService;
         }
 
         public async Task<string> RecordAudioAsync(int durationTime = 15, CancellationToken cancellationToken = default)
@@ -70,7 +75,7 @@ namespace MusicRecognitionApp.Services
                     .GenerateHashes(allPeaks);
 
                 AnalysisProgress?.Invoke(70);
-                var results = _databaseService
+                var results = _searchService
                     .SearchSong(queryHashes);
 
                 AnalysisProgress?.Invoke(100);
@@ -157,8 +162,8 @@ namespace MusicRecognitionApp.Services
             List<AudioHash> queryHashes = _hashGenerator
                 .GenerateHashes(allPeaks);
 
-            await _databaseService
-                .AddSongWithHashesAsync(title, artist, queryHashes);
+            await _importService
+                .AddSongAsync(title, artist, queryHashes);
         }
     }
 }

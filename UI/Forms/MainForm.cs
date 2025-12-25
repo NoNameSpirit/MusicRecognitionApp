@@ -1,7 +1,7 @@
 ﻿using MaterialSkin.Controls;
 using MusicRecognitionApp.Controls;
+using MusicRecognitionApp.Core.Enums;
 using MusicRecognitionApp.Core.Models.Business;
-using MusicRecognitionApp.Model.Enums;
 using MusicRecognitionApp.Services;
 using MusicRecognitionApp.Services.Interfaces;
 

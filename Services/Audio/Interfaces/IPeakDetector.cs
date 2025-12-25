@@ -1,4 +1,4 @@
-﻿using MusicRecognitionApp.Data;
+﻿using MusicRecognitionApp.Core.Models.Audio;
 
 namespace MusicRecognitionApp.Services.Audio.Interfaces
 {

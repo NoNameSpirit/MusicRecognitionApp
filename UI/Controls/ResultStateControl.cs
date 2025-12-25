@@ -1,8 +1,9 @@
 ﻿using MaterialSkin.Controls;
+using MusicRecognitionApp.Core.Enums;
 using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Forms;
-using MusicRecognitionApp.Model.Enums;
 using MusicRecognitionApp.Services.Data.Interfaces;
+using MusicRecognitionApp.Services.History;
 using MusicRecognitionApp.Services.Interfaces;
 using MusicRecognitionApp.Services.UI;
 using MusicRecognitionApp.Services.UI.Interfaces;
@@ -13,22 +14,22 @@ namespace MusicRecognitionApp.Controls
     public partial class ResultStateControl : UserControl
     {
         private readonly MainForm _mainForm;
-        private readonly IAudioDatabase _databaseService;
         private readonly IMessageBox _messageBoxService;
         private readonly IResultCardBuilder _resultCardBuilder;
+        private readonly IRecognitionSongService _recognitionSongService;
 
         public ResultStateControl(
             MainForm mainForm, 
-            IAudioDatabase databaseService,
             IMessageBox messageBoxService,
-            IResultCardBuilder resultCardBuilder)
+            IResultCardBuilder resultCardBuilder,
+            IRecognitionSongService recognitionSongService)
         {
             InitializeComponent();
 
             _mainForm = mainForm;
-            _databaseService = databaseService;
             _messageBoxService = messageBoxService;
             _resultCardBuilder = resultCardBuilder;
+            _recognitionSongService = recognitionSongService;
         }
 
         protected override void OnVisibleChanged(EventArgs e)
@@ -95,7 +96,10 @@ namespace MusicRecognitionApp.Controls
         {
             try
             {
-                await _databaseService
+                var temp = result.Song.Id;
+                var kek = result.Song.Id;
+
+                await _recognitionSongService
                     .SaveRecognizedSongsAsync(result.Song.Id, result.Matches);
             }
             catch (Exception ex)

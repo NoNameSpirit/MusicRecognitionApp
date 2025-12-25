@@ -1,6 +1,7 @@
 ﻿using MaterialSkin.Controls;
 using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Services.Data.Interfaces;
+using MusicRecognitionApp.Services.History;
 using MusicRecognitionApp.Services.Interfaces;
 using System.Windows.Forms;
 
@@ -12,11 +13,11 @@ namespace MusicRecognitionApp.Services
         private MaterialButton _btnAuthors;
         private FlowLayoutPanel _panelOfCards;
 
-        private readonly IAudioDatabase _databaseService;
+        private readonly IRecognitionSongService _recognitionSongService;
 
-        public CardService(IAudioDatabase databaseService) 
+        public CardService(IRecognitionSongService recognitionSongService) 
         {
-            _databaseService = databaseService;
+            _recognitionSongService = recognitionSongService;
         }
 
         public void Initialize(MaterialButton BtnSongs, MaterialButton BtnAuthors, FlowLayoutPanel FLPanelOfCards)
@@ -53,7 +54,7 @@ namespace MusicRecognitionApp.Services
 
         private void AddSongCards()
         {
-            var recognizedSongs = _databaseService.GetRecognizedSongs();
+            var recognizedSongs = _recognitionSongService.GetRecognizedSongs();
 
             if (!recognizedSongs.Any())
             {
@@ -70,7 +71,7 @@ namespace MusicRecognitionApp.Services
 
         private void AddAuthorCards()
         {
-            var recognizedArtists = _databaseService.GetRecognizedArtists();
+            var recognizedArtists = _recognitionSongService.GetRecognizedArtists();
 
             if (!recognizedArtists.Any())
             {

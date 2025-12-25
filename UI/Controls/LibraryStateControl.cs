@@ -1,7 +1,7 @@
 ﻿using MaterialSkin.Controls;
 using Microsoft.Extensions.DependencyInjection;
+using MusicRecognitionApp.Core.Enums;
 using MusicRecognitionApp.Forms;
-using MusicRecognitionApp.Model.Enums;
 using MusicRecognitionApp.Services;
 using MusicRecognitionApp.Services.Interfaces;
 using System;
