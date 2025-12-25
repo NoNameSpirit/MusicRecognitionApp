@@ -4,25 +4,25 @@
     <_LastSelectedProfileId>D:\########University########\3 курс\Shazam\MusicRecognizionApp\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="UI\Controls\AnalyzingStateControl.cs">
+    <Compile Update="Presentation\Controls\AnalyzingStateControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="UI\Controls\LibraryStateControl.cs">
+    <Compile Update="Presentation\Controls\LibraryStateControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="UI\Controls\ReadyStateControl.cs">
+    <Compile Update="Presentation\Controls\ReadyStateControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="UI\Controls\RecordingStateControl.cs">
+    <Compile Update="Presentation\Controls\RecordingStateControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="UI\Controls\ResultStateControl.cs">
+    <Compile Update="Presentation\Controls\ResultStateControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="UI\Forms\BaseForm.cs">
+    <Compile Update="Presentation\Forms\BaseForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="UI\Forms\MainForm.cs">
+    <Compile Update="Presentation\Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

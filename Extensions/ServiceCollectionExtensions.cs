@@ -1,19 +1,17 @@
-﻿using MusicRecognitionApp.Services.Audio.Interfaces;
-using MusicRecognitionApp.Services.Audio;
-using MusicRecognitionApp.Services;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using MusicRecognitionApp.Forms;
-using MusicRecognitionApp.Services.Interfaces;
-using MusicRecognitionApp.Services.UI.Interfaces;
-using MusicRecognitionApp.Services.UI;
 using Microsoft.EntityFrameworkCore;
-using MusicRecognitionApp.Services.Data.Repositories;
-using MusicRecognitionApp.Services.Data.Interfaces;
-using MusicRecognitionApp.Services.Data;
-using MusicRecognitionApp.Services.Data.Import;
-using MusicRecognitionApp.Services.History;
-using MusicRecognitionApp.Services.Import;
-using MusicRecognitionApp.Services.Search;
+using MusicRecognitionApp.Infrastructure.Data.Contexts;
+using MusicRecognitionApp.Infrastructure.Data.Interfaces;
+using MusicRecognitionApp.Infrastructure.Data.Repositories;
+using MusicRecognitionApp.Infrastructure.Audio.Interfaces;
+using MusicRecognitionApp.Infrastructure.Audio.Implementations;
+using MusicRecognitionApp.Infrastructure.Services.Interfaces;
+using MusicRecognitionApp.Infrastructure.Services.Implementations;
+using MusicRecognitionApp.Application.Services.Interfaces;
+using MusicRecognitionApp.Application.Services.Implementations;
+using MusicRecognitionApp.Presentation.Services.Interfaces;
+using MusicRecognitionApp.Presentation.Services.Implementation;
 
 namespace MusicRecognitionApp.Extensions
 {
@@ -22,6 +20,7 @@ namespace MusicRecognitionApp.Extensions
         public static IServiceCollection AddDatabaseServices(this IServiceCollection services) 
         {
             var exeDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ShazamDB.sqlite");
+            
             var connectionString = $"Data Source={exeDirectory};";
 
             services.AddDbContext<MusicRecognitionContext>(options =>
@@ -34,51 +33,38 @@ namespace MusicRecognitionApp.Extensions
             return services;
         }
 
-        public static IServiceCollection AddDataServices(this IServiceCollection services)
+        public static IServiceCollection AddInfrustructureServices(this IServiceCollection services)
         {
-            // (работа с БД, преобразование Entity <-> Model)
-            services.AddScoped<ISongService, SongService>()
+            services.AddScoped<IAudioHashGenerator, AudioHashGenerator>()
+                    .AddScoped<IAudioProcessor, AudioProcessor>()
+                    .AddScoped<IPeakDetector, PeakDetector>()
+                    .AddScoped<ISpectrogramBuilder, SpectrogramBuilder>()
                     .AddScoped<IAudioHashService, AudioHashService>()
-                    .AddScoped<IRecognizedSongService, RecognizedSongService>();
+                    .AddScoped<IRecognizedSongService, RecognizedSongService>()
+                    .AddScoped<ISongService, SongService>();
 
             return services;
         }
 
-        public static IServiceCollection AddBusinessServices(this IServiceCollection services)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            // (бизнес-логика приложения)
-            services.AddScoped<ISongImportService, SongImportService>()
+            services.AddScoped<IAudioRecognition, AudioRecognitionService>()
+                    .AddScoped<IAudioRecorder, AudioRecorderService>()
+                    .AddScoped<ISongImportService, SongImportService>()
                     .AddScoped<ISongSearchService, SongSearchService>()
                     .AddScoped<IRecognitionSongService, RecognitionSongService>();
 
             return services;
         }
 
-        public static IServiceCollection AddAudioServices(this IServiceCollection services)
-        {
-            services.AddScoped<IAudioHashGenerator, AudioHashGenerator>()
-                    .AddScoped<IAudioProcessor, AudioProcessor>()
-                    .AddScoped<IPeakDetector, PeakDetector>()
-                    .AddScoped<ISpectrogramBuilder, SpectrogramBuilder>()
-                    .AddScoped<IAudioRecognition, AudioRecognitionService>()
-                    .AddScoped<IAudioRecorder, AudioRecorderService>();
-
-            return services;
-        }
-
-        public static IServiceCollection AddUIServices(this IServiceCollection services)
+        public static IServiceCollection AddPresentationServices(this IServiceCollection services)
         {
             services.AddSingleton<IStateRegistry, StateRegistryService>()
                     .AddSingleton<IMessageBox, MessageBoxService>()
                     .AddScoped<ICardService, CardService>()
                     .AddScoped<IAnimationService, AnimationService>()
                     .AddScoped<IResultCardBuilder, ResultCardBuilder>();
-
-            return services;
-        }
-
-        public static IServiceCollection AddFormServices(this IServiceCollection services)
-        {
+           
             services.AddTransient<MainForm>();
 
             return services;

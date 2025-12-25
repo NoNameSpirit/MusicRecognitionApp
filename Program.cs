@@ -1,11 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
-using MusicRecognitionApp.Controls;
 using MusicRecognitionApp.Forms;
-using MusicRecognitionApp.Services;
-using MusicRecognitionApp.Services.Audio;
-using MusicRecognitionApp.Services.Audio.Interfaces;
-using MusicRecognitionApp.Services.Interfaces;
 using MusicRecognitionApp.Extensions;
+using MusicRecognitionApp.Infrastructure.Data.Contexts;
 
 namespace MusicRecognitionApp
 {
@@ -23,7 +19,7 @@ namespace MusicRecognitionApp
             EnsureDatabaseCreated(serviceProvider);
 
             MainForm mainForm = serviceProvider.GetRequiredService<MainForm>();
-            Application.Run(mainForm); 
+            System.Windows.Forms.Application.Run(mainForm); 
         }
 
         private static ServiceProvider ConfigureServices()
@@ -32,11 +28,9 @@ namespace MusicRecognitionApp
 
             services
                 .AddDatabaseServices()
-                .AddDataServices()
-                .AddBusinessServices()
-                .AddAudioServices()
-                .AddUIServices()
-                .AddFormServices();
+                .AddInfrustructureServices()
+                .AddApplicationServices()
+                .AddPresentationServices();
 
             return services.BuildServiceProvider();
         }
