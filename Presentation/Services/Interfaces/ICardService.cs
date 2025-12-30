@@ -1,13 +1,21 @@
 ﻿using MaterialSkin.Controls;
+using MusicRecognitionApp.Core.Models.Business;
+using MusicRecognitionApp.Presentation.Controls;
 
 namespace MusicRecognitionApp.Presentation.Services.Interfaces
 {
     public interface ICardService
     {
-        public void ShowSongs();
+        void ShowSongs();
 
-        public void ShowAuthors();
+        void ShowAuthors();
 
-        public void Initialize(MaterialButton BtnSongs, MaterialButton BtnAuthors, FlowLayoutPanel FLPanelOfCards);
+        void Initialize(MaterialButton btnSongs, MaterialButton btnAuthors, FlowLayoutPanel panelOfCards);
+
+        NoInfoCard ShowNoSongsCard();
+
+        SongCard CreateResultCard(SearchResultModel searchResultModel);
+        
+        NoInfoCard CreateNoResultsCard();
     }
 }

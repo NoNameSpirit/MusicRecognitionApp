@@ -19,6 +19,9 @@
     <Compile Update="Presentation\Controls\ResultStateControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Presentation\Controls\Cards\SongCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Presentation\Forms\BaseForm.cs">
       <SubType>Form</SubType>
     </Compile>

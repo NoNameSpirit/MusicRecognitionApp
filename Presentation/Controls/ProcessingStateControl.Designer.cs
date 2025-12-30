@@ -42,7 +42,8 @@
             PanelMain.BackColor = Color.AliceBlue;
             PanelMain.Controls.Add(LblProgressPercent);
             PanelMain.Controls.Add(LblAnalyzingStatus);
-            PanelMain.Controls.Add(ProgressBarAnalyzing);
+            PanelMain.Controls.Add(ProgressBarAnalyzing); 
+            PanelMain.Controls.Add(PicRecordingGif); 
             PanelMain.Dock = DockStyle.Fill;
             PanelMain.Location = new Point(0, 0);
             PanelMain.Margin = new Padding(14);
@@ -97,7 +98,6 @@
             // 
             // ProcessingStateControl
             // 
-            Controls.Add(PicRecordingGif);
             Controls.Add(PanelMain);
             Name = "ProcessingStateControl";
             Size = new Size(600, 650);

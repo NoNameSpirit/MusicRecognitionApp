@@ -9,32 +9,28 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
 {
     public class StateRegistryService : IStateRegistry
     {
-        private readonly ICardService cardService;
-        private readonly IServiceProvider _serviceProvider;
-        private readonly IAudioRecognition _recognitionService;
-        private readonly IAudioRecorder _recorderService;
+        private readonly ICardService _cardService;
         private readonly IMessageBox _messageBoxService;
         private readonly IAnimationService _animationService;
-        private readonly IResultCardBuilder _resultCardBuilder;
         private readonly IRecognitionSongService _recognitionSongService;
+        private readonly IAudioRecognition _recognitionService;
+        private readonly IAudioRecorder _recorderService;
 
 
         public StateRegistryService(
-            IServiceProvider serviceProvider,
-            IAudioRecognition audioRecognitionService,
-            IAudioRecorder audioRecorderService,
             IMessageBox messageBoxService,
+            ICardService cardService,
             IAnimationService animationService,
-            IResultCardBuilder resultCardBuilder,
-            IRecognitionSongService recognitionSongService)
+            IRecognitionSongService recognitionSongService,
+            IAudioRecognition audioRecognitionService,
+            IAudioRecorder audioRecorderService)
         {
-            _serviceProvider = serviceProvider;
+            _messageBoxService = messageBoxService;
+            _cardService = cardService;
+            _animationService = animationService;
+            _recognitionSongService = recognitionSongService;
             _recognitionService = audioRecognitionService;
             _recorderService = audioRecorderService;
-            _messageBoxService = messageBoxService;
-            _animationService = animationService;
-            _resultCardBuilder = resultCardBuilder;
-            _recognitionSongService = recognitionSongService;
         }
 
         public UserControl CreateStateControl(MainForm mainForm, AppState state)
@@ -47,9 +43,9 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
 
                 AppState.Analyzing => new AnalyzingStateControl(mainForm, _recognitionService),
 
-                AppState.Result => new ResultStateControl(mainForm, _messageBoxService, _resultCardBuilder, _recognitionSongService),
+                AppState.Result => new ResultStateControl(mainForm, _messageBoxService, _cardService, _recognitionSongService),
 
-                AppState.Library => new LibraryStateControl(mainForm, _serviceProvider),
+                AppState.Library => new LibraryStateControl(mainForm, _cardService),
 
                 AppState.Processing => new ProcessingStateControl(mainForm, _recognitionService),
 

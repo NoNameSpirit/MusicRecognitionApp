@@ -5,8 +5,8 @@ namespace MusicRecognitionApp.Presentation.Services.Interfaces
 {
     public interface IStateRegistry
     {
-        public UserControl CreateStateControl(MainForm mainForm, AppState state);
+        UserControl CreateStateControl(MainForm mainForm, AppState state);
 
-        public IEnumerable<AppState> GetStatesControls();
+        IEnumerable<AppState> GetStatesControls();
     }
 }

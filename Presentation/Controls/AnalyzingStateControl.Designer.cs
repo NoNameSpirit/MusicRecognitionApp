@@ -40,6 +40,7 @@
             // PanelMain
             // 
             PanelMain.BackColor = Color.AliceBlue;
+            PanelMain.Controls.Add(PicRecordingGif);
             PanelMain.Controls.Add(LblProgressPercent);
             PanelMain.Controls.Add(LblAnalyzingStatus);
             PanelMain.Controls.Add(ProgressBarAnalyzing);
@@ -97,7 +98,6 @@
             // 
             // AnalyzingStateControl
             // 
-            Controls.Add(PicRecordingGif);
             Controls.Add(PanelMain);
             Name = "AnalyzingStateControl";
             Size = new Size(600, 650);

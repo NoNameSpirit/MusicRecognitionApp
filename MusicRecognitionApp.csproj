@@ -20,6 +20,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Presentation\Controls\Cards\NoInfoCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Presentation\Controls\Cards\AuthorsCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

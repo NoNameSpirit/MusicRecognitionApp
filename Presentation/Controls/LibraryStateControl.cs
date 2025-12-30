@@ -7,19 +7,18 @@ namespace MusicRecognitionApp.Controls
 {
     public partial class LibraryStateControl : UserControl
     {
-        private readonly IServiceProvider _serviceProvider;
         private readonly MainForm _mainForm;
         private readonly ICardService _cardService;
 
         public LibraryStateControl(
-            MainForm mainForm, 
-            IServiceProvider serviceProvider)
+            MainForm mainForm,
+            ICardService cardService)
         {
             InitializeComponent();
 
-            _serviceProvider = serviceProvider;
             _mainForm = mainForm;
-            _cardService = _serviceProvider.GetRequiredService<ICardService>();
+            _cardService = cardService;
+            
             _cardService.Initialize(BtnSongs, BtnAuthors, FLPanelOfCards);
         }
 
@@ -35,11 +34,15 @@ namespace MusicRecognitionApp.Controls
 
         private void BtnSongs_Click(object sender, EventArgs e)
         {
+            FLPanelOfCards.Controls.Clear();
+
             _cardService.ShowSongs();
         }
 
         private void BtnAuthors_Click(object sender, EventArgs e)
         {
+            FLPanelOfCards.Controls.Clear();
+
             _cardService.ShowAuthors();
         }
 

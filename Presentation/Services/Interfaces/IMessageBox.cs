@@ -2,12 +2,12 @@
 {
     public interface IMessageBox
     {
-        public DialogResult ShowWarning(string message);
+        DialogResult ShowWarning(string message);
 
-        public DialogResult ShowQuestion(string message);
+        DialogResult ShowQuestion(string message);
 
-        public void ShowError(string message);
+        void ShowError(string message);
 
-        public void ShowInfo(string message);
+        void ShowInfo(string message);
     }
 }

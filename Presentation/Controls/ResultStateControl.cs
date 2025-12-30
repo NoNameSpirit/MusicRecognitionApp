@@ -11,20 +11,20 @@ namespace MusicRecognitionApp.Controls
     {
         private readonly MainForm _mainForm;
         private readonly IMessageBox _messageBoxService;
-        private readonly IResultCardBuilder _resultCardBuilder;
+        private readonly ICardService _cardService;
         private readonly IRecognitionSongService _recognitionSongService;
 
         public ResultStateControl(
             MainForm mainForm, 
             IMessageBox messageBoxService,
-            IResultCardBuilder resultCardBuilder,
+            ICardService cardService,
             IRecognitionSongService recognitionSongService)
         {
             InitializeComponent();
 
             _mainForm = mainForm;
             _messageBoxService = messageBoxService;
-            _resultCardBuilder = resultCardBuilder;
+            _cardService = cardService;
             _recognitionSongService = recognitionSongService;
         }
 
@@ -76,14 +76,14 @@ namespace MusicRecognitionApp.Controls
 
         private void ShowNoResults()
         {
-            var card = _resultCardBuilder.CreateNoResultsCard(); 
+            var card = _cardService.CreateNoResultsCard(); 
             PicRecordingGif.Image = Properties.Resources.rimuruNoResult;
             PanelResults.Controls.Add(card);
         }
 
         private void ShowResult(SearchResultModel result)
         {
-            var card = _resultCardBuilder.CreateResultCard(result); 
+            var card = _cardService.CreateResultCard(result); 
             PicRecordingGif.Image = Properties.Resources.rimuruHasResults;
             PanelResults.Controls.Add(card);
         }
