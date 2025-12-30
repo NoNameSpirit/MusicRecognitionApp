@@ -31,7 +31,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Presentation\Controls\ProcessingStateControl.cs">
+    <Compile Update="Presentation\Controls\States\ProcessingStateControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>

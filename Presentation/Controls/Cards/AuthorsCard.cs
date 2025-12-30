@@ -23,7 +23,7 @@
 
         private void OnCopyButtonClick(object sender, EventArgs e) 
         {
-            string? text = btnCopy.Tag.ToString();
+            string? text = btnCopy.Tag?.ToString();
             if (!string.IsNullOrEmpty(text))
             {
                 Clipboard.SetText(text);    
