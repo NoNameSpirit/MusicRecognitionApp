@@ -14,8 +14,8 @@ namespace MusicRecognitionApp.Forms
 
             materialSkinManager.ColorScheme = new ColorScheme(
                 Primary.Blue500,     // Основной - кнопки, FAB
-                Primary.Blue700,     // Темный - ховер эффекты
-                Primary.Blue50,      // Очень светлый - фоны
+                Primary.Blue700,     // ховер эффекты
+                Primary.Blue50,      // фоны
                 Accent.LightBlue200, // Акцент - переключатели
                 TextShade.WHITE      // Текст
             );

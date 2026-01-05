@@ -2,7 +2,6 @@
 using MusicRecognitionApp.Controls;
 using MusicRecognitionApp.Core.Enums;
 using MusicRecognitionApp.Forms;
-using MusicRecognitionApp.Infrastructure.Services.Interfaces;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
 
 namespace MusicRecognitionApp.Presentation.Services.Implementation
@@ -14,40 +13,36 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
         private readonly IAnimationService _animationService;
         private readonly IRecognitionSongService _recognitionSongService;
         private readonly IAudioRecognition _recognitionService;
-        private readonly IAudioRecorder _recorderService;
-
 
         public StateRegistryService(
             IMessageBox messageBoxService,
             ICardService cardService,
             IAnimationService animationService,
             IRecognitionSongService recognitionSongService,
-            IAudioRecognition audioRecognitionService,
-            IAudioRecorder audioRecorderService)
+            IAudioRecognition recognitionService)
         {
+            _recognitionService = recognitionService;
             _messageBoxService = messageBoxService;
             _cardService = cardService;
             _animationService = animationService;
             _recognitionSongService = recognitionSongService;
-            _recognitionService = audioRecognitionService;
-            _recorderService = audioRecorderService;
         }
 
         public UserControl CreateStateControl(MainForm mainForm, AppState state)
         {
             return state switch
             {
-                AppState.Ready => new ReadyStateControl(mainForm, _recognitionService, _animationService, _messageBoxService),
+                AppState.Ready => new ReadyStateControl(_recognitionService, mainForm, _animationService, _messageBoxService),
 
-                AppState.Recording => new RecordingStateControl(mainForm, _recorderService),
+                AppState.Recording => new RecordingStateControl(mainForm),
 
-                AppState.Analyzing => new AnalyzingStateControl(mainForm, _recognitionService),
+                AppState.Analyzing => new AnalyzingStateControl(mainForm),
 
                 AppState.Result => new ResultStateControl(mainForm, _messageBoxService, _cardService, _recognitionSongService),
 
                 AppState.Library => new LibraryStateControl(mainForm, _cardService),
 
-                AppState.Processing => new ProcessingStateControl(mainForm, _recognitionService),
+                AppState.Processing => new ProcessingStateControl(mainForm),
 
                 _ => throw new Exception($"Don't have this factory for {state}")
             };

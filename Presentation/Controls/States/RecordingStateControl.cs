@@ -7,18 +7,13 @@ namespace MusicRecognitionApp.Controls
     public partial class RecordingStateControl : UserControl
     {
         private readonly MainForm _mainForm;
-        private readonly IAudioRecorder _recorderService;
+        private IAudioRecorder _recorder;
 
-        public RecordingStateControl(
-            MainForm mainForm, 
-            IAudioRecorder recorderService)
+        public RecordingStateControl(MainForm mainForm)
         {
             InitializeComponent();
 
             _mainForm = mainForm;
-            _recorderService = recorderService;
-
-            _recorderService.RecordingProgress += OnRecordingProgress;
         }
 
         private void BtnStopRecording_Click(object sender, EventArgs e)
@@ -41,11 +36,21 @@ namespace MusicRecognitionApp.Controls
         protected override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
-
+        
             if (Visible)
             {
                 ProgressBarRecording.Value = 0;
             }
+        }
+
+        public void SetRecorder(IAudioRecorder recorder)
+        {
+            if (_recorder != null)
+            {
+                _recorder.RecordingProgress -= OnRecordingProgress;
+            }
+            _recorder = recorder;
+            _recorder.RecordingProgress += OnRecordingProgress;
         }
     }
 }

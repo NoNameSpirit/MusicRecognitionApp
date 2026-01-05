@@ -1,6 +1,6 @@
 ﻿namespace MusicRecognitionApp.Application.Services.Interfaces
 {
-    public interface IAudioRecorder
+    public interface IAudioRecorder : IDisposable
     {
         bool IsRecording { get; }
 

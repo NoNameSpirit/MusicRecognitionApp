@@ -25,7 +25,7 @@ namespace MusicRecognitionApp.Extensions
 
             services.AddDbContext<MusicRecognitionContext>(options =>
                 options.UseSqlite(connectionString));
-
+           
             services.AddScoped<ISongRepository, SongRepository>()
                     .AddScoped<IAudioHashRepository, AudioHashRepository>()
                     .AddScoped<IRecognizedSongRepository, RecognizedSongRepository>();
@@ -35,10 +35,10 @@ namespace MusicRecognitionApp.Extensions
 
         public static IServiceCollection AddInfrustructureServices(this IServiceCollection services)
         {
-            services.AddScoped<IAudioHashGenerator, AudioHashGenerator>()
-                    .AddScoped<IAudioProcessor, AudioProcessor>()
-                    .AddScoped<IPeakDetector, PeakDetector>()
-                    .AddScoped<ISpectrogramBuilder, SpectrogramBuilder>()
+            services.AddScoped<IAudioHashGenerator, AudioHashGenerator>() //  fix singleton
+                    .AddScoped<IAudioProcessor, AudioProcessor>()         //  fix singleton
+                    .AddScoped<IPeakDetector, PeakDetector>()             //  fix singleton
+                    .AddScoped<ISpectrogramBuilder, SpectrogramBuilder>() //  fix singleton
                     .AddScoped<IAudioHashService, AudioHashService>()
                     .AddScoped<IRecognizedSongService, RecognizedSongService>()
                     .AddScoped<ISongService, SongService>();
@@ -48,23 +48,22 @@ namespace MusicRecognitionApp.Extensions
 
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddScoped<IAudioRecognition, AudioRecognitionService>()
-                    .AddScoped<IAudioRecorder, AudioRecorderService>()
-                    .AddScoped<ISongImportService, SongImportService>()
+            services.AddScoped<ISongImportService, SongImportService>()
                     .AddScoped<ISongSearchService, SongSearchService>()
-                    .AddScoped<IRecognitionSongService, RecognitionSongService>();
+                    .AddScoped<IRecognitionSongService, RecognitionSongService>()
+                    .AddTransient<IAudioRecognition, AudioRecognitionService>() 
+                    .AddTransient<IAudioRecorder, AudioRecorderService>();
 
             return services;
         }
 
         public static IServiceCollection AddPresentationServices(this IServiceCollection services)
         {
-            services.AddSingleton<IStateRegistry, StateRegistryService>()
-                    .AddSingleton<IMessageBox, MessageBoxService>()
-                    .AddSingleton<ICardService, CardService>()
+            services.AddScoped<IStateRegistry, StateRegistryService>()
                     .AddScoped<ICardService, CardService>()
-                    .AddScoped<IAnimationService, AnimationService>();
-           
+                    .AddSingleton<IMessageBox, MessageBoxService>()
+                    .AddSingleton<IAnimationService, AnimationService>();
+
             services.AddTransient<MainForm>();
 
             return services;

@@ -1,4 +1,6 @@
-﻿using MusicRecognitionApp.Core.Enums;
+﻿using Microsoft.Extensions.DependencyInjection;
+using MusicRecognitionApp.Application.Services.Interfaces;
+using MusicRecognitionApp.Core.Enums;
 using MusicRecognitionApp.Forms;
 using MusicRecognitionApp.Infrastructure.Services.Interfaces;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
@@ -8,23 +10,23 @@ namespace MusicRecognitionApp.Controls
 {
     public partial class ReadyStateControl : UserControl
     {
-        private readonly MainForm _mainForm;
         private readonly IAudioRecognition _recognitionService;
+        private readonly MainForm _mainForm;
         private readonly IAnimationService _animationService;
         private readonly IMessageBox _messageBox;
 
         private bool _isProcessing = false;
         
         public ReadyStateControl(
-            MainForm mainForm,
             IAudioRecognition recognitionService,
+            MainForm mainForm,
             IAnimationService animationService,
             IMessageBox messageBox)
         {
             InitializeComponent();
 
-            _mainForm = mainForm;
             _recognitionService = recognitionService;
+            _mainForm = mainForm;
             _animationService = animationService;
             _messageBox = messageBox;
 

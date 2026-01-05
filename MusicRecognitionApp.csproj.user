@@ -4,6 +4,9 @@
     <_LastSelectedProfileId>D:\########University########\3 курс\Shazam\MusicRecognizionApp\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Update="Presentation\Controls\Cards\AuthorsCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Presentation\Controls\States\AnalyzingStateControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -28,5 +31,10 @@
     <Compile Update="Presentation\Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Presentation\Controls\Cards\AuthorsCard.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

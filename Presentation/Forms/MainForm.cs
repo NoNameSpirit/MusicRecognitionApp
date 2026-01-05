@@ -1,7 +1,10 @@
-﻿using MusicRecognitionApp.Core.Enums;
+﻿using Microsoft.Extensions.DependencyInjection;
+using MusicRecognitionApp.Application.Services.Interfaces;
+using MusicRecognitionApp.Controls;
+using MusicRecognitionApp.Core.Enums;
 using MusicRecognitionApp.Core.Models.Business;
-using MusicRecognitionApp.Infrastructure.Services.Interfaces;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
+using System.Text;
 
 namespace MusicRecognitionApp.Forms
 {
@@ -13,21 +16,24 @@ namespace MusicRecognitionApp.Forms
         private CancellationTokenSource _recordingCancellationTokenSource;
         
         public List<SearchResultModel> RecognitionResults { get; set; }
+        public IAudioRecorder AudioRecorder { get; set; }
 
         private readonly IMessageBox _messageBoxService;
         private readonly IStateRegistry _stateRegistryService;
         private readonly IAudioRecognition _recognitionService;
-        
+        private readonly IServiceProvider _serviceProvider;
         public MainForm(
             IMessageBox messageBoxService, 
-            IStateRegistry stateRegistryService, 
-            IAudioRecognition recognitionService)
+            IStateRegistry stateRegistryService,
+            IAudioRecognition recognitionService,
+            IServiceProvider serviceProvider)
         {
             InitializeComponent();
 
             _messageBoxService = messageBoxService;
             _stateRegistryService = stateRegistryService;
             _recognitionService = recognitionService;
+            _serviceProvider = serviceProvider;
 
             SetStateAsync(AppState.Ready);
         }
@@ -71,7 +77,15 @@ namespace MusicRecognitionApp.Forms
         private async Task StartRecordingProcess()
         {
             _recordingCancellationTokenSource = new CancellationTokenSource();
-            _recordedAudioFile = await _recognitionService.RecordAudioAsync(15, _recordingCancellationTokenSource.Token);
+
+            using var recorder = _serviceProvider.GetRequiredService<IAudioRecorder>();
+
+            if (_states[AppState.Recording] is RecordingStateControl recordingStateControl)
+            {
+                recordingStateControl.SetRecorder(recorder);
+            }
+
+            _recordedAudioFile = await recorder.RecordAudioFromMicrophoneAsync(15, _recordingCancellationTokenSource.Token);
 
             if (_recordingCancellationTokenSource.Token.IsCancellationRequested 
                 || string.IsNullOrEmpty(_recordedAudioFile))
@@ -86,8 +100,13 @@ namespace MusicRecognitionApp.Forms
 
         private async Task StartAnalysisProcess()
         {
+            if (_states[AppState.Analyzing] is AnalyzingStateControl analyzingStateControl)
+            {
+                analyzingStateControl.SetRecognition(_recognitionService);
+            }
+
             RecognitionResults = await _recognitionService.RecognizeFromMicrophoneAsync(_recordedAudioFile);
-            
+
             if (!string.IsNullOrEmpty(_recordedAudioFile) && File.Exists(_recordedAudioFile))
             {
                  File.Delete(_recordedAudioFile);

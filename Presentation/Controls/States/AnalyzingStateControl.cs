@@ -1,23 +1,28 @@
-﻿using MusicRecognitionApp.Core.Enums;
+﻿using MusicRecognitionApp.Application.Services.Interfaces;
+using MusicRecognitionApp.Core.Enums;
 using MusicRecognitionApp.Forms;
-using MusicRecognitionApp.Infrastructure.Services.Interfaces;
 
 namespace MusicRecognitionApp.Controls
 {
     public partial class AnalyzingStateControl : UserControl
     {
         private readonly MainForm _mainForm;
-        private readonly IAudioRecognition _recognitionService;
+        private IAudioRecognition _recognition;
 
-        public AnalyzingStateControl(
-            MainForm mainForm,
-            IAudioRecognition recognitionService)
+        public AnalyzingStateControl(MainForm mainForm)
         {
             InitializeComponent();
             _mainForm = mainForm;
+        }
 
-            _recognitionService = recognitionService;
-            _recognitionService.AnalysisProgress += UpdateProgress;
+        public void SetRecognition(IAudioRecognition recognition)
+        {
+            if(_recognition != null)
+            {
+                _recognition.AnalysisProgress -= UpdateProgress;
+            }
+            _recognition = recognition;
+            _recognition.AnalysisProgress += UpdateProgress;
         }
 
         public void UpdateProgress(int progress)

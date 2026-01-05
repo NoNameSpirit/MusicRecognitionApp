@@ -1,24 +1,29 @@
-﻿using MusicRecognitionApp.Core.Enums;
+﻿using MusicRecognitionApp.Application.Services.Interfaces;
+using MusicRecognitionApp.Core.Enums;
 using MusicRecognitionApp.Forms;
-using MusicRecognitionApp.Infrastructure.Services.Interfaces;
 
 namespace MusicRecognitionApp.Controls
 {
     public partial class ProcessingStateControl : UserControl
     {
         private readonly MainForm _mainForm;
-        private readonly IAudioRecognition _recognitionService;
         private CancellationTokenSource _cancellationTokenSource;
+        private IAudioRecognition? _recognition;
 
-        public ProcessingStateControl(
-            MainForm mainForm,
-            IAudioRecognition recognitionService)
+        public ProcessingStateControl(MainForm mainForm)
         {
             InitializeComponent();
             _mainForm = mainForm;
+        }
 
-            _recognitionService = recognitionService;
-            _recognitionService.ImportProgress += UpdateProgress;
+        public void SetRecognition(IAudioRecognition recognition)
+        {
+            if (_recognition != null)
+            {
+                _recognition.ImportProgress -= UpdateProgress;
+            }
+            _recognition = recognition;
+            _recognition.ImportProgress += UpdateProgress;
         }
 
         public void UpdateProgress(int progress)

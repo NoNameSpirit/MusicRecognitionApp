@@ -1,7 +1,7 @@
-﻿using MusicRecognitionApp.Application.Services.Interfaces;
-using MusicRecognitionApp.Core.Models.Business;
+﻿using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Infrastructure.Data.Interfaces;
 using MusicRecognitionApp.Infrastructure.Data.Mappers;
+using MusicRecognitionApp.Infrastructure.Services.Interfaces;
 using System.Diagnostics;
 
 namespace MusicRecognitionApp.Infrastructure.Services.Implementations

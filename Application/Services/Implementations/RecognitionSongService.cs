@@ -1,5 +1,6 @@
 ﻿using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Models.Business;
+using MusicRecognitionApp.Infrastructure.Services.Interfaces;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
 {

@@ -2,13 +2,11 @@
 using MusicRecognitionApp.Core.Models.Audio;
 using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Infrastructure.Audio.Interfaces;
-using MusicRecognitionApp.Infrastructure.Services.Interfaces;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
 {
     public class AudioRecognitionService : IAudioRecognition
     {
-        private readonly IAudioRecorder _recorderService;
         private readonly IAudioProcessor _audioProcessor;
         private readonly ISpectrogramBuilder _spectrogramBuilder;
         private readonly IPeakDetector _peakDetector;
@@ -22,7 +20,6 @@ namespace MusicRecognitionApp.Application.Services.Implementations
         public event Action<int> ImportProgress;
 
         public AudioRecognitionService(
-            IAudioRecorder recorderService,
             IAudioProcessor audioProcessor,
             ISpectrogramBuilder spectrogramBuilder,
             IPeakDetector peakDetector,
@@ -30,18 +27,12 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             ISongImportService importService,
             ISongSearchService searchService)
         {
-            _recorderService = recorderService;
             _audioProcessor = audioProcessor;
             _spectrogramBuilder = spectrogramBuilder;
             _peakDetector = peakDetector;
             _hashGenerator = hashGenerator;
             _importService = importService;
             _searchService = searchService;
-        }
-
-        public async Task<string> RecordAudioAsync(int durationTime = 15, CancellationToken cancellationToken = default)
-        {
-            return await _recorderService.RecordAudioFromMicrophoneAsync(durationTime, cancellationToken);
         }
 
         public async Task<List<SearchResultModel>> RecognizeFromMicrophoneAsync(string audioFilePath)
