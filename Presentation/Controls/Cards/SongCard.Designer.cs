@@ -31,59 +31,58 @@ namespace MusicRecognitionApp.Presentation.Controls
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.lblTitle = new MaterialLabel();
-            this.lblArtist = new MaterialLabel();
-            this.lblMatches = new MaterialLabel();
-            this.toolTip = new ToolTip();
-            this.notificationToolTip = new ToolTip();
-            this.btnCopy = new Button();
-            this.divider = new MaterialDivider();
-            //
+            AutoScaleMode = AutoScaleMode.Font;
+            lblTitle = new MaterialLabel();
+            lblArtist = new MaterialLabel();
+            lblMatches = new MaterialLabel();
+            toolTip = new ToolTip();
+            notificationToolTip = new ToolTip();
+            btnCopy = new Button();
+            divider = new MaterialDivider();
+            // 
             // lblTitle
-            //
+            // 
             lblTitle.Location = new Point(15, 60);
             lblTitle.AutoSize = true;
-            //
+            // 
             // lblArtist
-            //
+            // 
             lblArtist.Location = new Point(15, 15);
             lblArtist.AutoSize = true;
-            //
+            // 
             // lblMatches
-            //
-            lblMatches.Location = new Point(400, 60);
+            // 
+            lblMatches.Location = new Point(360, 60);
             lblMatches.AutoSize = true;
-            //
+            // 
             // toolTip
-            //
+            // 
             toolTip.AutoPopDelay = 5000;
             toolTip.InitialDelay = 500;
             toolTip.ReshowDelay = 500;
             toolTip.ShowAlways = true;
-            //
+            // 
             // notificationToolTip
-            //
+            // 
             notificationToolTip.ToolTipIcon = ToolTipIcon.Info;
             notificationToolTip.AutoPopDelay = 1000;
             notificationToolTip.InitialDelay = 500;
             notificationToolTip.ShowAlways = false;
             notificationToolTip.UseFading = true;
-            //
+            // 
             // btnCopySong
-            //
+            // 
             btnCopy.Text = "📋";
             btnCopy.Size = new Size(35, 40);
             btnCopy.Location = new Point(480, 10);
-            //
+            // 
             // divider
-            //
+            // 
             divider.Height = 2;
             divider.Dock = DockStyle.Bottom;
-
-            this.Size = new Size(520, 100);
-            this.Margin = new Padding(0, 0, 0, 10);
-            this.Controls.AddRange(new Control[] { lblTitle, lblArtist, lblMatches, btnCopy, divider });
+            Size = new Size(520, 100);
+            Margin = new Padding(0, 0, 0, 10);
+            Controls.AddRange(new Control[] { lblTitle, lblArtist, lblMatches, btnCopy, divider });
         }
 
         private MaterialLabel lblTitle;

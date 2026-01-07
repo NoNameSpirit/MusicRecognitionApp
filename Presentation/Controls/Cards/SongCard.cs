@@ -8,7 +8,7 @@
         {
             InitializeComponent();
 
-            this.lblTitle.Text = TruncateText(title, 50);
+            this.lblTitle.Text = TruncateText(title, 40);
             this.lblArtist.Text = TruncateText(artist, 30);
             this.lblMatches.Text = $"Совпадений: {matches}";
 
@@ -20,7 +20,7 @@
             btnCopy.Click += OnCopyButtonClick;
         }
 
-        private void OnCopyButtonClick(object sender, EventArgs e) 
+        private void OnCopyButtonClick(object sender, EventArgs e)
         {
             string? text = btnCopy.Tag?.ToString();
             if (!string.IsNullOrEmpty(text))

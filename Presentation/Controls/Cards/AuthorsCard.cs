@@ -10,7 +10,7 @@
 
             string title = $"Треков распознано: {trackCount}";
             
-            this.lblTitle.Text = TruncateText(title, 50);
+            this.lblTitle.Text = TruncateText(title, 40);
             this.lblArtist.Text = TruncateText(artist, 30);
 
             toolTip.SetToolTip(lblTitle, title);
