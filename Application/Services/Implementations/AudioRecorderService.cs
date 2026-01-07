@@ -1,46 +1,41 @@
 ﻿using MusicRecognitionApp.Application.Services.Interfaces;
 using NAudio.Wave;
 using System;
+using System.Data;
 using System.Reflection;
 using System.Threading;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
 {
-    public class AudioRecorderService : IAudioRecorder, IDisposable
+    public class AudioRecorderService : IAudioRecorder
     {
         public bool IsRecording { get; private set; }
         public event Action<int> RecordingProgress;
 
-        private bool _disposed = false;
         private readonly object _lockObject = new object();
-
-        private WaveInEvent? _sourceStream;
-        private WaveFileWriter? _waveWriter;
-        private CancellationTokenSource? _cancellationTokenSource;
+        private WaveFileWriter _currentWriter;
 
         public async Task<string> RecordAudioFromMicrophoneAsync(int durationSeconds = 15, CancellationToken cancellationToken = default)
         {
             string outputFilePath = null;
             bool success = false;
 
-            if (_disposed)
-                throw new ObjectDisposedException(nameof(AudioRecorderService));
-
             if (IsRecording)
                 throw new InvalidOperationException("Recording already in progress!");
 
+            var exeDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            outputFilePath = Path.Combine(exeDirectory, $"recorded_audio_{DateTime.Now:yyyyMMdd_HHmmssfff}.wav");
+
             IsRecording = true;
-            _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            WaveInEvent? sourceStream = null;
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
             try
             {
-                var exeDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                outputFilePath = Path.Combine(exeDirectory, $"recorded_audio_{DateTime.Now:yyyyMMdd_HHmmssfff}.wav");
-
                 int deviceNumber = 0;
                 WaveInCapabilities deviceCaps = WaveInEvent.GetCapabilities(deviceNumber);
 
-                _sourceStream = new WaveInEvent
+                sourceStream = new WaveInEvent
                 {
                     DeviceNumber = deviceNumber,
                     WaveFormat = new WaveFormat(44100, deviceCaps.Channels),
@@ -48,24 +43,20 @@ namespace MusicRecognitionApp.Application.Services.Implementations
                     NumberOfBuffers = 3,
                 };
 
-                _waveWriter = new WaveFileWriter(outputFilePath, _sourceStream.WaveFormat);
+                using var waveWriter = new WaveFileWriter(outputFilePath, sourceStream.WaveFormat);
+                _currentWriter = waveWriter;
 
-                _sourceStream.DataAvailable += OnDataAvailable;
-                _sourceStream.StartRecording();
+                sourceStream.DataAvailable += OnDataAvailable;
+                sourceStream.StartRecording();
 
                 for (int i = 0; i < durationSeconds; i++)
                 {
-                    if (_cancellationTokenSource.Token.IsCancellationRequested)
-                    {
-                        break;
-                    }
-
-                    await Task.Delay(1000);
+                    await Task.Delay(1000, cts.Token);
 
                     int progress = (i + 1) * 100 / durationSeconds;
                     RecordingProgress?.Invoke(progress);
                 }
-                success = !_cancellationTokenSource.Token.IsCancellationRequested;
+                success = !cts.Token.IsCancellationRequested;
 
                 return success ? outputFilePath : null;
             }
@@ -75,16 +66,29 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             }
             finally
             {
-                _sourceStream?.StopRecording();
-                if (_sourceStream != null)
+                if(sourceStream != null) 
                 {
-                    _sourceStream.DataAvailable -= OnDataAvailable;
+                    sourceStream.DataAvailable -= OnDataAvailable;
+                    sourceStream.Dispose();
                 }
+
+                IsRecording = false;
+                _currentWriter = null;
 
                 if (!success)
                     CleanupFile(outputFilePath);
+            }
+        }
 
-                IsRecording = false;
+        private void OnDataAvailable(object sender, WaveInEventArgs e)
+        {
+            lock (_lockObject)
+            {
+                if (_currentWriter != null && e.BytesRecorded > 0)
+                {
+                    _currentWriter.Write(e.Buffer, 0, e.BytesRecorded);
+                    _currentWriter.Flush();
+                }
             }
         }
 
@@ -94,65 +98,6 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             {
                 File.Delete(filepath);
             }
-        }
-
-        private void OnDataAvailable(object sender, WaveInEventArgs e)
-        {
-            lock (_lockObject)
-            {
-                if (_waveWriter != null && e.BytesRecorded > 0)
-                {
-                    _waveWriter.Write(e.Buffer, 0, e.BytesRecorded);
-                    _waveWriter.Flush();
-                }
-            }
-        }
-
-        ~AudioRecorderService()
-        {
-            Dispose(false);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (_disposed)
-            {
-                return;
-            }
-
-            // managed resources
-            if (disposing)
-            {
-                if (IsRecording)
-                {
-                    _sourceStream?.StopRecording();
-                    _cancellationTokenSource?.Cancel();
-                    IsRecording = false;
-                }
-                
-                WaveFileWriter writerToDispose = null;
-                lock (_lockObject)
-                {
-                    writerToDispose = _waveWriter;
-                    _waveWriter = null;
-                }
-
-                writerToDispose?.Dispose();
-                
-                _sourceStream?.Dispose();
-                _sourceStream = null;
-                
-                _cancellationTokenSource?.Dispose();
-                _cancellationTokenSource = null;
-            }
-            
-            _disposed = true;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
     }
 }

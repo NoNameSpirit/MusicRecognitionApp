@@ -78,7 +78,7 @@ namespace MusicRecognitionApp.Forms
         {
             _recordingCancellationTokenSource = new CancellationTokenSource();
 
-            using var recorder = _serviceProvider.GetRequiredService<IAudioRecorder>();
+            var recorder = _serviceProvider.GetRequiredService<IAudioRecorder>();
 
             if (_states[AppState.Recording] is RecordingStateControl recordingStateControl)
             {
