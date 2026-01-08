@@ -35,10 +35,10 @@ namespace MusicRecognitionApp.Extensions
 
         public static IServiceCollection AddInfrustructureServices(this IServiceCollection services)
         {
-            services.AddScoped<IAudioHashGenerator, AudioHashGenerator>() //  fix singleton
-                    .AddScoped<IAudioProcessor, AudioProcessor>()         //  fix singleton
-                    .AddScoped<IPeakDetector, PeakDetector>()             //  fix singleton
-                    .AddScoped<ISpectrogramBuilder, SpectrogramBuilder>() //  fix singleton
+            services.AddSingleton<IAudioHashGenerator, AudioHashGenerator>() 
+                    .AddSingleton<IAudioProcessor, AudioProcessor>()         
+                    .AddSingleton<IPeakDetector, PeakDetector>()             
+                    .AddSingleton<ISpectrogramBuilder, SpectrogramBuilder>() 
                     .AddScoped<IAudioHashService, AudioHashService>()
                     .AddScoped<IRecognizedSongService, RecognizedSongService>()
                     .AddScoped<ISongService, SongService>();

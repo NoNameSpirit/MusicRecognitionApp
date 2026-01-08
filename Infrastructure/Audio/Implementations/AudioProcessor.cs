@@ -1,4 +1,5 @@
-﻿using MusicRecognitionApp.Infrastructure.Audio.Interfaces;
+﻿using FftSharp;
+using MusicRecognitionApp.Infrastructure.Audio.Interfaces;
 using NAudio.Dsp;
 using NAudio.Wave;
 
@@ -6,19 +7,16 @@ namespace MusicRecognitionApp.Infrastructure.Audio.Implementations
 {
     public class AudioProcessor : IAudioProcessor
     {
-        private float[] audioSamples;
-        private int sampleRate;
-
         public float[] PreprocessAudio(string filePath)
         {
-            float[] samples = LoadAudioFile(filePath, out int channels);
+            float[] samples = LoadAudioFile(filePath, out int channels, out int sampleRate);
             samples = ConvertToMono(samples, channels);
-            samples = ApplyLowPassFilter(samples, 5000f);
-            samples = DownsampleAudio(samples, 4);
+            samples = ApplyLowPassFilter(samples, sampleRate, 5000f);
+            samples = DownsampleAudio(samples, sampleRate, 4);
             return samples;
         }
 
-        private float[] LoadAudioFile(string filePath, out int channels)
+        private float[] LoadAudioFile(string filePath, out int channels, out int sampleRate)
         {
             using (var audioFileReader = new AudioFileReader(filePath))
             {
@@ -28,12 +26,11 @@ namespace MusicRecognitionApp.Infrastructure.Audio.Implementations
 
                 int totalSamples = (int)(audioFileReader.Length / (audioFileReader.WaveFormat.BitsPerSample / 8));
 
-                audioSamples = new float[totalSamples];
+                var audioSamples = new float[totalSamples];
 
                 audioFileReader.Read(audioSamples, 0, totalSamples);
+                return audioSamples;
             }
-
-            return audioSamples;
         }
 
         private float[] ConvertToMono(float[] stereoSamples, int channels)
@@ -57,7 +54,7 @@ namespace MusicRecognitionApp.Infrastructure.Audio.Implementations
             throw new NotSupportedException("Только моно/стерео");
         }
 
-        private float[] ApplyLowPassFilter(float[] samples, float cutoffFreency = 5000f)
+        private float[] ApplyLowPassFilter(float[] samples, int sampleRate, float cutoffFreency = 5000f)
         {
             var filter = BiQuadFilter.LowPassFilter(sampleRate, cutoffFreency, 1.0f);
 
@@ -70,7 +67,7 @@ namespace MusicRecognitionApp.Infrastructure.Audio.Implementations
             return filteredSamples;
         }
 
-        private float[] DownsampleAudio(float[] samples, int downsampleFactor = 4)
+        private float[] DownsampleAudio(float[] samples, int sampleRate, int downsampleFactor = 4)
         {
             int newLength = samples.Length / downsampleFactor;
             float[] downsampledSamples = new float[newLength];
