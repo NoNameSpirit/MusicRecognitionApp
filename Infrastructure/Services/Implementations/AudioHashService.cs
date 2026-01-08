@@ -15,24 +15,16 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             _audioHashRepository = audioHashRepository;
         }
 
-        public Dictionary<uint, List<AudioHash>> GetHashesDictionary(List<uint> hashValues)
+        public async Task<List<(int SongId, int Count)>> FindSongMatchesAsync(List<uint> hashValues)
         {
             try
             {
-                var matchingHashes = _audioHashRepository.GetByHashes(hashValues, "Song");
-
-                var convertedHashes = matchingHashes
-                    .Select(EntityToModel.ToAudioHash)
-                    .ToList();
-
-                return convertedHashes
-                    .GroupBy(h => h.Hash)
-                    .ToDictionary(g => g.Key, g => g.ToList());
+                return await _audioHashRepository.GetMatchesAsync(hashValues);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[ERROR] Exception while getting hashes dictionary: {ex.Message}");
-                return new Dictionary<uint, List<AudioHash>>();
+                Debug.WriteLine($"[ERROR] Exception while getting hashes: {ex.Message}");
+                return new List<(int, int)>();
             }
         }
 

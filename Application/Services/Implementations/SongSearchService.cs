@@ -4,6 +4,7 @@ using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Infrastructure.Audio.Interfaces;
 using MusicRecognitionApp.Infrastructure.Services.Interfaces;
 using System.Diagnostics;
+using System.Diagnostics.Metrics;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
 {
@@ -23,7 +24,7 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             _audioHashGenerator = audioHashGenerator;
         }
 
-        public List<SearchResultModel> SearchSong(List<AudioHash> queryHashes)
+        public async Task<List<SearchResultModel>> SearchSong(List<AudioHash> queryHashes)
         {
             if (queryHashes == null || queryHashes.Count == 0)
                 return new List<SearchResultModel>();
@@ -31,22 +32,20 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             try
             {
                 var hashValues = queryHashes.Select(h => h.Hash).ToList();
-                var databaseDict = _audioHashService.GetHashesDictionary(hashValues);
-
-                var matches = _audioHashGenerator.FindMatches(queryHashes, databaseDict);
+                var matches = await _audioHashService.FindSongMatchesAsync(hashValues);
 
                 var results = new List<SearchResultModel>();
-                foreach (var match in matches)
+                foreach (var (songId, count) in matches)
                 {
-                    var song = _songService.GetByIdAsync(match.songId).Result;
+                    var song = await _songService.GetByIdAsync(songId);
 
                     if (song != null)
                     {
                         var result = new SearchResultModel
                         {
                             Song = song,
-                            Matches = match.matches,
-                            Confidence = match.confidence
+                            Matches = count,
+                            Confidence = count / queryHashes.Count
                         };
 
                         results.Add(result);
@@ -54,8 +53,8 @@ namespace MusicRecognitionApp.Application.Services.Implementations
                 }
 
                 List<SearchResultModel> sortedResults = results
-                    .OrderByDescending(r => r.Matches)
-                    .ThenByDescending(r => r.Confidence)
+                    .OrderByDescending(r => r.Confidence)
+                    .ThenByDescending(r => r.Matches)
                     .ToList();
 
                 return sortedResults;
