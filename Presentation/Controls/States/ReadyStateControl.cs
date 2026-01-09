@@ -5,6 +5,7 @@ using MusicRecognitionApp.Forms;
 using MusicRecognitionApp.Infrastructure.Services.Interfaces;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
 using NAudio.Wave;
+using System.Windows.Forms;
 
 namespace MusicRecognitionApp.Controls
 {
@@ -14,6 +15,7 @@ namespace MusicRecognitionApp.Controls
         private readonly MainForm _mainForm;
         private readonly IAnimationService _animationService;
         private readonly IMessageBox _messageBox;
+        private readonly ISongAddingService _songAddingService;
 
         private bool _isProcessing = false;
         
@@ -21,7 +23,8 @@ namespace MusicRecognitionApp.Controls
             IAudioRecognition recognitionService,
             MainForm mainForm,
             IAnimationService animationService,
-            IMessageBox messageBox)
+            IMessageBox messageBox,
+            ISongAddingService songAddingService)
         {
             InitializeComponent();
 
@@ -29,6 +32,7 @@ namespace MusicRecognitionApp.Controls
             _mainForm = mainForm;
             _animationService = animationService;
             _messageBox = messageBox;
+            _songAddingService = songAddingService;
 
             _animationService.AddHoverAnimation(PicRecordingGif);
         }
@@ -60,47 +64,23 @@ namespace MusicRecognitionApp.Controls
                 return;
             }
 
+            _isProcessing = true;
             try
             {
-                _isProcessing = true;
+                _mainForm.SetStateAsync(AppState.Processing);
+                
+                ImportResult result = await _songAddingService.ImportTracksFromFolderAsync();
 
-                using (FolderBrowserDialog folderDialog = new FolderBrowserDialog())
-                {
-                    folderDialog.Description = "Выберите папку содержащую музыку";
-                    folderDialog.ShowNewFolderButton = false;
-
-                    if (folderDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        string folderPath = folderDialog.SelectedPath;
-
-                        var result = _messageBox.ShowQuestion($"Добавить все аудио файлы из папки: {folderPath}?");
-
-                        if (result == DialogResult.Yes)
-                        {
-                            _mainForm.SetStateAsync(AppState.Processing);
-                            //await Task.Yield();
-
-                            var (added, failed, errors) = await _recognitionService.AddTracksFromFolderAsync(folderPath);
-
-                            _mainForm.SetStateAsync(AppState.Ready);
-
-                            var message = $"Добавлено треков в бд: {added}, не удалось добавить: {failed} {Environment.NewLine}";
-
-                            if (errors.Any())
-                            {
-                                message += $"Ошибки:{Environment.NewLine}" +
-                                           $"{string.Join($"{Environment.NewLine}", errors.Take(3))}";
-                            }
-
-                            _messageBox.ShowInfo(message);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex) 
-            {
-                _messageBox.ShowError($"Ошибка при импорте: {ex.Message}");
                 _mainForm.SetStateAsync(AppState.Ready);
+
+                if (result.Success)
+                {
+                    _messageBox.ShowInfo(result.Message);
+                }
+                else if(!string.IsNullOrEmpty(result.Message))
+                {
+                    _messageBox.ShowError(result.Message);
+                }
             }
             finally
             {

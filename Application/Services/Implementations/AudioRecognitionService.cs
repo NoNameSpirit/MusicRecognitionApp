@@ -40,43 +40,34 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             if (string.IsNullOrEmpty(audioFilePath))
                 return new List<SearchResultModel>();
 
-            return await Task.Run(() =>
-            {
-                AnalysisProgress?.Invoke(10);
-                float[] processedAudio = _audioProcessor
-                    .PreprocessAudio(audioFilePath);
+            AnalysisProgress?.Invoke(10);
+            float[] processedAudio = await Task.Run(() 
+                => _audioProcessor.PreprocessAudio(audioFilePath));
 
-                AnalysisProgress?.Invoke(20);
-                SpectrogramData spectrogramData = _spectrogramBuilder
-                    .ProcessAudio(processedAudio, 11025);
+            AnalysisProgress?.Invoke(20);
+            SpectrogramData spectrogramData = await Task.Run(()
+                => _spectrogramBuilder.ProcessAudio(processedAudio, 11025));
 
-                AnalysisProgress?.Invoke(40);
-                List<Peak> allPeaks = _peakDetector
-                    .ProcessPeekDetector(spectrogramData);
+            AnalysisProgress?.Invoke(40);
+            List<Peak> allPeaks = await Task.Run(()
+                => _peakDetector.ProcessPeekDetector(spectrogramData));
 
-                AnalysisProgress?.Invoke(50);
-                List<AudioHash> queryHashes = _hashGenerator
-                    .GenerateHashes(allPeaks);
+            AnalysisProgress?.Invoke(50);
+            List<AudioHash> queryHashes = await Task.Run(() 
+                => _hashGenerator.GenerateHashes(allPeaks));
 
-                AnalysisProgress?.Invoke(70);
-                var results = _searchService
-                    .SearchSong(queryHashes);
+            AnalysisProgress?.Invoke(70);
+            var results = await _searchService.SearchSong(queryHashes);
 
-                AnalysisProgress?.Invoke(100);
-                return results;
-            });
+            AnalysisProgress?.Invoke(100);
+            return results;
         }
 
         public async Task<(int added, int failed, List<string> errors)> AddTracksFromFolderAsync(string folderPath)
         {
-            var added = 0;
-            var failed = 0;
-            var errors = new List<string>();
-
             if (!Directory.Exists(folderPath) || string.IsNullOrEmpty(folderPath))
             {
-                errors.Add("File doesn't exists");
-                return (added, failed, errors);
+                return (0, 0, new List<string> { "Папка не существует" });
             }
 
             List<string> audioFiles = Directory.GetFiles(folderPath, "*.*", SearchOption.AllDirectories)
@@ -85,35 +76,36 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 
             if (audioFiles.Count == 0)
             {
-                errors.Add("В папке не найдены аудио файлы (mp3/wav)");
-                return (added, failed, errors);
+                return (0, 0, new List<string> { "В папке не найдены аудио файлы (mp3/wav)" });
             }
 
             ImportProgress?.Invoke(0);
 
-            await Task.Run(async () =>
+            var added = 0;
+            var failed = 0;
+            var errors = new List<string>();
+
+            for (int i = 0; i < audioFiles.Count; i++)
             {
-                for (int i = 0; i < audioFiles.Count; i++)
+                string filepath = audioFiles[i];
+
+                try
                 {
-                    string filepath = audioFiles[i];
-                    try
-                    {
-                        string artist = GetArtistFromFile(filepath, folderPath);
-                        string title = Path.GetFileNameWithoutExtension(filepath);
-
-                        await ProcessAndAddTrackAsync(filepath, title, artist);
-                        added++;
-                    }
-                    catch (Exception ex)
-                    {
-                        failed++;
-                        errors.Add($"{Path.GetFileName(audioFiles[i])}: {ex.Message}");
-                    }
-
-                    int progress = (i + 1) * 100 / audioFiles.Count;
-                    ImportProgress?.Invoke(progress);
+                    string artist = GetArtistFromFile(filepath, folderPath);
+                    string title = Path.GetFileNameWithoutExtension(filepath);
+            
+                    await AddTrackAsync(filepath, title, artist);
+                    added++;
                 }
-            });
+                catch (Exception ex)
+                {
+                    failed++;
+                    errors.Add($"{Path.GetFileName(filepath)}: {ex.Message}");
+                }
+            
+                int progress = (i + 1) * 100 / audioFiles.Count;
+                ImportProgress?.Invoke(progress);
+            }
 
             ImportProgress?.Invoke(100);
             return (added, failed, errors);
@@ -132,22 +124,22 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             return Path.GetFileName(dirName);
         }
 
-        private async Task ProcessAndAddTrackAsync(string filePath, string title, string artist)
+        private async Task AddTrackAsync(string audioFilePath, string title, string artist)
         {
-            float[] processedAudio = _audioProcessor
-                .PreprocessAudio(filePath);
 
-            SpectrogramData spectrogramData = _spectrogramBuilder
-                .ProcessAudio(processedAudio, 11025);
+            float[] processedAudio = await Task.Run(()
+                => _audioProcessor.PreprocessAudio(audioFilePath));
 
-            List<Peak> allPeaks = _peakDetector
-                .ProcessPeekDetector(spectrogramData);
+            SpectrogramData spectrogramData = await Task.Run(()
+                => _spectrogramBuilder.ProcessAudio(processedAudio, 11025));
 
-            List<AudioHash> queryHashes = _hashGenerator
-                .GenerateHashes(allPeaks);
+            List<Peak> allPeaks = await Task.Run(()
+                => _peakDetector.ProcessPeekDetector(spectrogramData));
 
-            await _importService
-                .AddSongAsync(title, artist, queryHashes);
+            List<AudioHash> queryHashes = await Task.Run(()
+                => _hashGenerator.GenerateHashes(allPeaks));
+
+            await _importService.AddSongAsync(title, artist, queryHashes);
         }
     }
 }

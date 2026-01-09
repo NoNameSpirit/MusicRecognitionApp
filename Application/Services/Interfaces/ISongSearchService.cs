@@ -5,6 +5,6 @@ namespace MusicRecognitionApp.Application.Services.Interfaces
 {
     public interface ISongSearchService
     {
-        List<SearchResultModel> SearchSong(List<AudioHash> queryHashes);
+        Task<List<SearchResultModel>> SearchSong(List<AudioHash> queryHashes);
     }
 }
