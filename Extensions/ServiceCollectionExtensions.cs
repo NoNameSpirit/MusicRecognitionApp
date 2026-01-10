@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using MusicRecognitionApp.Infrastructure.Data.Contexts;
 using MusicRecognitionApp.Infrastructure.Data.Interfaces;
 using MusicRecognitionApp.Infrastructure.Data.Repositories;
-using MusicRecognitionApp.Infrastructure.Audio.Interfaces;
 using MusicRecognitionApp.Infrastructure.Audio.Implementations;
-using MusicRecognitionApp.Infrastructure.Services.Interfaces;
 using MusicRecognitionApp.Infrastructure.Services.Implementations;
 using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Application.Services.Implementations;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
 using MusicRecognitionApp.Presentation.Services.Implementation;
+using MusicRecognitionApp.Application.Interfaces.Audio;
+using MusicRecognitionApp.Application.Interfaces.Services;
 
 namespace MusicRecognitionApp.Extensions
 {

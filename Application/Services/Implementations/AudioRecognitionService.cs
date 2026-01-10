@@ -1,7 +1,7 @@
-﻿using MusicRecognitionApp.Application.Services.Interfaces;
+﻿using MusicRecognitionApp.Application.Interfaces.Audio;
+using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Models.Audio;
 using MusicRecognitionApp.Core.Models.Business;
-using MusicRecognitionApp.Infrastructure.Audio.Interfaces;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
 {

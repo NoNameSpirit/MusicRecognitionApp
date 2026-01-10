@@ -1,5 +1,5 @@
 ﻿using FftSharp;
-using MusicRecognitionApp.Infrastructure.Audio.Interfaces;
+using MusicRecognitionApp.Application.Interfaces.Audio;
 using NAudio.Dsp;
 using NAudio.Wave;
 

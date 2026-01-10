@@ -1,6 +1,6 @@
 ﻿using MusicRecognitionApp.Core.Models.Audio;
 
-namespace MusicRecognitionApp.Infrastructure.Services.Interfaces
+namespace MusicRecognitionApp.Application.Interfaces.Services
 {
     public interface IAudioHashService
     {

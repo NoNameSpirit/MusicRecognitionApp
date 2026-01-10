@@ -1,9 +1,6 @@
 ﻿using MusicRecognitionApp.Application.Services.Interfaces;
 using NAudio.Wave;
-using System;
-using System.Data;
 using System.Reflection;
-using System.Threading;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
 {

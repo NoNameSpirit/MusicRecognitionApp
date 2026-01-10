@@ -1,6 +1,6 @@
 ﻿using MusicRecognitionApp.Core.Models.Business;
 
-namespace MusicRecognitionApp.Infrastructure.Services.Interfaces
+namespace MusicRecognitionApp.Application.Interfaces.Services
 {
     public interface IRecognizedSongService
     {

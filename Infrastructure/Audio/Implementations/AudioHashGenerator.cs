@@ -1,5 +1,5 @@
-﻿using MusicRecognitionApp.Core.Models.Audio;
-using MusicRecognitionApp.Infrastructure.Audio.Interfaces;
+﻿using MusicRecognitionApp.Application.Interfaces.Audio;
+using MusicRecognitionApp.Core.Models.Audio;
 
 namespace MusicRecognitionApp.Infrastructure.Audio.Implementations
 {

@@ -1,6 +1,6 @@
-﻿using MusicRecognitionApp.Application.Services.Interfaces;
+﻿using MusicRecognitionApp.Application.Interfaces.Services;
+using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Models.Audio;
-using MusicRecognitionApp.Infrastructure.Services.Interfaces;
 using System.Diagnostics;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
