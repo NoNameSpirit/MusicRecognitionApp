@@ -1,28 +1,28 @@
-﻿using MusicRecognitionApp.Application.Services.Interfaces;
+﻿using Microsoft.Extensions.DependencyInjection;
+using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Enums;
-using MusicRecognitionApp.Forms;
+using MusicRecognitionApp.Core.Models.Business;
+using MusicRecognitionApp.Presentation.Services.Interfaces;
 
 namespace MusicRecognitionApp.Controls
 {
-    public partial class AnalyzingStateControl : UserControl
+    public partial class AnalyzingStateControl : UserControl, IStateWithData
     {
-        private readonly MainForm _mainForm;
-        private IAudioRecognition _recognition;
+        public List<SearchResultModel>? RecognitionResults { get; set; }
 
-        public AnalyzingStateControl(MainForm mainForm)
+        private readonly IStateManagerService _stateManagerService;
+        private readonly IServiceProvider _serviceProvider;
+        
+        private IAnalyzingSessionService _sessionService;
+        private string? _recordedAudioFile;
+        public AnalyzingStateControl(
+            IStateManagerService stateManagerService,
+            IServiceProvider serviceProvider)
         {
             InitializeComponent();
-            _mainForm = mainForm;
-        }
 
-        public void SetRecognition(IAudioRecognition recognition)
-        {
-            if(_recognition != null)
-            {
-                _recognition.AnalysisProgress -= UpdateProgress;
-            }
-            _recognition = recognition;
-            _recognition.AnalysisProgress += UpdateProgress;
+            _stateManagerService = stateManagerService;
+            _serviceProvider = serviceProvider;
         }
 
         public void UpdateProgress(int progress)
@@ -37,9 +37,41 @@ namespace MusicRecognitionApp.Controls
             LblProgressPercent.Text = $"{progress}%";
         }
 
-        private void BtnStopRecognition_Click(object sender, EventArgs e)
+        public void SetStateData(object? stateData)
         {
-            _mainForm.SetStateAsync(AppState.Ready);
+            _recordedAudioFile = stateData as string;
+        }
+
+        private async Task StartAnalyzingAsync()
+        {
+            string? recordedAudioFile;
+            try
+            {
+                _sessionService.AnalyzingSession += UpdateProgress;
+
+                RecognitionResults = await _sessionService.StartAnalyzingAsync(_recordedAudioFile);
+            }
+            finally 
+            {
+                _sessionService.AnalyzingSession -= UpdateProgress;
+            }
+
+            await _stateManagerService.SetStateAsync(AppState.Result, RecognitionResults);
+        }
+
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+
+            if (Visible)
+            {
+                ProgressBarAnalyzing.Value = 0;
+                LblProgressPercent.Text = "0%";
+                RecognitionResults = null;
+
+                _sessionService = _serviceProvider.GetRequiredService<IAnalyzingSessionService>();
+                _ = StartAnalyzingAsync();
+            }
         }
     }
 }

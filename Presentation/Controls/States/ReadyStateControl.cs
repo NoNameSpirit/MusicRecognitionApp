@@ -1,60 +1,49 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using MusicRecognitionApp.Application.Services.Interfaces;
-using MusicRecognitionApp.Core.Enums;
-using MusicRecognitionApp.Forms;
-using MusicRecognitionApp.Infrastructure.Services.Interfaces;
+﻿using MusicRecognitionApp.Core.Enums;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
-using NAudio.Wave;
-using System.Windows.Forms;
 
 namespace MusicRecognitionApp.Controls
 {
     public partial class ReadyStateControl : UserControl
     {
-        private readonly IAudioRecognition _recognitionService;
-        private readonly MainForm _mainForm;
+        private readonly IStateManagerService _stateManagerService;
         private readonly IAnimationService _animationService;
         private readonly IMessageBox _messageBox;
         private readonly ISongAddingService _songAddingService;
 
         private bool _isProcessing = false;
-        
+
         public ReadyStateControl(
-            IAudioRecognition recognitionService,
-            MainForm mainForm,
+            IStateManagerService stateManagerService,
             IAnimationService animationService,
             IMessageBox messageBox,
             ISongAddingService songAddingService)
         {
-            InitializeComponent();
-
-            _recognitionService = recognitionService;
-            _mainForm = mainForm;
+            _stateManagerService = stateManagerService;
             _animationService = animationService;
             _messageBox = messageBox;
             _songAddingService = songAddingService;
 
-            _animationService.AddHoverAnimation(PicRecordingGif);
+            InitializeComponent();
         }
 
-        private void FABtnLibrary_Click(object sender, EventArgs e)
+        private async void FABtnLibrary_Click(object sender, EventArgs e)
         {
-            _mainForm.SetStateAsync(AppState.Library);
+            await _stateManagerService.SetStateAsync(AppState.Library);
         }
 
-        private void BtnLibrary_Click(object sender, EventArgs e)
+        private async void BtnLibrary_Click(object sender, EventArgs e)
         {
-            _mainForm.SetStateAsync(AppState.Library);
+            await _stateManagerService.SetStateAsync(AppState.Library);
         }
 
-        private void BtnStartRecognition_Click(object sender, EventArgs e)
+        private async void BtnStartRecognition_Click(object sender, EventArgs e)
         {
-            _mainForm.SetStateAsync(AppState.Recording);
+            await _stateManagerService.SetStateAsync(AppState.Recording);
         }
 
-        private void PicRecordingGif_Click(object sender, EventArgs e)
+        private async void PicRecordingGif_Click(object sender, EventArgs e)
         {
-            _mainForm.SetStateAsync(AppState.Recording);
+            await _stateManagerService.SetStateAsync(AppState.Recording);
         }
 
         private async void FABtnAddingTracks_Click(object sender, EventArgs e)
@@ -67,25 +56,30 @@ namespace MusicRecognitionApp.Controls
             _isProcessing = true;
             try
             {
-                _mainForm.SetStateAsync(AppState.Processing);
-                
-                ImportResult result = await _songAddingService.ImportTracksFromFolderAsync();
+                await _stateManagerService.SetStateAsync(AppState.Processing);
 
-                _mainForm.SetStateAsync(AppState.Ready);
+                ImportResult result = await _songAddingService.ImportTracksFromFolderAsync();
 
                 if (result.Success)
                 {
                     _messageBox.ShowInfo(result.Message);
                 }
-                else if(!string.IsNullOrEmpty(result.Message))
+                else if (!string.IsNullOrEmpty(result.Message))
                 {
                     _messageBox.ShowError(result.Message);
                 }
+
+                await _stateManagerService.SetStateAsync(AppState.Ready);
             }
             finally
             {
                 _isProcessing = false;
             }
+        }
+
+        private void ReadyStateControl_Load(object sender, EventArgs e)
+        {
+            _animationService.AddHoverAnimation(PicRecordingGif);
         }
     }
 }

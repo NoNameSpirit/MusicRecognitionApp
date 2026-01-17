@@ -1,25 +1,21 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using MusicRecognitionApp.Core.Enums;
-using MusicRecognitionApp.Forms;
+﻿using MusicRecognitionApp.Core.Enums;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
 
 namespace MusicRecognitionApp.Controls
 {
     public partial class LibraryStateControl : UserControl
     {
-        private readonly MainForm _mainForm;
         private readonly ICardService _cardService;
+        private readonly IStateManagerService _stateManagerService;
 
         public LibraryStateControl(
-            MainForm mainForm,
+            IStateManagerService stateManagerService,
             ICardService cardService)
         {
-            InitializeComponent();
-
-            _mainForm = mainForm;
+            _stateManagerService = stateManagerService;
             _cardService = cardService;
-            
-            _cardService.Initialize(BtnSongs, BtnAuthors, FLPanelOfCards);
+
+            InitializeComponent();
         }
 
         protected override void OnVisibleChanged(EventArgs e)
@@ -46,9 +42,14 @@ namespace MusicRecognitionApp.Controls
             _cardService.ShowAuthors();
         }
 
-        private void FABtnReadyStateControl_Click(object sender, EventArgs e)
+        private async void FABtnReadyStateControl_Click(object sender, EventArgs e)
         {
-            _mainForm.SetStateAsync(AppState.Ready);
+            await _stateManagerService.SetStateAsync(AppState.Ready);
+        }
+
+        private void LibraryStateControl_Load(object sender, EventArgs e)
+        {
+            _cardService.Initialize(BtnSongs, BtnAuthors, FLPanelOfCards);
         }
     }
 }

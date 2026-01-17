@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace MusicRecognitionApp.Presentation.Services.Interfaces
+﻿namespace MusicRecognitionApp.Presentation.Services.Interfaces
 {
     public interface IAnimationService
     {

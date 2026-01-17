@@ -1,25 +1,67 @@
-﻿using MusicRecognitionApp.Application.Services.Interfaces;
+﻿using Microsoft.Extensions.DependencyInjection;
+using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Enums;
-using MusicRecognitionApp.Forms;
+using MusicRecognitionApp.Presentation.Services.Interfaces;
 
 namespace MusicRecognitionApp.Controls
 {
     public partial class RecordingStateControl : UserControl
     {
-        private readonly MainForm _mainForm;
-        private IAudioRecorder _recorder;
+        private readonly IStateManagerService _stateManagerService;
+        private readonly IServiceProvider _serviceProvider;
+        
+        private IRecordingSessionService _sessionService;
 
-        public RecordingStateControl(MainForm mainForm)
+        public RecordingStateControl(
+            IStateManagerService stateManagerService,
+            IServiceProvider serviceProvider)
         {
             InitializeComponent();
 
-            _mainForm = mainForm;
+            _stateManagerService = stateManagerService;
+            _serviceProvider = serviceProvider;
         }
 
         private void BtnStopRecording_Click(object sender, EventArgs e)
         {
-            _mainForm.StopRecording();
-            _mainForm.SetStateAsync(AppState.Ready);
+            _sessionService.StopRecording();
+        }
+
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+        
+            if (Visible)
+            {
+                ProgressBarRecording.Value = 0;
+                
+                _sessionService = _serviceProvider.GetRequiredService<IRecordingSessionService>();
+                _ = StartRecordingAsync();
+            }
+        }
+
+        private async Task StartRecordingAsync()
+        {
+            string? recordedAudioFile;
+            try 
+            {
+                _sessionService.RecordingSession += OnRecordingProgress;
+                
+                recordedAudioFile = await _sessionService.StartRecordingAsync();
+            }
+            finally 
+            {
+                _sessionService.RecordingSession -= OnRecordingProgress;
+            }
+
+            if (string.IsNullOrEmpty(recordedAudioFile))
+            {
+                await _stateManagerService.SetStateAsync(AppState.Ready);
+            }
+            else
+            {
+                await _stateManagerService.SetStateAsync(AppState.Analyzing, recordedAudioFile);
+            }
         }
 
         private void OnRecordingProgress(int progress)
@@ -31,26 +73,6 @@ namespace MusicRecognitionApp.Controls
             }
 
             ProgressBarRecording.Value = progress;
-        }
-
-        protected override void OnVisibleChanged(EventArgs e)
-        {
-            base.OnVisibleChanged(e);
-        
-            if (Visible)
-            {
-                ProgressBarRecording.Value = 0;
-            }
-        }
-
-        public void SetRecorder(IAudioRecorder recorder)
-        {
-            if (_recorder != null)
-            {
-                _recorder.RecordingProgress -= OnRecordingProgress;
-            }
-            _recorder = recorder;
-            _recorder.RecordingProgress += OnRecordingProgress;
         }
     }
 }

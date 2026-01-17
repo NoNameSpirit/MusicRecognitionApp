@@ -1,22 +1,22 @@
 ﻿using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Enums;
-using MusicRecognitionApp.Forms;
+using MusicRecognitionApp.Presentation.Services.Interfaces;
 
 namespace MusicRecognitionApp.Controls
 {
     public partial class ProcessingStateControl : UserControl
     {
-        private readonly MainForm _mainForm;
+        private readonly IStateManagerService _stateManagerService;
         private CancellationTokenSource _cancellationTokenSource;
-        private IAudioRecognition? _recognition;
+        private IAudioRecognitionService? _recognition;
 
-        public ProcessingStateControl(MainForm mainForm)
+        public ProcessingStateControl(IStateManagerService stateManagerService)
         {
             InitializeComponent();
-            _mainForm = mainForm;
+            _stateManagerService = stateManagerService;
         }
 
-        public void SetRecognition(IAudioRecognition recognition)
+        public void SetRecognition(IAudioRecognitionService recognition)
         {
             if (_recognition != null)
             {
@@ -38,9 +38,9 @@ namespace MusicRecognitionApp.Controls
             LblProgressPercent.Text = $"{progress}%";
         }
 
-        private void BtnStopRecognition_Click(object sender, EventArgs e)
+        private async void BtnStopRecognition_Click(object sender, EventArgs e)
         {
-            _mainForm.SetStateAsync(AppState.Ready);
+            await _stateManagerService.SetStateAsync(AppState.Ready);
         }
     }
 }

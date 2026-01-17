@@ -5,7 +5,7 @@ using MusicRecognitionApp.Core.Models.Business;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
 {
-    public class AudioRecognitionService : IAudioRecognition
+    public class AudioRecognitionService : IAudioRecognitionService
     {
         private readonly IAudioProcessor _audioProcessor;
         private readonly ISpectrogramBuilder _spectrogramBuilder;
@@ -41,7 +41,7 @@ namespace MusicRecognitionApp.Application.Services.Implementations
                 return new List<SearchResultModel>();
 
             AnalysisProgress?.Invoke(10);
-            float[] processedAudio = await Task.Run(() 
+            float[] processedAudio = await Task.Run(()
                 => _audioProcessor.PreprocessAudio(audioFilePath));
 
             AnalysisProgress?.Invoke(20);
@@ -53,7 +53,7 @@ namespace MusicRecognitionApp.Application.Services.Implementations
                 => _peakDetector.ProcessPeekDetector(spectrogramData));
 
             AnalysisProgress?.Invoke(50);
-            List<AudioHash> queryHashes = await Task.Run(() 
+            List<AudioHash> queryHashes = await Task.Run(()
                 => _hashGenerator.GenerateHashes(allPeaks));
 
             AnalysisProgress?.Invoke(70);
@@ -63,11 +63,14 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             return results;
         }
 
-        public async Task<(int added, int failed, List<string> errors)> AddTracksFromFolderAsync(string folderPath)
+        public async Task<ImportTracksResult> AddTracksFromFolderAsync(string folderPath)
         {
-            if (!Directory.Exists(folderPath) || string.IsNullOrEmpty(folderPath))
+            var result = new ImportTracksResult(0, 0, new List<string>());
+
+            if (string.IsNullOrEmpty(folderPath) || !Directory.Exists(folderPath))
             {
-                return (0, 0, new List<string> { "Папка не существует" });
+                result.Errors.Add("Папка не существует");
+                return result;
             }
 
             List<string> audioFiles = Directory.GetFiles(folderPath, "*.*", SearchOption.AllDirectories)
@@ -76,15 +79,14 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 
             if (audioFiles.Count == 0)
             {
-                return (0, 0, new List<string> { "В папке не найдены аудио файлы (mp3/wav)" });
+                result.Errors.Add("В папке не найдены аудио файлы (mp3/wav)");
+                return result;
             }
 
             ImportProgress?.Invoke(0);
 
-            var added = 0;
-            var failed = 0;
-            var errors = new List<string>();
-
+            int added = 0;
+            int failed = 0;
             for (int i = 0; i < audioFiles.Count; i++)
             {
                 string filepath = audioFiles[i];
@@ -100,15 +102,15 @@ namespace MusicRecognitionApp.Application.Services.Implementations
                 catch (Exception ex)
                 {
                     failed++;
-                    errors.Add($"{Path.GetFileName(filepath)}: {ex.Message}");
+                    result.Errors.Add($"{Path.GetFileName(filepath)}: {ex.Message}");
                 }
             
                 int progress = (i + 1) * 100 / audioFiles.Count;
                 ImportProgress?.Invoke(progress);
             }
-
             ImportProgress?.Invoke(100);
-            return (added, failed, errors);
+            
+            return new ImportTracksResult(added, failed, result.Errors);
         }
 
         private string GetArtistFromFile(string filePath, string selectedFolder)

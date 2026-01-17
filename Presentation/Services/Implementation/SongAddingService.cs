@@ -1,17 +1,15 @@
 ﻿using MusicRecognitionApp.Application.Services.Interfaces;
-using MusicRecognitionApp.Core.Enums;
-using MusicRecognitionApp.Forms;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
 
 namespace MusicRecognitionApp.Presentation.Services.Implementation
 {
     public class SongAddingService : ISongAddingService
     {
-        private readonly IAudioRecognition _recognitionService;
+        private readonly IAudioRecognitionService _recognitionService;
         private readonly IMessageBox _messageBox;
 
         public SongAddingService(
-            IAudioRecognition recognitionService,
+            IAudioRecognitionService recognitionService,
             IMessageBox messageBox)
         {
             _recognitionService = recognitionService;

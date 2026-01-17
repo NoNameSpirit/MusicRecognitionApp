@@ -2,27 +2,28 @@
 using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Enums;
 using MusicRecognitionApp.Core.Models.Business;
-using MusicRecognitionApp.Forms;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
 
 namespace MusicRecognitionApp.Controls
 {
-    public partial class ResultStateControl : UserControl
+    public partial class ResultStateControl : UserControl, IStateWithData
     {
-        private readonly MainForm _mainForm;
+        private List<SearchResultModel> _results;
+        
+        private readonly IStateManagerService _stateManagerService;
         private readonly IMessageBox _messageBoxService;
         private readonly ICardService _cardService;
         private readonly IRecognitionSongService _recognitionSongService;
 
         public ResultStateControl(
-            MainForm mainForm, 
+            IStateManagerService stateManagerService, 
             IMessageBox messageBoxService,
             ICardService cardService,
             IRecognitionSongService recognitionSongService)
         {
             InitializeComponent();
 
-            _mainForm = mainForm;
+            _stateManagerService = stateManagerService;
             _messageBoxService = messageBoxService;
             _cardService = cardService;
             _recognitionSongService = recognitionSongService;
@@ -55,19 +56,16 @@ namespace MusicRecognitionApp.Controls
         {
             ClearResults();
 
-            var results = _mainForm.RecognitionResults;
-
-            if (results == null || results.Count == 0)
+            if (_results == null || _results.Count == 0)
             {
                 ShowNoResults();
                 PicRecordingGif.Image = Properties.Resources.rimuruNoResult;
                 return;
             }
 
-            var bestResult = results.FirstOrDefault();
+            SearchResultModel bestResult = _results.FirstOrDefault()!;
             if (bestResult.Matches > 0)
             {
-                //Don't wait
                 _ = SaveRecognizedSong(bestResult);
             }
 
@@ -108,17 +106,23 @@ namespace MusicRecognitionApp.Controls
 
         private void FABtnLibrary_Click(object sender, EventArgs e)
         {
-            _mainForm.SetStateAsync(AppState.Library);
+            _stateManagerService.SetStateAsync(AppState.Library);
         }
 
         private void BtnLibrary_Click(object sender, EventArgs e)
         {
-            _mainForm.SetStateAsync(AppState.Library);
+            _stateManagerService.SetStateAsync(AppState.Library);
         }
 
         private void BtnBackToReady_Click(object sender, EventArgs e)
         {
-            _mainForm.SetStateAsync(AppState.Ready);
+            _stateManagerService.SetStateAsync(AppState.Ready);
+        }
+
+        public void SetStateData(object? stateData)
+        {
+            _results = stateData as List<SearchResultModel>;
+            DisplayResults();
         }
     }
 }

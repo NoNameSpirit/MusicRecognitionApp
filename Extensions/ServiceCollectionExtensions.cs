@@ -12,6 +12,7 @@ using MusicRecognitionApp.Presentation.Services.Interfaces;
 using MusicRecognitionApp.Presentation.Services.Implementation;
 using MusicRecognitionApp.Application.Interfaces.Audio;
 using MusicRecognitionApp.Application.Interfaces.Services;
+using MusicRecognitionApp.Core.Interfaces;
 
 namespace MusicRecognitionApp.Extensions
 {
@@ -51,20 +52,26 @@ namespace MusicRecognitionApp.Extensions
             services.AddScoped<ISongImportService, SongImportService>()
                     .AddScoped<ISongSearchService, SongSearchService>()
                     .AddScoped<IRecognitionSongService, RecognitionSongService>()
-                    .AddTransient<IAudioRecognition, AudioRecognitionService>() 
-                    .AddTransient<IAudioRecorder, AudioRecorderService>();
+                    .AddTransient<IAnalyzingSessionService, AnalyzingSessionService>()
+                    .AddTransient<IRecordingSessionService, RecordingSessionService>()
+                    .AddTransient<IAudioRecognitionService, AudioRecognitionService>() 
+                    .AddTransient<IAudioRecorderService, AudioRecorderService>();
 
             return services;
         }
 
         public static IServiceCollection AddPresentationServices(this IServiceCollection services)
         {
-            services.AddScoped<IStateRegistry, StateRegistryService>()
+            services.AddSingleton<IMessageBox, MessageBoxService>()
+                    .AddSingleton<IAnimationService, AnimationService>()
+                    .AddScoped<IStateRegistry, StateRegistryService>()
+                    .AddScoped<IStateManagerService, StateManagerService>()
                     .AddScoped<ICardService, CardService>()
-                    .AddSingleton<IMessageBox, MessageBoxService>()
-                    .AddSingleton<IAnimationService, AnimationService>();
+                    .AddTransient<ISongAddingService, SongAddingService>();
 
-            services.AddTransient<MainForm>();
+            services.AddSingleton<MainForm>();
+            
+            services.AddSingleton<IApplicationForm, MainForm>();
 
             return services;
         }

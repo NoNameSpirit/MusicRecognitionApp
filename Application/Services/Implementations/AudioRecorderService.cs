@@ -4,9 +4,8 @@ using System.Reflection;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
 {
-    public class AudioRecorderService : IAudioRecorder
+    public class AudioRecorderService : IAudioRecorderService
     {
-        public bool IsRecording { get; private set; }
         public event Action<int> RecordingProgress;
 
         private readonly object _lockObject = new object();
@@ -17,13 +16,9 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             string outputFilePath = null;
             bool success = false;
 
-            if (IsRecording)
-                throw new InvalidOperationException("Recording already in progress!");
-
             var exeDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             outputFilePath = Path.Combine(exeDirectory, $"recorded_audio_{DateTime.Now:yyyyMMdd_HHmmssfff}.wav");
 
-            IsRecording = true;
             WaveInEvent? sourceStream = null;
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
@@ -69,7 +64,6 @@ namespace MusicRecognitionApp.Application.Services.Implementations
                     sourceStream.Dispose();
                 }
 
-                IsRecording = false;
                 _currentWriter = null;
 
                 if (!success)
@@ -84,7 +78,6 @@ namespace MusicRecognitionApp.Application.Services.Implementations
                 if (_currentWriter != null && e.BytesRecorded > 0)
                 {
                     _currentWriter.Write(e.Buffer, 0, e.BytesRecorded);
-                    _currentWriter.Flush();
                 }
             }
         }

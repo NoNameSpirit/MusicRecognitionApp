@@ -1,119 +1,22 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using MusicRecognitionApp.Application.Services.Interfaces;
-using MusicRecognitionApp.Controls;
-using MusicRecognitionApp.Core.Enums;
-using MusicRecognitionApp.Core.Models.Business;
+﻿using MusicRecognitionApp.Core.Enums;
+using MusicRecognitionApp.Core.Interfaces;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
-using System.Text;
 
 namespace MusicRecognitionApp.Forms
 {
-    public partial class MainForm : BaseForm
+    public partial class MainForm : BaseForm, IApplicationForm
     {
-        private AppState _currentState ;
-        private Dictionary<AppState, UserControl> _states = new();
-        private string _recordedAudioFile; 
-        private CancellationTokenSource _recordingCancellationTokenSource;
-        
-        public List<SearchResultModel> RecognitionResults { get; set; }
-        public IAudioRecorder AudioRecorder { get; set; }
-
         private readonly IMessageBox _messageBoxService;
-        private readonly IStateRegistry _stateRegistryService;
-        private readonly IAudioRecognition _recognitionService;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IStateManagerService _stateManagerService;
+        
         public MainForm(
-            IMessageBox messageBoxService, 
-            IStateRegistry stateRegistryService,
-            IAudioRecognition recognitionService,
-            IServiceProvider serviceProvider)
+            IMessageBox messageBoxService,
+            IStateManagerService stateManagerService)
         {
             InitializeComponent();
 
             _messageBoxService = messageBoxService;
-            _stateRegistryService = stateRegistryService;
-            _recognitionService = recognitionService;
-            _serviceProvider = serviceProvider;
-
-            SetStateAsync(AppState.Ready);
-        }
-
-        private void InitializeState()
-        {
-            if (!_states.ContainsKey(_currentState))
-            {
-                var control = _stateRegistryService.CreateStateControl(this, _currentState);
-
-                control.Dock = DockStyle.Fill;
-                control.Visible = false;
-
-                _states[_currentState] = control;
-                this.Controls.Add(control);
-            }
-        }
-
-        public async Task SetStateAsync(AppState newState)
-        {
-            if (_states.ContainsKey(_currentState))
-                _states[_currentState].Visible = false;
-
-            _currentState = newState;
-            InitializeState();
-
-            _states[_currentState].Visible = true;
-            _states[_currentState].BringToFront();
-
-            if (_currentState == AppState.Recording)
-            {
-                await StartRecordingProcess();
-            }
-            else if (_currentState == AppState.Analyzing)
-            {
-                await StartAnalysisProcess();
-                RecognitionResults = null;
-            }
-        }
-
-        private async Task StartRecordingProcess()
-        {
-            _recordingCancellationTokenSource = new CancellationTokenSource();
-
-            var recorder = _serviceProvider.GetRequiredService<IAudioRecorder>();
-
-            if (_states[AppState.Recording] is RecordingStateControl recordingStateControl)
-            {
-                recordingStateControl.SetRecorder(recorder);
-            }
-
-            _recordedAudioFile = await recorder.RecordAudioFromMicrophoneAsync(15, _recordingCancellationTokenSource.Token);
-
-            if (_recordingCancellationTokenSource.Token.IsCancellationRequested 
-                || string.IsNullOrEmpty(_recordedAudioFile))
-            {
-                SetStateAsync(AppState.Ready);
-            }
-            else
-            {
-                SetStateAsync(AppState.Analyzing);
-            }
-        }
-
-        private async Task StartAnalysisProcess()
-        {
-            if (_states[AppState.Analyzing] is AnalyzingStateControl analyzingStateControl)
-            {
-                analyzingStateControl.SetRecognition(_recognitionService);
-            }
-
-            RecognitionResults = await _recognitionService.RecognizeFromMicrophoneAsync(_recordedAudioFile);
-
-            if (!string.IsNullOrEmpty(_recordedAudioFile) && File.Exists(_recordedAudioFile))
-            {
-                 File.Delete(_recordedAudioFile);
-                 _recordedAudioFile = null;
-            }
-
-            SetStateAsync(AppState.Result);
+            _stateManagerService = stateManagerService;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -126,15 +29,23 @@ namespace MusicRecognitionApp.Forms
                 e.Cancel = true;
             }
         }
-
-        public void StopRecording()
+        
+        private async void MainForm_Load(object sender, EventArgs e)
         {
-            _recordingCancellationTokenSource?.Cancel(); 
+            _stateManagerService.Initialize(this);
+            await _stateManagerService.SetStateAsync(AppState.Ready);
         }
 
-        public AppState GetCurrentControl()
-        {
-            return _currentState;
-        }
+        public void AddControl(UserControl control)
+            => Controls.Add(control);
+
+        public void RemoveControl(UserControl control)
+            => Controls.Remove(control);
+
+        public void BringToFront(UserControl control)
+            => control.BringToFront();
+
+        public void SetVisibility(UserControl control, bool visible)
+            => control.Visible = visible;
     }
 }

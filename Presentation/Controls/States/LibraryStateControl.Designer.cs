@@ -131,6 +131,7 @@
             Controls.Add(PanelTabs);
             Name = "LibraryStateControl";
             Size = new Size(600, 600);
+            Load += LibraryStateControl_Load;
             PanelTabs.ResumeLayout(false);
             PanelTabs.PerformLayout();
             PanelContent.ResumeLayout(false);

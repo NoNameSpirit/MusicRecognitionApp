@@ -2,7 +2,7 @@
 
 namespace MusicRecognitionApp.Application.Services.Interfaces
 {
-    public interface IAudioRecognition
+    public interface IAudioRecognitionService
     {
         event Action<int> AnalysisProgress;
 
@@ -10,6 +10,8 @@ namespace MusicRecognitionApp.Application.Services.Interfaces
 
         Task<List<SearchResultModel>> RecognizeFromMicrophoneAsync(string audioFilePath);
 
-        Task<(int added, int failed, List<string> errors)> AddTracksFromFolderAsync(string folderPath);
+        Task<ImportTracksResult> AddTracksFromFolderAsync(string folderPath);
     }
+
+    public record ImportTracksResult(int Added, int Failed, List<string> Errors);
 }

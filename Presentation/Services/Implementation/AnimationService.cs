@@ -1,5 +1,4 @@
 ﻿using MusicRecognitionApp.Presentation.Services.Interfaces;
-using System.Drawing;
 using Timer = System.Windows.Forms.Timer;
 
 namespace MusicRecognitionApp.Presentation.Services.Implementation

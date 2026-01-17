@@ -18,8 +18,7 @@ namespace MusicRecognitionApp
 
             EnsureDatabaseCreated(serviceProvider);
 
-            using var scope = serviceProvider.CreateScope();
-            MainForm mainForm = scope.ServiceProvider.GetRequiredService<MainForm>(); 
+            MainForm mainForm = serviceProvider.GetRequiredService<MainForm>(); 
             System.Windows.Forms.Application.Run(mainForm); 
         }
 

@@ -13,11 +13,11 @@ namespace MusicRecognitionApp.Forms
             materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
 
             materialSkinManager.ColorScheme = new ColorScheme(
-                Primary.Blue500,     // Основной - кнопки, FAB
-                Primary.Blue700,     // ховер эффекты
-                Primary.Blue50,      // фоны
-                Accent.LightBlue200, // Акцент - переключатели
-                TextShade.WHITE      // Текст
+                Primary.Blue500,     
+                Primary.Blue700,     
+                Primary.Blue50,      
+                Accent.LightBlue200, 
+                TextShade.WHITE      
             );
         }
     }

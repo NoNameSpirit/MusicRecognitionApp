@@ -139,6 +139,7 @@
             Controls.Add(PanelMain);
             Name = "ReadyStateControl";
             Size = new Size(600, 650);
+            Load += ReadyStateControl_Load;
             PanelMain.ResumeLayout(false);
             PanelMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)PicRecordingGif).EndInit();
