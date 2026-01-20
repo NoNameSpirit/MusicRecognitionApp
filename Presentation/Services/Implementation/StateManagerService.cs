@@ -1,4 +1,5 @@
-﻿using MusicRecognitionApp.Core.Enums;
+﻿using MusicRecognitionApp.Controls;
+using MusicRecognitionApp.Core.Enums;
 using MusicRecognitionApp.Forms;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
 
@@ -11,14 +12,12 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
         private MainForm _form; 
 
         private readonly IStateRegistry _stateRegistryService;
-        private readonly IServiceProvider _serviceProvider;
         
         public StateManagerService(
             IStateRegistry stateRegistryService,
             IServiceProvider serviceProvider)
         {
             _stateRegistryService = stateRegistryService;
-            _serviceProvider = serviceProvider;
         }
 
         public async Task SetStateAsync(AppState newState)
@@ -33,19 +32,20 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
 
         private async Task SetStateInternalAsync(AppState newState, object? stateData)
         {
+            
             if (_states.ContainsKey(_currentState))
                 _form.SetVisibility(_states[_currentState], false);
 
             _currentState = newState;
             InitializeState();
 
-            _form.SetVisibility(_states[_currentState], true);
-            _form.BringToFront(_states[_currentState]);
-
             if (_states[_currentState] is IStateWithData stateWithData)
             {
                 stateWithData.SetStateData(stateData);
             }
+
+            _form.SetVisibility(_states[_currentState], true);
+            _form.BringToFront(_states[_currentState]);
         }
 
         private void InitializeState()
@@ -53,7 +53,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
             if (_states.ContainsKey(_currentState))
                 return;
 
-            var control = _stateRegistryService.CreateStateControl(_currentState);
+            var control = _stateRegistryService.CreateStateControl(_currentState, this);
 
             control.Dock = DockStyle.Fill;
             control.Visible = false;

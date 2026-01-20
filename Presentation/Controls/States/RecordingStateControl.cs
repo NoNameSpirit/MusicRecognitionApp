@@ -8,18 +8,17 @@ namespace MusicRecognitionApp.Controls
     public partial class RecordingStateControl : UserControl
     {
         private readonly IStateManagerService _stateManagerService;
-        private readonly IServiceProvider _serviceProvider;
         
         private IRecordingSessionService _sessionService;
 
         public RecordingStateControl(
             IStateManagerService stateManagerService,
-            IServiceProvider serviceProvider)
+            IRecordingSessionService sessionService)
         {
             InitializeComponent();
 
             _stateManagerService = stateManagerService;
-            _serviceProvider = serviceProvider;
+            _sessionService = sessionService;
         }
 
         private void BtnStopRecording_Click(object sender, EventArgs e)
@@ -35,7 +34,6 @@ namespace MusicRecognitionApp.Controls
             {
                 ProgressBarRecording.Value = 0;
                 
-                _sessionService = _serviceProvider.GetRequiredService<IRecordingSessionService>();
                 _ = StartRecordingAsync();
             }
         }

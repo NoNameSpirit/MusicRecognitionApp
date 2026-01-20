@@ -8,38 +8,35 @@ namespace MusicRecognitionApp.Application.Services.Implementations
     {
         public event Action<int> AnalyzingSession;
 
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IAudioRecognitionService _recognitionService;
         
-        public AnalyzingSessionService(
-            IServiceProvider serviceProvider)
+        public AnalyzingSessionService(IAudioRecognitionService recognitionService)
         {
-            _serviceProvider = serviceProvider;
+            _recognitionService = recognitionService;
         }
-        
 
-        public async Task<List<SearchResultModel>?> StartAnalyzingAsync(string? recordedAudioFile)
-        {
-            List<SearchResultModel>? RecognitionResults;
-
-            var recognitionService = _serviceProvider.GetRequiredService<IAudioRecognitionService>();
-            try
+            public async Task<List<SearchResultModel>?> StartAnalyzingAsync(string? recordedAudioFile)
             {
-                recognitionService.AnalysisProgress += OnAnalyzingSession;
+                List<SearchResultModel>? RecognitionResults;
+
+                try
+                {
+                    _recognitionService.AnalysisProgress += OnAnalyzingSession;
                 
-                RecognitionResults = await recognitionService.RecognizeFromMicrophoneAsync(recordedAudioFile);
-            }
-            finally
-            {
-                recognitionService.AnalysisProgress -= OnAnalyzingSession;
-            }
+                    RecognitionResults = await _recognitionService.RecognizeFromMicrophoneAsync(recordedAudioFile);
+                }
+                finally
+                {
+                    _recognitionService.AnalysisProgress -= OnAnalyzingSession;
+                }
 
-            if (File.Exists(recordedAudioFile))
-            {
-                File.Delete(recordedAudioFile);
-            }
+                if (File.Exists(recordedAudioFile))
+                {
+                    File.Delete(recordedAudioFile);
+                }
 
-            return RecognitionResults;
-        }
+                return RecognitionResults;
+            }
 
         private void OnAnalyzingSession(int progress)
         {

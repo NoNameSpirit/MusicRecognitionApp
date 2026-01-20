@@ -36,7 +36,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
 
             if (!songs.Any())
             {
-                var card = CreateNoInfoCard("Нет распознанных треков");
+                var card = CreateNoInfoCard("There are no recognized tracks");
 
                 _panelOfCards.Controls.Add(card);
 
@@ -59,7 +59,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
 
             if (!recognizedArtists.Any())
             {
-                var card = CreateNoInfoCard("Нет распознанных исполнителей");
+                var card = CreateNoInfoCard("There are no recognized artists");
 
                 _panelOfCards.Controls.Add(card);
 
@@ -77,10 +77,10 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
         }
 
         public NoInfoCard ShowNoSongsCard()
-            => CreateNoInfoCard("Нет распознанных треков");
+            => CreateNoInfoCard("There are no recognized tracks");
         
         public NoInfoCard CreateNoResultsCard()
-            => CreateNoInfoCard($"Ничего не распознано {Environment.NewLine}Попробуйте еще раз");
+            => CreateNoInfoCard($"Nothing is recognized {Environment.NewLine}Try again");
 
         public SongCard CreateResultCard(SearchResultModel searchResultModel)
             => CreateSongCard(searchResultModel.Song.Title, searchResultModel.Song.Artist, searchResultModel.Matches);

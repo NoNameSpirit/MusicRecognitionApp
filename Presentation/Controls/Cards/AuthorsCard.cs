@@ -8,14 +8,14 @@
         {
             InitializeComponent();
 
-            string title = $"Треков распознано: {trackCount}";
+            string title = $"Tracks recognized: {trackCount}";
             
             this.lblTitle.Text = TruncateText(title, 40);
             this.lblArtist.Text = TruncateText(artist, 30);
 
             toolTip.SetToolTip(lblTitle, title);
             toolTip.SetToolTip(lblArtist, artist);
-            notificationToolTip.SetToolTip(btnCopy, "Копировать");
+            notificationToolTip.SetToolTip(btnCopy, "Copy");
 
             btnCopy.Tag = $"{artist}";
             btnCopy.Click += OnCopyButtonClick;
@@ -29,7 +29,7 @@
                 Clipboard.SetText(text);    
             }
 
-            notificationToolTip.Show("Скопировано", btnCopy);             
+            notificationToolTip.Show("Copied", btnCopy);             
 
             CopyRequest?.Invoke(this, EventArgs.Empty);
         }

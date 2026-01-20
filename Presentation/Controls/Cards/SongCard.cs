@@ -10,11 +10,11 @@
 
             this.lblTitle.Text = TruncateText(title, 40);
             this.lblArtist.Text = TruncateText(artist, 30);
-            this.lblMatches.Text = $"Совпадений: {matches}";
+            this.lblMatches.Text = $"Matches: {matches}";
 
             toolTip.SetToolTip(lblTitle, title);
             toolTip.SetToolTip(lblArtist, artist);
-            notificationToolTip.SetToolTip(btnCopy, "Копировать");
+            notificationToolTip.SetToolTip(btnCopy, "Copy");
 
             btnCopy.Tag = $"{title} - {artist}";
             btnCopy.Click += OnCopyButtonClick;
@@ -28,7 +28,7 @@
                 Clipboard.SetText(text);
             }
 
-            notificationToolTip.Show("Скопировано", btnCopy);
+            notificationToolTip.Show("Copied", btnCopy);
 
             CopyRequest?.Invoke(this, EventArgs.Empty);
         }

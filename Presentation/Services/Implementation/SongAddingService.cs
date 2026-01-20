@@ -20,39 +20,39 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
         {
             using var folderDialog = new FolderBrowserDialog()
             {
-                Description = "Выберите папку содержащую музыку",
+                Description = "Select the folder containing the music.",
                 ShowNewFolderButton = false,
             };
 
             if (folderDialog.ShowDialog() != DialogResult.OK)
             {
-                return new ImportResult(false, "Отменено пользователем");
+                return new ImportResult(false, "Cancelled by user");
             }
 
             string folderPath = folderDialog.SelectedPath;
 
-            var result = _messageBox.ShowQuestion($"Добавить все аудио файлы из папки: {folderPath}?");
+            var result = _messageBox.ShowQuestion($"Add all audio files from a folder: {folderPath}?");
 
             if (result != DialogResult.Yes)
             {
-                return new ImportResult(false, "Отменено пользователем");
+                return new ImportResult(false, "Cancelled by user");
             }
 
             try
             {
                 var (added, failed, errors) = await _recognitionService.AddTracksFromFolderAsync(folderPath);
 
-                var message = $"Добавлено треков в БД: {added}, не удалось добавить: {failed}";
+                var message = $"Tracks added to the database: {added}, couldn't add: {failed}";
                 if (errors.Any())
                 {
-                    message += $"{Environment.NewLine}Ошибки:{Environment.NewLine}{string.Join($"{Environment.NewLine}", errors.Take(3))}";
+                    message += $"{Environment.NewLine}Errors:{Environment.NewLine}{string.Join($"{Environment.NewLine}", errors.Take(3))}";
                 }
 
                 return new ImportResult(true, message, added, failed);
             }
             catch (Exception ex)
             {
-                return new ImportResult(false, $"Ошибка при импорте: {ex.Message}");
+                return new ImportResult(false, $"Error during import: {ex.Message}");
             }
         }
     }

@@ -69,7 +69,7 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 
             if (string.IsNullOrEmpty(folderPath) || !Directory.Exists(folderPath))
             {
-                result.Errors.Add("Папка не существует");
+                result.Errors.Add("Folder doesn't exist");
                 return result;
             }
 
@@ -79,7 +79,7 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 
             if (audioFiles.Count == 0)
             {
-                result.Errors.Add("В папке не найдены аудио файлы (mp3/wav)");
+                result.Errors.Add("Audio files (mp3/wav) were not found in the folder");
                 return result;
             }
 

@@ -5,7 +5,6 @@ namespace MusicRecognitionApp.Infrastructure.Data.Contexts
 {
     public class MusicRecognitionContext : DbContext
     {
-        // При описании свзяи с одной стороны с другой уже не требуется, id автоматически индексируются и определяются как PK
         public MusicRecognitionContext(DbContextOptions<MusicRecognitionContext> options)
             : base(options)
         {

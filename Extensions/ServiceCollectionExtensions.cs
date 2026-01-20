@@ -52,10 +52,10 @@ namespace MusicRecognitionApp.Extensions
             services.AddScoped<ISongImportService, SongImportService>()
                     .AddScoped<ISongSearchService, SongSearchService>()
                     .AddScoped<IRecognitionSongService, RecognitionSongService>()
-                    .AddTransient<IAnalyzingSessionService, AnalyzingSessionService>()
-                    .AddTransient<IRecordingSessionService, RecordingSessionService>()
-                    .AddTransient<IAudioRecognitionService, AudioRecognitionService>() 
-                    .AddTransient<IAudioRecorderService, AudioRecorderService>();
+                    .AddScoped<IAnalyzingSessionService, AnalyzingSessionService>()
+                    .AddScoped<IRecordingSessionService, RecordingSessionService>()
+                    .AddScoped<IAudioRecognitionService, AudioRecognitionService>() 
+                    .AddScoped<IAudioRecorderService, AudioRecorderService>();
 
             return services;
         }
@@ -69,9 +69,9 @@ namespace MusicRecognitionApp.Extensions
                     .AddScoped<ICardService, CardService>()
                     .AddTransient<ISongAddingService, SongAddingService>();
 
-            services.AddSingleton<MainForm>();
+            services.AddScoped<MainForm>();
             
-            services.AddSingleton<IApplicationForm, MainForm>();
+            services.AddScoped<IApplicationForm, MainForm>();
 
             return services;
         }

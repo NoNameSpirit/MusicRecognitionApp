@@ -11,18 +11,17 @@ namespace MusicRecognitionApp.Controls
         public List<SearchResultModel>? RecognitionResults { get; set; }
 
         private readonly IStateManagerService _stateManagerService;
-        private readonly IServiceProvider _serviceProvider;
         
         private IAnalyzingSessionService _sessionService;
         private string? _recordedAudioFile;
         public AnalyzingStateControl(
             IStateManagerService stateManagerService,
-            IServiceProvider serviceProvider)
+            IAnalyzingSessionService sessionService)
         {
             InitializeComponent();
 
             _stateManagerService = stateManagerService;
-            _serviceProvider = serviceProvider;
+            _sessionService = sessionService;
         }
 
         public void UpdateProgress(int progress)
@@ -44,7 +43,6 @@ namespace MusicRecognitionApp.Controls
 
         private async Task StartAnalyzingAsync()
         {
-            string? recordedAudioFile;
             try
             {
                 _sessionService.AnalyzingSession += UpdateProgress;
@@ -69,7 +67,6 @@ namespace MusicRecognitionApp.Controls
                 LblProgressPercent.Text = "0%";
                 RecognitionResults = null;
 
-                _sessionService = _serviceProvider.GetRequiredService<IAnalyzingSessionService>();
                 _ = StartAnalyzingAsync();
             }
         }

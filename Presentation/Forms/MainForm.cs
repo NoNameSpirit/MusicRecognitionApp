@@ -22,7 +22,7 @@ namespace MusicRecognitionApp.Forms
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             DialogResult result = _messageBoxService
-                .ShowWarning("Вы действительно хотите закрыть приложение?");
+                .ShowWarning("Do you really want to close the app?");
 
             if (result == DialogResult.No)
             {

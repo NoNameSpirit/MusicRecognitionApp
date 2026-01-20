@@ -99,7 +99,7 @@ namespace MusicRecognitionApp.Controls
             catch (Exception ex)
             {
                 _messageBoxService
-                    .ShowError($"Ошибка при сохранении распознанного трека: {ex.Message}");
+                    .ShowError($"Error saving a recognized track: {ex.Message}");
             }
         }
 

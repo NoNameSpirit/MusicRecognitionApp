@@ -74,13 +74,5 @@ namespace MusicRecognitionApp.Infrastructure.Audio.Implementations
             uint hash = (uint)(anchorFreq << 20 | targetFreq << 10 | timeDelta);
             return hash;
         }
-
-        private bool IsAcceptable(double confidence, int consistentMatches)
-        {
-            if (confidence > 0.10) return true;
-            if (confidence > 0.05 && consistentMatches >= 8) return true;
-            if (confidence > 0.02 && consistentMatches >= 5) return true;
-            return false;
-        }
     }
 }

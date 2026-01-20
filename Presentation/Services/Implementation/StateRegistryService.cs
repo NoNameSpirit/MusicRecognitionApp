@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using MusicRecognitionApp.Application.Services.Interfaces;
+﻿using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Controls;
 using MusicRecognitionApp.Core.Enums;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
@@ -8,46 +7,47 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
 {
     public class StateRegistryService : IStateRegistry
     {
-        private readonly IServiceProvider _serviceProvider;
         private readonly ICardService _cardService;
         private readonly IMessageBox _messageBoxService;
         private readonly IAnimationService _animationService;
         private readonly IRecognitionSongService _recognitionSongService;
         private readonly ISongAddingService _songAddingService;
+        private readonly IRecordingSessionService _recordingSessionService;
+        private readonly IAnalyzingSessionService _analyzingSessionService;
 
         public StateRegistryService(
-            IServiceProvider serviceProvider,
             IMessageBox messageBoxService,
             ICardService cardService,
             IAnimationService animationService,
             IRecognitionSongService recognitionSongService,
-            ISongAddingService songAddingService)
+            ISongAddingService songAddingService,
+            IRecordingSessionService recordingSessionService,
+            IAnalyzingSessionService analyzingSessionService)
         {
-            _serviceProvider = serviceProvider;
             _messageBoxService = messageBoxService;
             _cardService = cardService;
             _animationService = animationService;
             _recognitionSongService = recognitionSongService;
             _songAddingService = songAddingService;
+            _recordingSessionService = recordingSessionService;
+            _analyzingSessionService = analyzingSessionService;
         }
 
-        public UserControl CreateStateControl(AppState state)
+        public UserControl CreateStateControl(AppState state, IStateManagerService stateManagerService)
         {
-            var _stateManagerService = _serviceProvider.GetRequiredService<IStateManagerService>();
-
             return state switch
             {
-                AppState.Ready => new ReadyStateControl(_stateManagerService, _animationService, _messageBoxService, _songAddingService),
+                AppState.Ready => new ReadyStateControl(stateManagerService, _animationService, _messageBoxService, _songAddingService),
 
-                AppState.Recording => new RecordingStateControl(_stateManagerService, _serviceProvider),
+                AppState.Recording => new RecordingStateControl(stateManagerService, _recordingSessionService),
 
-                AppState.Analyzing => new AnalyzingStateControl(_stateManagerService, _serviceProvider),
+                AppState.Analyzing => new AnalyzingStateControl(stateManagerService, _analyzingSessionService),
 
-                AppState.Result => new ResultStateControl(_stateManagerService, _messageBoxService, _cardService, _recognitionSongService),
+                AppState.Result => new ResultStateControl(stateManagerService, _messageBoxService, _cardService, _recognitionSongService),
 
-                AppState.Library => new LibraryStateControl(_stateManagerService, _cardService),
+                AppState.Library => new LibraryStateControl(stateManagerService, _cardService),
 
-                AppState.Processing => new ProcessingStateControl(_stateManagerService),
+                AppState.Processing => new ProcessingStateControl(stateManagerService),
 
                 _ => throw new Exception($"Don't have this factory for {state}")
             };

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using MusicRecognitionApp.Application.Services.Interfaces;
+﻿using MusicRecognitionApp.Application.Services.Interfaces;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
 {
@@ -9,11 +8,11 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 
         private CancellationTokenSource? _cts;
 
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IAudioRecorderService _recorderService;
 
-        public RecordingSessionService(IServiceProvider serviceProvider)
+        public RecordingSessionService(IAudioRecorderService recorderService)
         {
-            _serviceProvider = serviceProvider;
+            _recorderService = recorderService;
         }
 
         public async Task<string?> StartRecordingAsync()
@@ -23,17 +22,15 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 
             _cts = new CancellationTokenSource();
 
-            var recorder = _serviceProvider.GetRequiredService<IAudioRecorderService>();
-
-            recorder.RecordingProgress += OnRecordingSession;
+            _recorderService.RecordingProgress += OnRecordingSession;
             
             try
             {
-                return await recorder.RecordAudioFromMicrophoneAsync(15, _cts.Token);
+                return await _recorderService.RecordAudioFromMicrophoneAsync(15, _cts.Token);
             }
             finally
             {
-                recorder.RecordingProgress -= OnRecordingSession;
+                _recorderService.RecordingProgress -= OnRecordingSession;
                 _cts?.Dispose();
                 _cts = null;    
             }
@@ -43,7 +40,6 @@ namespace MusicRecognitionApp.Application.Services.Implementations
         {
             _cts?.Cancel();
         }
-
 
         private void OnRecordingSession(int progress)
         {

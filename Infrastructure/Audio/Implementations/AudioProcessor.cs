@@ -51,7 +51,7 @@ namespace MusicRecognitionApp.Infrastructure.Audio.Implementations
                 return monoSamples;
             }
 
-            throw new NotSupportedException("Только моно/стерео");
+            throw new NotSupportedException("Only mono/stereo");
         }
 
         private float[] ApplyLowPassFilter(float[] samples, int sampleRate, float cutoffFreency = 5000f)

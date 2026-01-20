@@ -7,8 +7,6 @@ namespace MusicRecognitionApp
 {
     internal static class Program
     {
-        private const string ConnectionString = "ShzamDB";
-
         [STAThread]
         static void Main()
         {
@@ -18,7 +16,8 @@ namespace MusicRecognitionApp
 
             EnsureDatabaseCreated(serviceProvider);
 
-            MainForm mainForm = serviceProvider.GetRequiredService<MainForm>(); 
+            using var scope = serviceProvider.CreateScope();
+            MainForm mainForm = scope.ServiceProvider.GetRequiredService<MainForm>(); 
             System.Windows.Forms.Application.Run(mainForm); 
         }
 
@@ -48,8 +47,8 @@ namespace MusicRecognitionApp
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"Ошибка запуска: {ex.Message}{Environment.NewLine}{Environment.NewLine}" +
-                    $"Закройте приложение и попробуйте снова.",
+                    $"Launch error: {ex.Message}{Environment.NewLine}{Environment.NewLine}" +
+                    $"Close the app and try again.",
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
