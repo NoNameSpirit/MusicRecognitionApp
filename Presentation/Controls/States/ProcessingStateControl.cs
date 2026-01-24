@@ -7,22 +7,16 @@ namespace MusicRecognitionApp.Controls
     public partial class ProcessingStateControl : UserControl
     {
         private readonly IStateManagerService _stateManagerService;
-        private IProcessingAudio? _processingAudio;
+        private readonly IProcessingAudio _processingAudio;
 
-        public ProcessingStateControl(IStateManagerService stateManagerService)
+        public ProcessingStateControl(
+            IStateManagerService stateManagerService,
+            IProcessingAudio processingAudio)
         {
-            InitializeComponent();
             _stateManagerService = stateManagerService;
-        }
-
-        public void SetRecognition(IProcessingAudio processingAudio)
-        {
-            if (_processingAudio != null)
-            {
-                _processingAudio.ImportProgress -= UpdateProgress;
-            }
             _processingAudio = processingAudio;
-            _processingAudio.ImportProgress += UpdateProgress;
+
+            InitializeComponent();
         }
 
         public void UpdateProgress(int progress)
@@ -40,6 +34,11 @@ namespace MusicRecognitionApp.Controls
         private async void BtnStopRecognition_Click(object sender, EventArgs e)
         {
             await _stateManagerService.SetStateAsync(AppState.Ready);
+        }
+
+        private void ProcessingStateControl_Load(object sender, EventArgs e)
+        {
+            _processingAudio.ImportProgress += UpdateProgress;
         }
     }
 }

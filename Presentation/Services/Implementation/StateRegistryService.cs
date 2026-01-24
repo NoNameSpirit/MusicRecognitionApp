@@ -14,6 +14,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
         private readonly ISongAddingService _songAddingService;
         private readonly IRecordingSessionService _recordingSessionService;
         private readonly IAnalyzingSessionService _analyzingSessionService;
+        private readonly IProcessingAudio _processingAudio;
 
         public StateRegistryService(
             IMessageBox messageBoxService,
@@ -22,7 +23,8 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
             IRecognitionSongService recognitionSongService,
             ISongAddingService songAddingService,
             IRecordingSessionService recordingSessionService,
-            IAnalyzingSessionService analyzingSessionService)
+            IAnalyzingSessionService analyzingSessionService,
+            IProcessingAudio processingAudio)
         {
             _messageBoxService = messageBoxService;
             _cardService = cardService;
@@ -31,6 +33,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
             _songAddingService = songAddingService;
             _recordingSessionService = recordingSessionService;
             _analyzingSessionService = analyzingSessionService;
+            _processingAudio = processingAudio;
         }
 
         public UserControl CreateStateControl(AppState state, IStateManagerService stateManagerService)
@@ -47,7 +50,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
 
                 AppState.Library => new LibraryStateControl(stateManagerService, _cardService),
 
-                AppState.Processing => new ProcessingStateControl(stateManagerService),
+                AppState.Processing => new ProcessingStateControl(stateManagerService, _processingAudio),
 
                 _ => throw new Exception($"Don't have this factory for {state}")
             };
