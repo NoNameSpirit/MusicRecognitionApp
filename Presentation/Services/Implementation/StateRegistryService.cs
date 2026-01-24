@@ -15,6 +15,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
         private readonly IRecordingSessionService _recordingSessionService;
         private readonly IAnalyzingSessionService _analyzingSessionService;
         private readonly IProcessingAudio _processingAudio;
+        private readonly IResultDisplayService _resultDisplayService;
 
         public StateRegistryService(
             IMessageBox messageBoxService,
@@ -24,7 +25,8 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
             ISongAddingService songAddingService,
             IRecordingSessionService recordingSessionService,
             IAnalyzingSessionService analyzingSessionService,
-            IProcessingAudio processingAudio)
+            IProcessingAudio processingAudio,
+            IResultDisplayService resultDisplayService)
         {
             _messageBoxService = messageBoxService;
             _cardService = cardService;
@@ -34,6 +36,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
             _recordingSessionService = recordingSessionService;
             _analyzingSessionService = analyzingSessionService;
             _processingAudio = processingAudio;
+            _resultDisplayService = resultDisplayService;
         }
 
         public UserControl CreateStateControl(AppState state, IStateManagerService stateManagerService)
@@ -46,7 +49,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
 
                 AppState.Analyzing => new AnalyzingStateControl(stateManagerService, _analyzingSessionService),
 
-                AppState.Result => new ResultStateControl(stateManagerService, _messageBoxService, _cardService, _recognitionSongService),
+                AppState.Result => new ResultStateControl(stateManagerService, _resultDisplayService),
 
                 AppState.Library => new LibraryStateControl(stateManagerService, _cardService),
 

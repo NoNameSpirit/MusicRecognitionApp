@@ -68,6 +68,7 @@ namespace MusicRecognitionApp.Extensions
                     .AddScoped<IStateRegistry, StateRegistryService>()
                     .AddScoped<IStateManagerService, StateManagerService>()
                     .AddScoped<ICardService, CardService>()
+                    .AddScoped<IResultDisplayService, ResultDisplayService>()
                     .AddTransient<ISongAddingService, SongAddingService>();
 
             services.AddScoped<MainForm>();
