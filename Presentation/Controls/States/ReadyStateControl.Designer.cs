@@ -56,9 +56,9 @@
             // 
             // FABtnAddingTracks
             // 
-            FABtnAddingTracks.BackgroundImage = Properties.Resources.next_arrow;
+            FABtnAddingTracks.BackgroundImage = Properties.Resources.plusIcon;
             FABtnAddingTracks.Depth = 0;
-            FABtnAddingTracks.Icon = null;
+            FABtnAddingTracks.Icon = Properties.Resources.plusIcon;
             FABtnAddingTracks.Location = new Point(528, 17);
             FABtnAddingTracks.MouseState = MaterialSkin.MouseState.HOVER;
             FABtnAddingTracks.Name = "FABtnAddingTracks";
