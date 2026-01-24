@@ -7,8 +7,7 @@ namespace MusicRecognitionApp.Controls
     public partial class ProcessingStateControl : UserControl
     {
         private readonly IStateManagerService _stateManagerService;
-        private CancellationTokenSource _cancellationTokenSource;
-        private IAudioRecognitionService? _recognition;
+        private IProcessingAudio? _processingAudio;
 
         public ProcessingStateControl(IStateManagerService stateManagerService)
         {
@@ -16,14 +15,14 @@ namespace MusicRecognitionApp.Controls
             _stateManagerService = stateManagerService;
         }
 
-        public void SetRecognition(IAudioRecognitionService recognition)
+        public void SetRecognition(IProcessingAudio processingAudio)
         {
-            if (_recognition != null)
+            if (_processingAudio != null)
             {
-                _recognition.ImportProgress -= UpdateProgress;
+                _processingAudio.ImportProgress -= UpdateProgress;
             }
-            _recognition = recognition;
-            _recognition.ImportProgress += UpdateProgress;
+            _processingAudio = processingAudio;
+            _processingAudio.ImportProgress += UpdateProgress;
         }
 
         public void UpdateProgress(int progress)

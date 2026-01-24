@@ -5,14 +5,14 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
 {
     public class SongAddingService : ISongAddingService
     {
-        private readonly IAudioRecognitionService _recognitionService;
+        private readonly IProcessingAudio _processingAudio;
         private readonly IMessageBox _messageBox;
 
         public SongAddingService(
-            IAudioRecognitionService recognitionService,
+            IProcessingAudio processingAudio,
             IMessageBox messageBox)
         {
-            _recognitionService = recognitionService;
+            _processingAudio = processingAudio;
             _messageBox = messageBox;
         }
 
@@ -40,7 +40,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
 
             try
             {
-                var (added, failed, errors) = await _recognitionService.AddTracksFromFolderAsync(folderPath);
+                var (added, failed, errors) = await _processingAudio.AddTracksFromFolderAsync(folderPath);
 
                 var message = $"Tracks added to the database: {added}, couldn't add: {failed}";
                 if (errors.Any())
