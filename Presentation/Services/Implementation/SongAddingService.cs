@@ -40,7 +40,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
 
             try
             {
-                var (added, failed, errors) = await _processingAudio.AddTracksFromFolderAsync(folderPath);
+                var (added, failed, errors) = await Task.Run(() => _processingAudio.AddTracksFromFolderAsync(folderPath));
 
                 var message = $"Tracks added to the database: {added}, couldn't add: {failed}";
                 if (errors.Any())
