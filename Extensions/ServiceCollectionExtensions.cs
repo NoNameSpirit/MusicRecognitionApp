@@ -55,7 +55,7 @@ namespace MusicRecognitionApp.Extensions
                     .AddScoped<IAnalyzingSessionService, AnalyzingSessionService>()
                     .AddScoped<IRecordingSessionService, RecordingSessionService>()
                     .AddScoped<IRecognitionService, RecognitionService>() 
-                    .AddScoped<IAudioRecorderService, AudioRecorderService>()
+                    .AddScoped<IRecorderService, RecorderService>()
                     .AddScoped<IProcessingAudio, ProcessingAudio>();
 
             return services;

@@ -8,9 +8,9 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 
         private CancellationTokenSource? _cts;
 
-        private readonly IAudioRecorderService _recorderService;
+        private readonly IRecorderService _recorderService;
 
-        public RecordingSessionService(IAudioRecorderService recorderService)
+        public RecordingSessionService(IRecorderService recorderService)
         {
             _recorderService = recorderService;
         }

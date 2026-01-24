@@ -1,6 +1,6 @@
 ﻿namespace MusicRecognitionApp.Application.Services.Interfaces
 {
-    public interface IAudioRecorderService 
+    public interface IRecorderService 
     {
         event Action<int> RecordingProgress;
 

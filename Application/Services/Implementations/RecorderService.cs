@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
 {
-    public class AudioRecorderService : IAudioRecorderService
+    public class RecorderService : IRecorderService
     {
         public event Action<int> RecordingProgress;
 
