@@ -5,7 +5,7 @@ using MusicRecognitionApp.Core.Models.Business;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
 {
-    public class AudioRecognitionService : IAudioRecognitionService
+    public class RecognitionService : IRecognitionService
     {
         private readonly IAudioProcessor _audioProcessor;
         private readonly ISpectrogramBuilder _spectrogramBuilder;
@@ -15,7 +15,7 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 
         public event Action<int> AnalysisProgress;
 
-        public AudioRecognitionService(
+        public RecognitionService(
             IAudioProcessor audioProcessor,
             ISpectrogramBuilder spectrogramBuilder,
             IPeakDetector peakDetector,

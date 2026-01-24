@@ -8,9 +8,9 @@ namespace MusicRecognitionApp.Application.Services.Implementations
     {
         public event Action<int> AnalyzingSession;
 
-        private readonly IAudioRecognitionService _recognitionService;
+        private readonly IRecognitionService _recognitionService;
         
-        public AnalyzingSessionService(IAudioRecognitionService recognitionService)
+        public AnalyzingSessionService(IRecognitionService recognitionService)
         {
             _recognitionService = recognitionService;
         }

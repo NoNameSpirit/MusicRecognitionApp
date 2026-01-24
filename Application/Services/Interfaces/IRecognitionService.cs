@@ -2,7 +2,7 @@
 
 namespace MusicRecognitionApp.Application.Services.Interfaces
 {
-    public interface IAudioRecognitionService
+    public interface IRecognitionService
     {
         event Action<int> AnalysisProgress;
 
