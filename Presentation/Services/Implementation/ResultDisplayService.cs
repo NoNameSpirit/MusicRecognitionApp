@@ -1,6 +1,6 @@
 ﻿using MaterialSkin.Controls;
+using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Application.Services.Interfaces;
-using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
 
 namespace MusicRecognitionApp.Presentation.Services.Implementation
@@ -29,7 +29,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
             panelResults.Controls.Clear();
         }
 
-        public async Task DisplayResults(Panel panelResults, PictureBox picRecordingGif, List<SearchResultModel>? results)
+        public async Task DisplayResults(Panel panelResults, PictureBox picRecordingGif, List<SearchResult>? results)
         {
             ClearResults(panelResults);
 
@@ -39,7 +39,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
                 return;
             }
 
-            SearchResultModel bestResult = results.FirstOrDefault()!;
+            SearchResult bestResult = results.FirstOrDefault()!;
             if (bestResult.Matches > 0)
             {
                 try
@@ -64,7 +64,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
             panelResults.Controls.Add(card);
         }
 
-        private void ShowResult(SearchResultModel result, Panel panelResults, PictureBox picRecordingGif)
+        private void ShowResult(SearchResult result, Panel panelResults, PictureBox picRecordingGif)
         {
             var card = _cardService.CreateResultCard(result);
             picRecordingGif.Image = Properties.Resources.rimuruHasResults;

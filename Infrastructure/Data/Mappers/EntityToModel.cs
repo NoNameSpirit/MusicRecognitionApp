@@ -1,4 +1,5 @@
-﻿using MusicRecognitionApp.Core.Models.Audio;
+﻿using MusicRecognitionApp.Application.Models;
+using MusicRecognitionApp.Core.Models.Audio;
 using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Infrastructure.Data.Entities;
 
@@ -19,17 +20,12 @@ namespace MusicRecognitionApp.Infrastructure.Data.Mappers
             };
         }
 
-        public static SearchResultModel ToSearchResultModel(SongEntity entity, int matches, double confidence)
+        public static SearchResult ToSearchResultModel(SongEntity entity, int matches, double confidence)
         {
             if (entity == null)
                 return null;
 
-            return new SearchResultModel
-            {
-                Song = ToSongModel(entity),
-                Matches = matches,
-                Confidence = confidence
-            };
+            return new SearchResult(ToSongModel(entity), matches, confidence);
         }
 
         public static RecognizedSongModel ToRecognizedSongModel(RecognizedSongEntity entity)

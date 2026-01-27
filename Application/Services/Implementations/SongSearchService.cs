@@ -1,8 +1,8 @@
 ﻿using MusicRecognitionApp.Application.Interfaces.Audio;
 using MusicRecognitionApp.Application.Interfaces.Services;
+using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Models.Audio;
-using MusicRecognitionApp.Core.Models.Business;
 using System.Diagnostics;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
@@ -23,35 +23,30 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             _audioHashGenerator = audioHashGenerator;
         }
 
-        public async Task<List<SearchResultModel>> SearchSong(List<AudioHash> queryHashes)
+        public async Task<List<SearchResult>> SearchSong(List<AudioHash> queryHashes)
         {
             if (queryHashes == null || queryHashes.Count == 0)
-                return new List<SearchResultModel>();
+                return new List<SearchResult>();
 
             try
             {
                 var hashValues = queryHashes.Select(h => h.Hash).ToList();
                 var matches = await _audioHashService.FindSongMatchesAsync(hashValues);
 
-                var results = new List<SearchResultModel>();
+                var results = new List<SearchResult>();
                 foreach (var (songId, count) in matches)
                 {
                     var song = await _songService.GetByIdAsync(songId);
 
                     if (song != null)
                     {
-                        var result = new SearchResultModel
-                        {
-                            Song = song,
-                            Matches = count,
-                            Confidence = count / queryHashes.Count
-                        };
+                        var result = new SearchResult(song, count, count / queryHashes.Count);
 
                         results.Add(result);
                     }
                 }
 
-                List<SearchResultModel> sortedResults = results
+                List<SearchResult> sortedResults = results
                     .OrderByDescending(r => r.Confidence)
                     .ThenByDescending(r => r.Matches)
                     .ToList();
@@ -61,7 +56,7 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             catch (Exception ex)
             {
                 Debug.WriteLine($"[ERROR] Exception while searching a song: {ex.Message}");
-                return new List<SearchResultModel>();
+                return new List<SearchResult>();
             }
         }
     }

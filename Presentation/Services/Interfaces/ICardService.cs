@@ -1,5 +1,5 @@
 ﻿using MaterialSkin.Controls;
-using MusicRecognitionApp.Core.Models.Business;
+using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Presentation.Controls;
 
 namespace MusicRecognitionApp.Presentation.Services.Interfaces
@@ -14,7 +14,7 @@ namespace MusicRecognitionApp.Presentation.Services.Interfaces
 
         NoInfoCard ShowNoSongsCard();
 
-        SongCard CreateResultCard(SearchResultModel searchResultModel);
+        SongCard CreateResultCard(SearchResult searchResultModel);
         
         NoInfoCard CreateNoResultsCard();
     }

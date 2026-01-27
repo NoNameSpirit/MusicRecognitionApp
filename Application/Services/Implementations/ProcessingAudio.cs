@@ -1,4 +1,5 @@
 ﻿using MusicRecognitionApp.Application.Interfaces.Audio;
+using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Models.Audio;
 

@@ -1,4 +1,6 @@
-﻿namespace MusicRecognitionApp.Application.Services.Interfaces
+﻿using MusicRecognitionApp.Application.Models;
+
+namespace MusicRecognitionApp.Application.Services.Interfaces
 {
     public interface IProcessingAudio
     {
@@ -6,6 +8,4 @@
         
         Task<ImportTracksResult> AddTracksFromFolderAsync(string folderPath);
     }
-
-    public record ImportTracksResult(int Added, int Failed, List<string> Errors);
 }

@@ -1,12 +1,12 @@
-﻿using MusicRecognitionApp.Core.Enums;
-using MusicRecognitionApp.Core.Models.Business;
+﻿using MusicRecognitionApp.Application.Models;
+using MusicRecognitionApp.Core.Enums;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
 
 namespace MusicRecognitionApp.Controls
 {
     public partial class ResultStateControl : UserControl, IStateWithData
     {
-        private List<SearchResultModel> _results;
+        private List<SearchResult> _results;
         
         private readonly IStateManagerService _stateManagerService;
         private readonly IResultDisplayService _resultDisplayService;
@@ -52,7 +52,7 @@ namespace MusicRecognitionApp.Controls
 
         public void SetStateData(object? stateData)
         {
-            _results = stateData as List<SearchResultModel>;
+            _results = stateData as List<SearchResult>;
             _resultDisplayService.ClearResults(PanelResults);
         }
     }

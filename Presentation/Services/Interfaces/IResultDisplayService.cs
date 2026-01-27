@@ -1,4 +1,4 @@
-﻿using MusicRecognitionApp.Core.Models.Business;
+﻿using MusicRecognitionApp.Application.Models;
 
 namespace MusicRecognitionApp.Presentation.Services.Interfaces
 {
@@ -6,6 +6,6 @@ namespace MusicRecognitionApp.Presentation.Services.Interfaces
     {
         void ClearResults(Panel panelResults);
 
-        Task DisplayResults(Panel panelResults, PictureBox picRecordingGif, List<SearchResultModel>? results);
+        Task DisplayResults(Panel panelResults, PictureBox picRecordingGif, List<SearchResult>? results);
     }
 }

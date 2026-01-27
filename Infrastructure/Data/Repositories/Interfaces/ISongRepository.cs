@@ -1,6 +1,6 @@
 ﻿using MusicRecognitionApp.Infrastructure.Data.Entities;
 
-namespace MusicRecognitionApp.Infrastructure.Data.Interfaces
+namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces
 {
     public interface ISongRepository : IRepositoryCrud<SongEntity>
     {

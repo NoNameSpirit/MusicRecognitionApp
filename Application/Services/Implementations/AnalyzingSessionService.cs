@@ -1,6 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Application.Services.Interfaces;
-using MusicRecognitionApp.Core.Models.Business;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
 {
@@ -15,9 +14,9 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             _recognitionService = recognitionService;
         }
 
-            public async Task<List<SearchResultModel>?> StartAnalyzingAsync(string? recordedAudioFile)
+            public async Task<List<SearchResult>?> StartAnalyzingAsync(string? recordedAudioFile)
             {
-                List<SearchResultModel>? RecognitionResults;
+                List<SearchResult>? RecognitionResults;
 
                 try
                 {

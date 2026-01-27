@@ -1,4 +1,4 @@
-﻿namespace MusicRecognitionApp.Core.Interfaces
+﻿namespace MusicRecognitionApp.Presentation
 {
     public interface IApplicationForm
     {

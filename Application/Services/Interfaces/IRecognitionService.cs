@@ -1,4 +1,4 @@
-﻿using MusicRecognitionApp.Core.Models.Business;
+﻿using MusicRecognitionApp.Application.Models;
 
 namespace MusicRecognitionApp.Application.Services.Interfaces
 {
@@ -6,6 +6,6 @@ namespace MusicRecognitionApp.Application.Services.Interfaces
     {
         event Action<int> AnalysisProgress;
 
-        Task<List<SearchResultModel>> RecognizeFromMicrophoneAsync(string audioFilePath);
+        Task<List<SearchResult>> RecognizeFromMicrophoneAsync(string audioFilePath);
     }
 }

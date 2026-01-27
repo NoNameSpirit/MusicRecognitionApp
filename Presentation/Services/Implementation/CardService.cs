@@ -1,6 +1,6 @@
 ﻿using MaterialSkin.Controls;
+using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Application.Services.Interfaces;
-using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Presentation.Controls;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
 
@@ -82,7 +82,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
         public NoInfoCard CreateNoResultsCard()
             => CreateNoInfoCard($"Nothing is recognized {Environment.NewLine}Try again");
 
-        public SongCard CreateResultCard(SearchResultModel searchResultModel)
+        public SongCard CreateResultCard(SearchResult searchResultModel)
             => CreateSongCard(searchResultModel.Song.Title, searchResultModel.Song.Artist, searchResultModel.Matches);
         
         private SongCard CreateSongCard(string title, string artist, int matches)

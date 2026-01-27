@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using MusicRecognitionApp.Application.Services.Interfaces;
+﻿using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Enums;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
 

@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MusicRecognitionApp.Infrastructure.Data.Interfaces;
+using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
 using System.Linq.Expressions;
 
-namespace MusicRecognitionApp.Infrastructure.Data.Repositories
+namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
 {
     public abstract class RepositoryCrud<TEntity> : IRepositoryCrud<TEntity> where TEntity : class
     {

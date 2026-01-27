@@ -1,4 +1,4 @@
-﻿using MusicRecognitionApp.Core.Models.Business;
+﻿using MusicRecognitionApp.Application.Models;
 
 namespace MusicRecognitionApp.Application.Services.Interfaces
 {
@@ -6,6 +6,6 @@ namespace MusicRecognitionApp.Application.Services.Interfaces
     {
         event Action<int> AnalyzingSession;
 
-        Task<List<SearchResultModel>?> StartAnalyzingAsync(string? recordedAudioFile);
+        Task<List<SearchResult>?> StartAnalyzingAsync(string? recordedAudioFile);
     }
 }

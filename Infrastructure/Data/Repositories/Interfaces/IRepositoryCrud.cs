@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace MusicRecognitionApp.Infrastructure.Data.Interfaces
+namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces
 {
     public interface IRepositoryCrud<TEntity> where TEntity : class
     {

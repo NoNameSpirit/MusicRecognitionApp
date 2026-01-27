@@ -1,14 +1,13 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Enums;
-using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
 
 namespace MusicRecognitionApp.Controls
 {
     public partial class AnalyzingStateControl : UserControl, IStateWithData
     {
-        public List<SearchResultModel>? RecognitionResults { get; set; }
+        public List<SearchResult>? RecognitionResults { get; set; }
 
         private readonly IStateManagerService _stateManagerService;
         

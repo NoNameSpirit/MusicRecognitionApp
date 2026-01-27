@@ -1,7 +1,7 @@
 ﻿using MusicRecognitionApp.Application.Interfaces.Audio;
+using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Models.Audio;
-using MusicRecognitionApp.Core.Models.Business;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
 {
@@ -29,10 +29,10 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             _searchService = searchService;
         }
 
-        public async Task<List<SearchResultModel>> RecognizeFromMicrophoneAsync(string audioFilePath)
+        public async Task<List<SearchResult>> RecognizeFromMicrophoneAsync(string audioFilePath)
         {
             if (string.IsNullOrEmpty(audioFilePath))
-                return new List<SearchResultModel>();
+                return new List<SearchResult>();
 
             AnalysisProgress?.Invoke(10);
             float[] processedAudio = await Task.Run(()

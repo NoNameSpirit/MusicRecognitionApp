@@ -1,5 +1,4 @@
-﻿using MusicRecognitionApp.Controls;
-using MusicRecognitionApp.Core.Enums;
+﻿using MusicRecognitionApp.Core.Enums;
 using MusicRecognitionApp.Forms;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
 
