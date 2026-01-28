@@ -1,18 +1,22 @@
-﻿using MusicRecognitionApp.Application.Interfaces.Services;
+﻿using Microsoft.Extensions.Logging;
+using MusicRecognitionApp.Application.Interfaces.Services;
 using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Infrastructure.Data.Mappers;
 using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
-using System.Diagnostics;
 
 namespace MusicRecognitionApp.Infrastructure.Services.Implementations
 {
     public class RecognizedSongService : IRecognizedSongService
     {
         private readonly IRecognizedSongRepository _recognizedSongRepository;
+        private readonly ILogger<RecognizedSongService> _logger;
 
-        public RecognizedSongService(IRecognizedSongRepository recognizedSongRepository)
+        public RecognizedSongService(
+            IRecognizedSongRepository recognizedSongRepository,
+            ILogger<RecognizedSongService> logger)
         {
             _recognizedSongRepository = recognizedSongRepository;
+            _logger = logger;
         }
 
         public async Task SaveRecognizedSongAsync(int songId, int matches)
@@ -21,7 +25,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             {
                 if (matches < 1)
                 {
-                    Debug.WriteLine($"[WARN] Not saving recognition with {matches} matches for song {songId}");
+                    _logger.LogWarning("Skipping save: {Matches} matches for song {SongId}", matches, songId);
                     return;
                 }
 
@@ -31,7 +35,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[ERROR] Exception while saving recognition: {ex.Message}");
+                _logger.LogError(ex, "Failed to save recognized song {SongId} with {Matches} matches", songId, matches);
                 throw;
             }
         }
@@ -46,7 +50,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[ERROR] Exception while getting recognized songs: {ex.Message}");
+                _logger.LogError(ex, "Error retrieving recognized songs");
                 return new List<RecognizedSongModel>();
             }
         }
@@ -61,7 +65,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[ERROR] Exception while getting artists statistics: {ex.Message}");
+                _logger.LogError(ex, "Error retrieving artist statistics");
                 return new List<ArtistStatisticModel>();
             }
         }

@@ -1,4 +1,5 @@
-﻿using MusicRecognitionApp.Application.Interfaces.Services;
+﻿using Microsoft.Extensions.Logging;
+using MusicRecognitionApp.Application.Interfaces.Services;
 using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Models.Audio;
 using System.Diagnostics;
@@ -9,12 +10,15 @@ namespace MusicRecognitionApp.Application.Services.Implementations
     {
         private readonly IAudioHashService _audioHashService;
         private readonly ISongService _songService;
+        private readonly ILogger<SongImportService> _logger;
         public SongImportService(
             IAudioHashService audioHashService,
-            ISongService songService)
+            ISongService songService,
+            ILogger<SongImportService> logger)
         {
             _audioHashService = audioHashService;
             _songService = songService;
+            _logger = logger;
         }
 
         public async Task AddSongAsync(string title, string artist, List<AudioHash> hashes)
@@ -27,7 +31,7 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[ERROR] Exception while adding track: {ex}");
+                _logger.LogError(ex, "Exception while adding track Title - Artist:", title, artist);
                 throw;
             }
         }

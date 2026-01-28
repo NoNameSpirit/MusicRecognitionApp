@@ -1,4 +1,5 @@
-﻿using MusicRecognitionApp.Application.Interfaces.Services;
+﻿using Microsoft.Extensions.Logging;
+using MusicRecognitionApp.Application.Interfaces.Services;
 using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Infrastructure.Data.Entities;
 using MusicRecognitionApp.Infrastructure.Data.Mappers;
@@ -10,10 +11,14 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
     public class SongService : ISongService
     {
         private readonly ISongRepository _songRepository;
+        private readonly ILogger<SongService> _logger;
 
-        public SongService(ISongRepository songRepository)
+        public SongService(
+            ISongRepository songRepository,
+            ILogger<SongService> logger)
         {
             _songRepository = songRepository;
+            _logger = logger;
         }
 
         public async Task<SongModel?> GetByIdAsync(int id)
@@ -25,7 +30,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[ERROR] Exception while getting song by id {id}: {ex.Message}");
+                _logger.LogError(ex, "Error getting song by ID {SongId}", id);
                 return null;
             }
         }
@@ -40,7 +45,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[ERROR] Exception while getting song: title - {title}, artist - {artist}, message: {ex.Message}");
+                _logger.LogError(ex, "Error getting song by title '{Title}' and artist '{Artist}'", title, artist); 
                 return null;
             }
         }
@@ -49,18 +54,18 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
         {
             try
             {
-                var existing = await GetByTitleAndArtistAsync(title, artist);
-                if (existing != null)
-                {
-                    Debug.WriteLine($"[INFO] Song already exists: {title} - {artist}");
-                    return existing;
-                }
-
                 if (string.IsNullOrWhiteSpace(title))
                     throw new ArgumentException("Title cannot be empty", nameof(title));
 
                 if (string.IsNullOrWhiteSpace(artist))
                     throw new ArgumentException("Artist cannot be empty", nameof(artist));
+
+                var existing = await GetByTitleAndArtistAsync(title, artist);
+                if (existing != null)
+                {
+                    _logger.LogInformation("Song already exists: '{Title}' by '{Artist}'", title, artist); 
+                    return existing;
+                }
 
                 var entity = new SongEntity
                 {
@@ -76,7 +81,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[ERROR] Exception while creating song: {ex.Message}");
+                _logger.LogError(ex, "Error creating song '{Title}' by '{Artist}'", title, artist); 
                 throw;
             }
         }

@@ -1,4 +1,5 @@
-﻿using MusicRecognitionApp.Application.Interfaces.Audio;
+﻿using Microsoft.Extensions.Logging;
+using MusicRecognitionApp.Application.Interfaces.Audio;
 using MusicRecognitionApp.Application.Interfaces.Services;
 using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Application.Services.Interfaces;
@@ -12,15 +13,18 @@ namespace MusicRecognitionApp.Application.Services.Implementations
         private readonly ISongService _songService;
         private readonly IAudioHashService _audioHashService;
         private readonly IAudioHashGenerator _audioHashGenerator;
+        private readonly ILogger<SongSearchService> _logger;
 
         public SongSearchService(
             IAudioHashService audioHashService,
             ISongService songService,
-            IAudioHashGenerator audioHashGenerator)
+            IAudioHashGenerator audioHashGenerator,
+            ILogger<SongSearchService> logger)
         {
             _audioHashService = audioHashService;
             _songService = songService;
             _audioHashGenerator = audioHashGenerator;
+            _logger = logger;
         }
 
         public async Task<List<SearchResult>> SearchSong(List<AudioHash> queryHashes)
@@ -57,7 +61,7 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[ERROR] Exception while searching a song: {ex.Message}");
+                _logger.LogError(ex, "Exception while searching a song by hashes: ", queryHashes?.Count ?? 0);
                 return new List<SearchResult>();
             }
         }

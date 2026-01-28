@@ -1,4 +1,5 @@
-﻿using MusicRecognitionApp.Application.Interfaces.Services;
+﻿using Microsoft.Extensions.Logging;
+using MusicRecognitionApp.Application.Interfaces.Services;
 using MusicRecognitionApp.Core.Models.Audio;
 using MusicRecognitionApp.Infrastructure.Data.Mappers;
 using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
@@ -9,10 +10,14 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
     public class AudioHashService : IAudioHashService
     {
         private readonly IAudioHashRepository _audioHashRepository;
+        private readonly ILogger<AudioHashService> _logger;
 
-        public AudioHashService(IAudioHashRepository audioHashRepository)
+        public AudioHashService(
+            IAudioHashRepository audioHashRepository,
+            ILogger<AudioHashService> logger)
         {
             _audioHashRepository = audioHashRepository;
+            _logger = logger;
         }
 
         public async Task<List<(int SongId, int Count)>> FindSongMatchesAsync(List<uint> hashValues)
@@ -23,7 +28,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[ERROR] Exception while getting hashes: {ex.Message}");
+                _logger.LogError(ex, "Error while getting song matches for {HashCount} hashes", hashValues?.Count ?? 0);
                 return new List<(int, int)>();
             }
         }
@@ -34,7 +39,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             {
                 if (hashes == null || hashes.Count == 0)
                 {
-                    Debug.WriteLine($"[WARN] No hashes to add for song {songId}");
+                    _logger.LogWarning("No hashes to add for song {SongId}", songId);
                     return;
                 }
 
@@ -48,7 +53,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[ERROR] Exception while adding hashes for song {songId}: {ex.Message}");
+                _logger.LogError(ex, "Error adding hashes for song {SongId}", songId);
                 throw;
             }
         }

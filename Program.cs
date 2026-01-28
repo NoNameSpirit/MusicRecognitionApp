@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MusicRecognitionApp.Forms;
 using MusicRecognitionApp.Extensions;
 using MusicRecognitionApp.Infrastructure.Data.Contexts;
+using Microsoft.Extensions.Logging;
 
 namespace MusicRecognitionApp
 {
@@ -29,7 +30,11 @@ namespace MusicRecognitionApp
                 .AddDatabaseServices()
                 .AddInfrustructureServices()
                 .AddApplicationServices()
-                .AddPresentationServices();
+                .AddPresentationServices()
+                .AddLogging(builder =>
+                {
+                    builder.AddDebug();
+                });
 
             return services.BuildServiceProvider();
         }
