@@ -32,10 +32,10 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
         {
             return Context.Set<RecognizedSongEntity>()
                 .Include(r => r.Song)
-                .AsEnumerable()
                 .GroupBy(r => r.Song.Artist)
-                .Select(g => (Artist: g.Key, SongCount: g.Count()))
-                .OrderByDescending(g => g.SongCount)
+                .Select(g => new { Artist = g.Key, SongCount = g.Count() })
+                .ToList()
+                .Select(x => (x.Artist, x.SongCount))
                 .ToList();
         }
     }

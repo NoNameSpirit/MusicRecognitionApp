@@ -41,10 +41,10 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
                 foreach (AudioHash hash in hashes)
                 {
                     var entity = EntityToModel.ToAudioHashEntity(hash, songId);
-                    _audioHashRepository.InsertAsync(entity);
+                    await _audioHashRepository.InsertAsync(entity);
                 }
 
-                _audioHashRepository.SaveChangesAsync();
+                await _audioHashRepository.SaveChangesAsync();
             }
             catch (Exception ex)
             {

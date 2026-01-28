@@ -40,7 +40,9 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 
                     if (song != null)
                     {
-                        var result = new SearchResult(song, count, count / queryHashes.Count);
+                        var confidence = (double)count / queryHashes.Count;
+
+                        var result = new SearchResult(song, count, confidence);
 
                         results.Add(result);
                     }

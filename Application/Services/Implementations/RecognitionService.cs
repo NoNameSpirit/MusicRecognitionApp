@@ -15,6 +15,8 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 
         public event Action<int> AnalysisProgress;
 
+        private const int TargetSampleRate = 11025;
+
         public RecognitionService(
             IAudioProcessor audioProcessor,
             ISpectrogramBuilder spectrogramBuilder,
@@ -40,7 +42,7 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 
             AnalysisProgress?.Invoke(20);
             SpectrogramData spectrogramData = await Task.Run(()
-                => _spectrogramBuilder.ProcessAudio(processedAudio, 11025));
+                => _spectrogramBuilder.ProcessAudio(processedAudio, TargetSampleRate));
 
             AnalysisProgress?.Invoke(40);
             List<Peak> allPeaks = await Task.Run(()
