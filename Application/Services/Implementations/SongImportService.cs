@@ -26,8 +26,15 @@ namespace MusicRecognitionApp.Application.Services.Implementations
         {
             try
             {
-                var song = await _songService.CreateAsync(title, artist);
-                await _audioHashService.AddHashesAsync(hashes, song.Id);
+                var result = await _songService.CreateAsync(title, artist);
+                if (result.IsNew)
+                {
+                    await _audioHashService.AddHashesAsync(hashes, result.Song.Id);
+                }
+                else
+                {
+                    _logger.LogInformation("Track already exists Title - Artist:", title, artist);
+                }
             }
             catch (Exception ex)
             {

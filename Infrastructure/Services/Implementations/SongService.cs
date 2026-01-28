@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using MusicRecognitionApp.Application.Interfaces.Services;
+using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Infrastructure.Data.Entities;
 using MusicRecognitionApp.Infrastructure.Data.Mappers;
@@ -49,7 +50,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             }
         }
 
-        public async Task<SongModel> CreateAsync(string title, string artist)
+        public async Task<SongCreationResult> CreateAsync(string title, string artist)
         {
             try
             {
@@ -62,21 +63,18 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
                 var existing = await GetByTitleAndArtistAsync(title, artist);
                 if (existing != null)
                 {
-                    _logger.LogInformation("Song already exists: '{Title}' by '{Artist}'", title, artist); 
-                    return existing;
+                    _logger.LogInformation("Song already exists: '{Title}' by '{Artist}'", title, artist);
+                    return new SongCreationResult(existing, false);
                 }
 
-                var entity = new SongEntity
-                {
-                    Title = title,
-                    Artist = artist
-                };
+                var entity = new SongEntity{Title = title, Artist = artist};
 
                 await _songRepository.InsertAsync(entity);
                 await _songRepository.SaveChangesAsync();
 
                 var created = await _songRepository.GetSongByTitleAndArtistAsync(title, artist);
-                return EntityToModel.ToSongModel(created);
+                var model = EntityToModel.ToSongModel(created);
+                return new SongCreationResult(model, true);
             }
             catch (Exception ex)
             {
