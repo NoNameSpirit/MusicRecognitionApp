@@ -2,7 +2,7 @@
 
 namespace MusicRecognitionApp.Presentation.Services.Implementation
 {
-    public class MessageBoxService : IMessageBox
+    public class MessageBoxService : IMessageBoxService
     {
         public DialogResult ShowWarning(string message)
         {

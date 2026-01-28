@@ -7,7 +7,7 @@ namespace MusicRecognitionApp.Controls
     {
         private readonly IStateManagerService _stateManagerService;
         private readonly IAnimationService _animationService;
-        private readonly IMessageBox _messageBox;
+        private readonly IMessageBoxService _messageBoxService;
         private readonly ISongAddingService _songAddingService;
 
         private bool _isProcessing = false;
@@ -15,12 +15,12 @@ namespace MusicRecognitionApp.Controls
         public ReadyStateControl(
             IStateManagerService stateManagerService,
             IAnimationService animationService,
-            IMessageBox messageBox,
+            IMessageBoxService messageBoxService,
             ISongAddingService songAddingService)
         {
             _stateManagerService = stateManagerService;
             _animationService = animationService;
-            _messageBox = messageBox;
+            _messageBoxService = messageBoxService;
             _songAddingService = songAddingService;
 
             InitializeComponent();
@@ -62,18 +62,22 @@ namespace MusicRecognitionApp.Controls
 
                 if (result.Success)
                 {
-                    _messageBox.ShowInfo(result.Message);
+                    _messageBoxService.ShowInfo(result.Message);
                 }
                 else if (!string.IsNullOrEmpty(result.Message))
                 {
-                    _messageBox.ShowError(result.Message);
+                    _messageBoxService.ShowError(result.Message);
                 }
-
-                await _stateManagerService.SetStateAsync(AppState.Ready);
+            }
+            catch (Exception ex)
+            {
+                _messageBoxService.ShowError($"Error while adding tracks: {ex.Message}");
             }
             finally
             {
                 _isProcessing = false;
+
+                await _stateManagerService.SetStateAsync(AppState.Ready);
             }
         }
 

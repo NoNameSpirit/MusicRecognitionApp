@@ -14,28 +14,28 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             _recognitionService = recognitionService;
         }
 
-            public async Task<List<SearchResult>?> StartAnalyzingAsync(string? recordedAudioFile)
+        public async Task<List<SearchResult>?> StartAnalyzingAsync(string? recordedAudioFile)
+        {
+            List<SearchResult>? RecognitionResults;
+
+            try
             {
-                List<SearchResult>? RecognitionResults;
+                _recognitionService.AnalysisProgress += OnAnalyzingSession;
 
-                try
-                {
-                    _recognitionService.AnalysisProgress += OnAnalyzingSession;
-                
-                    RecognitionResults = await _recognitionService.RecognizeFromMicrophoneAsync(recordedAudioFile);
-                }
-                finally
-                {
-                    _recognitionService.AnalysisProgress -= OnAnalyzingSession;
-                }
-
-                if (File.Exists(recordedAudioFile))
-                {
-                    File.Delete(recordedAudioFile);
-                }
-
-                return RecognitionResults;
+                RecognitionResults = await _recognitionService.RecognizeFromMicrophoneAsync(recordedAudioFile);
             }
+            finally
+            {
+                _recognitionService.AnalysisProgress -= OnAnalyzingSession;
+            }
+
+            if (File.Exists(recordedAudioFile))
+            {
+                File.Delete(recordedAudioFile);
+            }
+
+            return RecognitionResults;
+        }
 
         private void OnAnalyzingSession(int progress)
         {

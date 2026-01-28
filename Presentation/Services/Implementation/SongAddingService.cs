@@ -6,14 +6,14 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
     public class SongAddingService : ISongAddingService
     {
         private readonly IProcessingAudio _processingAudio;
-        private readonly IMessageBox _messageBox;
+        private readonly IMessageBoxService _messageBoxService;
 
         public SongAddingService(
             IProcessingAudio processingAudio,
-            IMessageBox messageBox)
+            IMessageBoxService messageBoxService)
         {
             _processingAudio = processingAudio;
-            _messageBox = messageBox;
+            _messageBoxService = messageBoxService;
         }
 
         public async Task<ImportResult> ImportTracksFromFolderAsync()
@@ -23,16 +23,13 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
                 Description = "Select the folder containing the music.",
                 ShowNewFolderButton = false,
             };
-
             if (folderDialog.ShowDialog() != DialogResult.OK)
             {
                 return new ImportResult(false, "Cancelled by user");
             }
-
             string folderPath = folderDialog.SelectedPath;
 
-            var result = _messageBox.ShowQuestion($"Add all audio files from a folder: {folderPath}?");
-
+            var result = _messageBoxService.ShowQuestion($"Add all audio files from a folder: {folderPath}?");
             if (result != DialogResult.Yes)
             {
                 return new ImportResult(false, "Cancelled by user");

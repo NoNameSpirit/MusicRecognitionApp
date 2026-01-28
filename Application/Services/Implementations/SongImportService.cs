@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using MusicRecognitionApp.Application.Interfaces.Services;
+using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Models.Audio;
 using System.Diagnostics;
@@ -26,7 +27,6 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             try
             {
                 var song = await _songService.CreateAsync(title, artist);
-
                 await _audioHashService.AddHashesAsync(hashes, song.Id);
             }
             catch (Exception ex)

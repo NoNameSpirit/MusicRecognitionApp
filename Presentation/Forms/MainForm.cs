@@ -6,11 +6,11 @@ namespace MusicRecognitionApp.Forms
 {
     public partial class MainForm : BaseForm, IApplicationForm
     {
-        private readonly IMessageBox _messageBoxService;
+        private readonly IMessageBoxService _messageBoxService;
         private readonly IStateManagerService _stateManagerService;
         
         public MainForm(
-            IMessageBox messageBoxService,
+            IMessageBoxService messageBoxService,
             IStateManagerService stateManagerService)
         {
             InitializeComponent();

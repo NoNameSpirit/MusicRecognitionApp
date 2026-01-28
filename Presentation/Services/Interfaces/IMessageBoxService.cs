@@ -1,6 +1,6 @@
 ﻿namespace MusicRecognitionApp.Presentation.Services.Interfaces
 {
-    public interface IMessageBox
+    public interface IMessageBoxService
     {
         DialogResult ShowWarning(string message);
 

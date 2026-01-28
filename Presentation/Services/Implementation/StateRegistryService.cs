@@ -8,7 +8,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
     public class StateRegistryService : IStateRegistry
     {
         private readonly ICardService _cardService;
-        private readonly IMessageBox _messageBoxService;
+        private readonly IMessageBoxService _messageBoxService;
         private readonly IAnimationService _animationService;
         private readonly IRecognitionSongService _recognitionSongService;
         private readonly ISongAddingService _songAddingService;
@@ -18,7 +18,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
         private readonly IResultDisplayService _resultDisplayService;
 
         public StateRegistryService(
-            IMessageBox messageBoxService,
+            IMessageBoxService messageBoxService,
             ICardService cardService,
             IAnimationService animationService,
             IRecognitionSongService recognitionSongService,
@@ -45,11 +45,11 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
             {
                 AppState.Ready => new ReadyStateControl(stateManagerService, _animationService, _messageBoxService, _songAddingService),
 
-                AppState.Recording => new RecordingStateControl(stateManagerService, _recordingSessionService),
+                AppState.Recording => new RecordingStateControl(stateManagerService, _recordingSessionService, _messageBoxService),
 
-                AppState.Analyzing => new AnalyzingStateControl(stateManagerService, _analyzingSessionService),
+                AppState.Analyzing => new AnalyzingStateControl(stateManagerService, _analyzingSessionService, _messageBoxService),
 
-                AppState.Result => new ResultStateControl(stateManagerService, _resultDisplayService),
+                AppState.Result => new ResultStateControl(stateManagerService, _resultDisplayService, _messageBoxService),
 
                 AppState.Library => new LibraryStateControl(stateManagerService, _cardService),
 

@@ -10,16 +10,19 @@ namespace MusicRecognitionApp.Controls
         public List<SearchResult>? RecognitionResults { get; set; }
 
         private readonly IStateManagerService _stateManagerService;
-        
+        private readonly IMessageBoxService _messageBoxService;
+
         private IAnalyzingSessionService _sessionService;
         private string? _recordedAudioFile;
         public AnalyzingStateControl(
             IStateManagerService stateManagerService,
-            IAnalyzingSessionService sessionService)
+            IAnalyzingSessionService sessionService,
+            IMessageBoxService messageBoxService)
         {
             InitializeComponent();
 
             _stateManagerService = stateManagerService;
+            _messageBoxService = messageBoxService;
             _sessionService = sessionService;
         }
 
@@ -40,22 +43,6 @@ namespace MusicRecognitionApp.Controls
             _recordedAudioFile = stateData as string;
         }
 
-        private async Task StartAnalyzingAsync()
-        {
-            try
-            {
-                _sessionService.AnalyzingSession += UpdateProgress;
-
-                RecognitionResults = await _sessionService.StartAnalyzingAsync(_recordedAudioFile);
-            }
-            finally 
-            {
-                _sessionService.AnalyzingSession -= UpdateProgress;
-            }
-
-            await _stateManagerService.SetStateAsync(AppState.Result, RecognitionResults);
-        }
-
         protected override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
@@ -67,6 +54,28 @@ namespace MusicRecognitionApp.Controls
                 RecognitionResults = null;
 
                 _ = StartAnalyzingAsync();
+            }
+        }
+
+        private async Task StartAnalyzingAsync()
+        {
+            try
+            {
+                _sessionService.AnalyzingSession += UpdateProgress;
+
+                RecognitionResults = await _sessionService.StartAnalyzingAsync(_recordedAudioFile);
+
+                await _stateManagerService.SetStateAsync(AppState.Result, RecognitionResults);
+            }
+            catch (Exception ex)
+            {
+                _messageBoxService.ShowError($"Analysis failed: {ex.Message}");
+
+                await _stateManagerService.SetStateAsync(AppState.Ready);
+            }
+            finally
+            {
+                _sessionService.AnalyzingSession -= UpdateProgress;
             }
         }
     }

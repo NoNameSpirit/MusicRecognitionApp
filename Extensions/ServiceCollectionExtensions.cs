@@ -63,7 +63,7 @@ namespace MusicRecognitionApp.Extensions
 
         public static IServiceCollection AddPresentationServices(this IServiceCollection services)
         {
-            services.AddSingleton<IMessageBox, MessageBoxService>()
+            services.AddSingleton<IMessageBoxService, MessageBoxService>()
                     .AddSingleton<IAnimationService, AnimationService>()
                     .AddScoped<IStateRegistry, StateRegistryService>()
                     .AddScoped<IStateManagerService, StateManagerService>()

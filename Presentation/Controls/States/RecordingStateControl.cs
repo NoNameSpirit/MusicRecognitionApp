@@ -7,17 +7,19 @@ namespace MusicRecognitionApp.Controls
     public partial class RecordingStateControl : UserControl
     {
         private readonly IStateManagerService _stateManagerService;
-        
+        private readonly IMessageBoxService _messageBoxService;
         private IRecordingSessionService _sessionService;
-
+        
         public RecordingStateControl(
             IStateManagerService stateManagerService,
-            IRecordingSessionService sessionService)
+            IRecordingSessionService sessionService,
+            IMessageBoxService messageBoxService)
         {
             InitializeComponent();
 
             _stateManagerService = stateManagerService;
             _sessionService = sessionService;
+            _messageBoxService = messageBoxService;
         }
 
         private void BtnStopRecording_Click(object sender, EventArgs e)
@@ -39,25 +41,30 @@ namespace MusicRecognitionApp.Controls
 
         private async Task StartRecordingAsync()
         {
-            string? recordedAudioFile;
-            try 
+            try
             {
                 _sessionService.RecordingSession += OnRecordingProgress;
-                
-                recordedAudioFile = await _sessionService.StartRecordingAsync();
-            }
-            finally 
-            {
-                _sessionService.RecordingSession -= OnRecordingProgress;
-            }
 
-            if (string.IsNullOrEmpty(recordedAudioFile))
+                string? recordedAudioFile = await _sessionService.StartRecordingAsync();
+
+                if (string.IsNullOrEmpty(recordedAudioFile))
+                {
+                    await _stateManagerService.SetStateAsync(AppState.Ready);
+                }
+                else
+                {
+                    await _stateManagerService.SetStateAsync(AppState.Analyzing, recordedAudioFile);
+                }
+            }
+            catch (Exception ex)
             {
+                _messageBoxService.ShowError($"Recording failed: {ex.Message}");
+
                 await _stateManagerService.SetStateAsync(AppState.Ready);
             }
-            else
+            finally
             {
-                await _stateManagerService.SetStateAsync(AppState.Analyzing, recordedAudioFile);
+                _sessionService.RecordingSession -= OnRecordingProgress;
             }
         }
 

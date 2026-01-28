@@ -1,5 +1,6 @@
 ﻿using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Core.Enums;
+using MusicRecognitionApp.Presentation.Services.Implementation;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
 
 namespace MusicRecognitionApp.Controls
@@ -10,13 +11,16 @@ namespace MusicRecognitionApp.Controls
         
         private readonly IStateManagerService _stateManagerService;
         private readonly IResultDisplayService _resultDisplayService;
+        private readonly IMessageBoxService _messageBoxService;
 
         public ResultStateControl(
             IStateManagerService stateManagerService,
-            IResultDisplayService resultDisplayService)
-        {
+            IResultDisplayService resultDisplayService,
+            IMessageBoxService messageBoxService)
+        {   
             _stateManagerService = stateManagerService;
             _resultDisplayService = resultDisplayService;
+            _messageBoxService = messageBoxService;
 
             InitializeComponent();
         }
@@ -27,7 +31,14 @@ namespace MusicRecognitionApp.Controls
 
             if (Visible)
             {
-                await _resultDisplayService.DisplayResults(PanelResults, PicRecordingGif, _results);
+                try
+                {
+                    await _resultDisplayService.DisplayResults(PanelResults, PicRecordingGif, _results);
+                }
+                catch (Exception ex)
+                {
+                    _messageBoxService.ShowError($"Error saving a recognized track: {ex.Message}");
+                }
             }
             else
             {

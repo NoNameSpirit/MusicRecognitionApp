@@ -7,15 +7,12 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
 {
     public class ResultDisplayService : IResultDisplayService
     {
-        private readonly IMessageBox _messageBoxService;
         private readonly ICardService _cardService;
         private readonly IRecognitionSongService _recognitionSongService;
         public ResultDisplayService(
-            IMessageBox messageBoxService,
             ICardService cardService,
             IRecognitionSongService recognitionSongService)
         {
-            _messageBoxService = messageBoxService;
             _cardService = cardService;
             _recognitionSongService = recognitionSongService;
         }
@@ -42,16 +39,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
             SearchResult bestResult = results.FirstOrDefault()!;
             if (bestResult.Matches > 0)
             {
-                try
-                {
-                    await _recognitionSongService
-                        .SaveRecognizedSongsAsync(bestResult.Song.Id, bestResult.Matches);
-                }
-                catch (Exception ex)
-                {
-                    _messageBoxService
-                        .ShowError($"Error saving a recognized track: {ex.Message}");
-                }
+                await _recognitionSongService.SaveRecognizedSongsAsync(bestResult.Song.Id, bestResult.Matches);
             }
 
             ShowResult(bestResult, panelResults, picRecordingGif);
