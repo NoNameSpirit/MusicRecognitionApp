@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MusicRecognitionApp.Application\MusicRecognitionApp.Application.csproj" />
+    <ProjectReference Include="..\MusicRecognitionApp.Core\MusicRecognitionApp.Core.csproj" />
+    <ProjectReference Include="..\MusicRecognitionApp.Infrastructure\MusicRecognitionApp.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
