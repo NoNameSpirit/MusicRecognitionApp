@@ -18,7 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MusicRecognitionApp.Shared\MusicRecognitionApp.Shared.csproj" />
+    <ProjectReference Include="..\MusicRecognitionApp.Application\MusicRecognitionApp.Application.csproj" />
+    <ProjectReference Include="..\MusicRecognitionApp.Core\MusicRecognitionApp.Core.csproj" />
+    <ProjectReference Include="..\MusicRecognitionApp.Infrastructure\MusicRecognitionApp.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

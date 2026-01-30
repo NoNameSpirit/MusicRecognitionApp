@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MusicRecognitionApp.Extensions;
 using MusicRecognitionApp.Forms;
+using MusicRecognitionApp.Infrastructure.Extensions;
 using MusicRecognitionApp.Infrastructure.Services;
 
 namespace MusicRecognitionApp

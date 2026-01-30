@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicRecognitionApp.Applica
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicRecognitionApp.Infrastructure", "MusicRecognitionApp.Infrastructure\MusicRecognitionApp.Infrastructure.csproj", "{74C90288-AB49-4BA8-9645-8A569CD10EAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicRecognitionApp.Shared", "MusicRecognitionApp.Shared\MusicRecognitionApp.Shared.csproj", "{7C3584D2-2AC9-43C9-B052-B02A42A1614B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicRecognitionApp.MudBlazor", "MusicRecognitionApp.MudBlazor\MusicRecognitionApp.MudBlazor.csproj", "{40D01D88-A167-4571-A17D-36D97013F3AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{74C90288-AB49-4BA8-9645-8A569CD10EAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74C90288-AB49-4BA8-9645-8A569CD10EAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74C90288-AB49-4BA8-9645-8A569CD10EAB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7C3584D2-2AC9-43C9-B052-B02A42A1614B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7C3584D2-2AC9-43C9-B052-B02A42A1614B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7C3584D2-2AC9-43C9-B052-B02A42A1614B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7C3584D2-2AC9-43C9-B052-B02A42A1614B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40D01D88-A167-4571-A17D-36D97013F3AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40D01D88-A167-4571-A17D-36D97013F3AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40D01D88-A167-4571-A17D-36D97013F3AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40D01D88-A167-4571-A17D-36D97013F3AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

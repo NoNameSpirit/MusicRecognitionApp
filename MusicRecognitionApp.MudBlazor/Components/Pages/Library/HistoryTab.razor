@@ -1,0 +1,50 @@
+﻿@using MudBlazor
+@using MusicRecognitionApp.Core.Models.Business
+
+<MudTextField @bind-Value="SearchQuery"
+              Placeholder="Search by title or artist"
+              Adornment="Adornment.Start"
+              AdornmentIcon="@Icons.Material.Filled.Search"
+              Class="mb-4" />
+
+@if (_recognizedSongs == null)
+{
+    <MudProgressCircular Indeterminate="true" Color="Color.Primary" Class="mt-8" />
+}
+else
+{
+    <MudTable Items="@FilteredSongs" Hover="true" Striped="true" FixedHeader="true">
+        <ColGroup>
+            <col style="width: 45%;" />
+            <col style="width: 25%;" />
+            <col style="width: 15%;" />
+            <col style="width: 15%;" />
+        </ColGroup>
+        <HeaderContent>
+            <MudTh>
+                <MudTableSortLabel T="RecognizedSongModel" SortBy="x => x.Song.Title">Title</MudTableSortLabel>
+            </MudTh>
+            <MudTh>
+                <MudTableSortLabel T="RecognizedSongModel" SortBy="x => x.Song.Artist">Artist</MudTableSortLabel>
+            </MudTh>
+            <MudTh>
+                <MudTableSortLabel T="RecognizedSongModel" SortBy="x => x.Matches">Matches</MudTableSortLabel>
+            </MudTh>
+            <MudTh>
+                <MudTableSortLabel T="RecognizedSongModel" SortBy="x => x.RecognitionDate">Date</MudTableSortLabel>
+            </MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.Song.Title</MudTd>
+            <MudTd>@context.Song.Artist</MudTd>
+            <MudTd>@context.Matches</MudTd>
+            <MudTd>@context.RecognitionDate.ToString("g")</MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>No recognition history yet.</MudText>
+        </NoRecordsContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+}
