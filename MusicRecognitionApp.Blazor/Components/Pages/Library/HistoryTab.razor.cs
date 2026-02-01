@@ -27,9 +27,9 @@ namespace MusicRecognitionApp.Blazor.Components.Pages.Library
             }
         }
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-            _recognizedSongs = RecognitionSongService.GetRecognizedSongs();
+            _recognizedSongs = await RecognitionSongService.GetRecognizedSongsAsync();
         }
     }
 }

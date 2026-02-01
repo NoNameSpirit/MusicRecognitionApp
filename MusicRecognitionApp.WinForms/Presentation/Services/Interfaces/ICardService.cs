@@ -6,9 +6,9 @@ namespace MusicRecognitionApp.Presentation.Services.Interfaces
 {
     public interface ICardService
     {
-        void ShowSongs();
+        Task ShowSongsAsync();
 
-        void ShowAuthors();
+        Task ShowAuthorsAsync();
 
         void Initialize(MaterialButton btnSongs, MaterialButton btnAuthors, FlowLayoutPanel panelOfCards);
 

@@ -30,6 +30,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
                 }
 
                 var recognizedSong = ModelToEntity.ToRecognizedSongEntity(songId, matches);
+                
                 await _recognizedSongRepository.InsertAsync(recognizedSong);
                 await _recognizedSongRepository.SaveChangesAsync();
             }
@@ -40,11 +41,13 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             }
         }
 
-        public List<RecognizedSongModel> GetRecognizedSongs()
+        public async Task<List<RecognizedSongModel>> GetRecognizedSongsAsync()
         {
             try
             {
-                return _recognizedSongRepository.GetAllOrderedByDate()
+                var recognizedSongEntity = await _recognizedSongRepository.GetAllOrderedByDateAsync();
+
+                return recognizedSongEntity
                     .Select(EntityToModel.ToRecognizedSongModel)
                     .ToList();
             }
@@ -55,13 +58,11 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             }
         }
 
-        public List<ArtistStatisticModel> GetArtistsStatistics()
+        public async Task<List<ArtistStatisticModel>> GetArtistsStatisticsAsync()
         {
             try
             {
-                return _recognizedSongRepository.GetArtistsStatistics()
-                    .Select(EntityToModel.ToArtistStatisticModel)
-                    .ToList();
+                return await _recognizedSongRepository.GetArtistsStatisticsAsync();
             }
             catch (Exception ex)
             {

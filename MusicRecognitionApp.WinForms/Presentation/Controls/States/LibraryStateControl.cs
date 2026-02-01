@@ -18,28 +18,28 @@ namespace MusicRecognitionApp.Controls
             InitializeComponent();
         }
 
-        protected override void OnVisibleChanged(EventArgs e)
+        protected async override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
 
             if (Visible)
             {
-                _cardService.ShowSongs();
+                await _cardService.ShowSongsAsync();
             }
         }
 
-        private void BtnSongs_Click(object sender, EventArgs e)
+        private async void BtnSongs_Click(object sender, EventArgs e)
         {
             FLPanelOfCards.Controls.Clear();
 
-            _cardService.ShowSongs();
+            await _cardService.ShowSongsAsync();
         }
 
-        private void BtnAuthors_Click(object sender, EventArgs e)
+        private async void BtnAuthors_Click(object sender, EventArgs e)
         {
             FLPanelOfCards.Controls.Clear();
 
-            _cardService.ShowAuthors();
+            await _cardService.ShowAuthorsAsync();
         }
 
         private async void FABtnReadyStateControl_Click(object sender, EventArgs e)

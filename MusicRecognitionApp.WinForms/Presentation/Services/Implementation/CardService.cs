@@ -26,13 +26,12 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
             _panelOfCards = panelOfCards;
         }
 
-        public void ShowSongs()
+        public async Task ShowSongsAsync()
         {
             SetBtnsStyles(true);
-            
             _panelOfCards.Controls.Clear();
             
-            var songs = _recognitionSongService.GetRecognizedSongs();
+            var songs = await _recognitionSongService.GetRecognizedSongsAsync();
 
             if (!songs.Any())
             {
@@ -51,11 +50,11 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
             };
         }
 
-        public void ShowAuthors()
+        public async Task ShowAuthorsAsync()
         {
             SetBtnsStyles(false);
             
-            var recognizedArtists = _recognitionSongService.GetRecognizedArtists();
+            var recognizedArtists = await _recognitionSongService.GetRecognizedArtistsAsync();
 
             if (!recognizedArtists.Any())
             {

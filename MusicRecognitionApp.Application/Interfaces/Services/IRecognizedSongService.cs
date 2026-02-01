@@ -5,7 +5,7 @@ namespace MusicRecognitionApp.Application.Interfaces.Services
     public interface IRecognizedSongService
     {
         Task SaveRecognizedSongAsync(int songId, int matches);
-        List<RecognizedSongModel> GetRecognizedSongs();
-        List<ArtistStatisticModel> GetArtistsStatistics();
+        Task<List<RecognizedSongModel>> GetRecognizedSongsAsync();
+        Task<List<ArtistStatisticModel>> GetArtistsStatisticsAsync();
     }
 }

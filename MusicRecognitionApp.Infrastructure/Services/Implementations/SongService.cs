@@ -72,8 +72,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
                 await _songRepository.InsertAsync(entity);
                 await _songRepository.SaveChangesAsync();
 
-                var created = await _songRepository.GetSongByTitleAndArtistAsync(title, artist);
-                var model = EntityToModel.ToSongModel(created);
+                var model = EntityToModel.ToSongModel(entity);
                 return new SongCreationResult(model, true);
             }
             catch (Exception ex)

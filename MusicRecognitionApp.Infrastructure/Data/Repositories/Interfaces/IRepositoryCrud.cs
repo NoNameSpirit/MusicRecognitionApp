@@ -10,7 +10,7 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces
         void Delete(TEntity entity);
 
         Task<TEntity> GetByIdAsync(int id);
-        IEnumerable<TEntity> Get(
+        Task<List<TEntity>> GetAsync(
             Expression<Func<TEntity, bool>>? filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             int? take = null,

@@ -1,11 +1,12 @@
-﻿using MusicRecognitionApp.Infrastructure.Data.Entities;
+﻿using MusicRecognitionApp.Core.Models.Business;
+using MusicRecognitionApp.Infrastructure.Data.Entities;
 
 namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces
 {
     public interface IRecognizedSongRepository : IRepositoryCrud<RecognizedSongEntity>
     {
-        IEnumerable<RecognizedSongEntity> GetRecent(int limit = 10);
-        IEnumerable<RecognizedSongEntity> GetAllOrderedByDate();
-        IEnumerable<(string Artist, int SongCount)> GetArtistsStatistics();
+        Task<List<RecognizedSongEntity>> GetRecentAsync(int limit = 10);
+        Task<List<RecognizedSongEntity>> GetAllOrderedByDateAsync();
+        Task<List<ArtistStatisticModel>> GetArtistsStatisticsAsync();
     }
 }

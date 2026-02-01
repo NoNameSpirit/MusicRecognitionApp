@@ -18,14 +18,14 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             await _recognizedSongService.SaveRecognizedSongAsync(songId, matches);
         }
 
-        public List<RecognizedSongModel> GetRecognizedSongs()
+        public async Task<List<RecognizedSongModel>> GetRecognizedSongsAsync()
         {
-            return _recognizedSongService.GetRecognizedSongs();
+            return await _recognizedSongService.GetRecognizedSongsAsync();
         }
 
-        public List<ArtistStatisticModel> GetRecognizedArtists()
+        public async Task<List<ArtistStatisticModel>> GetRecognizedArtistsAsync()
         {
-            return _recognizedSongService.GetArtistsStatistics();
+            return await _recognizedSongService.GetArtistsStatisticsAsync();
         }
     }
 }

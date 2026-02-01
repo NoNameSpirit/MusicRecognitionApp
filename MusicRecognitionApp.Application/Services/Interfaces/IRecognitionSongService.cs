@@ -6,8 +6,8 @@ namespace MusicRecognitionApp.Application.Services.Interfaces
     {
         Task SaveRecognizedSongsAsync(int songId, int matches);
 
-        List<RecognizedSongModel> GetRecognizedSongs();
+        Task<List<RecognizedSongModel>> GetRecognizedSongsAsync();
 
-        List<ArtistStatisticModel> GetRecognizedArtists();
+        Task<List<ArtistStatisticModel>> GetRecognizedArtistsAsync();
     }
 }

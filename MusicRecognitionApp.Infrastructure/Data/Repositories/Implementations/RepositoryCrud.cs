@@ -35,7 +35,7 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
             return await _dbSet.FindAsync(id);
         }
 
-        public IEnumerable<TEntity> Get(
+        public async Task<List<TEntity>> GetAsync(
             Expression<Func<TEntity, bool>>? filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             int? take = null,
@@ -54,7 +54,9 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
             if (take != null)
                 query.Take(take.Value);
 
-            return orderBy != null ? orderBy(query).ToList() : query.ToList();
+            var orderedQuery = orderBy != null ? orderBy(query) : query;
+
+            return await orderedQuery.ToListAsync();
         }
 
 
