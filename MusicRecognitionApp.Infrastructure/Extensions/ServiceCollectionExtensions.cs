@@ -10,6 +10,7 @@ using MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations;
 using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
 using MusicRecognitionApp.Infrastructure.Services;
 using MusicRecognitionApp.Infrastructure.Services.Implementations;
+using System.Reflection;
 
 namespace MusicRecognitionApp.Infrastructure.Extensions
 {
@@ -17,8 +18,12 @@ namespace MusicRecognitionApp.Infrastructure.Extensions
     {
         public static IServiceCollection AddDatabaseServices(this IServiceCollection services) 
         {
-            var solutionRoot = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, ".."));
-            var dbPath = Path.Combine(solutionRoot, "ShazamDB.sqlite");
+            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+            var assemblyFolder = Path.GetDirectoryName(assemblyLocation);
+
+            var solutionDir = Path.Combine(assemblyFolder, "..", "..", "..", "..");
+            var dbPath = Path.Combine(solutionDir, "ShazamDB.sqlite");
+
             var connectionString = $"Data Source={dbPath};";
 
             services.AddDbContext<MusicRecognitionContext>(options =>
