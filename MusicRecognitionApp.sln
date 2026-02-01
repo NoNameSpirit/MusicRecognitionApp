@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicRecognitionApp.Applica
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicRecognitionApp.Infrastructure", "MusicRecognitionApp.Infrastructure\MusicRecognitionApp.Infrastructure.csproj", "{74C90288-AB49-4BA8-9645-8A569CD10EAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicRecognitionApp.MudBlazor", "MusicRecognitionApp.MudBlazor\MusicRecognitionApp.MudBlazor.csproj", "{40D01D88-A167-4571-A17D-36D97013F3AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicRecognitionApp.Blazor", "MusicRecognitionApp.Blazor\MusicRecognitionApp.Blazor.csproj", "{40D01D88-A167-4571-A17D-36D97013F3AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
