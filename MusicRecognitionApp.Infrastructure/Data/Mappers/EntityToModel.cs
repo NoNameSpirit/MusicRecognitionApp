@@ -57,7 +57,6 @@ namespace MusicRecognitionApp.Infrastructure.Data.Mappers
             {
                 Hash = entity.Hash,
                 TimeOffset = entity.TimeOffset,
-                SongId = songId,
             };
         }
 

@@ -4,6 +4,6 @@ namespace MusicRecognitionApp.Application.Services.Interfaces
 {
     public interface ISongImportService
     {
-        Task AddSongAsync(string title, string artist, List<AudioHash> hashes);
+        Task AddSongAsync(string title, string artist, List<AudioHash> hashes, CancellationToken cancellationToken = default);
     }
 }

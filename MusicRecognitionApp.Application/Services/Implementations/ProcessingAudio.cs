@@ -94,22 +94,24 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             return Path.GetFileName(dirName);
         }
 
-        private async Task AddTrackAsync(string audioFilePath, string title, string artist)
+        public async Task AddTrackAsync(string audioFilePath, string title, string artist, CancellationToken cancellationToken = default)
         {
+            float[] processedAudio = await Task.Run(() 
+                => _audioProcessor.PreprocessAudio(audioFilePath), cancellationToken);
 
-            float[] processedAudio = await Task.Run(()
-                => _audioProcessor.PreprocessAudio(audioFilePath));
-
+            cancellationToken.ThrowIfCancellationRequested();
             SpectrogramData spectrogramData = await Task.Run(()
-                => _spectrogramBuilder.ProcessAudio(processedAudio, 11025));
+                => _spectrogramBuilder.ProcessAudio(processedAudio, 11025), cancellationToken);
 
+            cancellationToken.ThrowIfCancellationRequested();
             List<Peak> allPeaks = await Task.Run(()
-                => _peakDetector.ProcessPeekDetector(spectrogramData));
+                => _peakDetector.ProcessPeekDetector(spectrogramData), cancellationToken);
 
+            cancellationToken.ThrowIfCancellationRequested();
             List<AudioHash> queryHashes = await Task.Run(()
-                => _hashGenerator.GenerateHashes(allPeaks));
+                => _hashGenerator.GenerateHashes(allPeaks), cancellationToken);
 
-            await _importService.AddSongAsync(title, artist, queryHashes);
+            await _importService.AddSongAsync(title, artist, queryHashes, cancellationToken);
         }
     }
 }
