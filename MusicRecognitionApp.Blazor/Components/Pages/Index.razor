@@ -1,0 +1,22 @@
+﻿@page "/"
+
+@using MusicRecognitionApp.Blazor.Components.Pages.Library
+
+<MudPaper Elevation="1">
+    <MudToolBar>
+        <MudSpacer />
+        <MudButton StartIcon="@Icons.Material.Filled.Add"
+                   Color="Color.Primary"
+                   OnClick="OpenAddTrackDialog">
+            Add Track
+        </MudButton>
+    </MudToolBar>
+    <MudTabs Centered="true" Border="true" Rounded="true" AlwaysShowScrollButtons="true">
+        <MudTabPanel Text="History">
+            <HistoryTab />
+        </MudTabPanel>
+        <MudTabPanel Text="Statistic">
+            <StatisticTab />
+        </MudTabPanel>
+    </MudTabs>
+</MudPaper>

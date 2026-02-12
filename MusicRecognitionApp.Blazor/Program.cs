@@ -5,7 +5,7 @@ using MusicRecognitionApp.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDatabaseServices()
+builder.Services.AddDatabaseServices(builder.Configuration)
                 .AddInfrustructureServices()
                 .AddApplicationServices();
 
