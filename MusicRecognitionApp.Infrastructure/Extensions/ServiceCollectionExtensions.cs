@@ -1,33 +1,29 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MusicRecognitionApp.Application.Interfaces.Audio;
 using MusicRecognitionApp.Application.Interfaces.Services;
+using MusicRecognitionApp.Application.Interfaces.UnitOfWork;
 using MusicRecognitionApp.Application.Services.Implementations;
 using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Infrastructure.Audio.Implementations;
+using MusicRecognitionApp.Infrastructure.Data;
 using MusicRecognitionApp.Infrastructure.Data.Contexts;
 using MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations;
 using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
 using MusicRecognitionApp.Infrastructure.Services;
 using MusicRecognitionApp.Infrastructure.Services.Implementations;
-using System.Reflection;
 
 namespace MusicRecognitionApp.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddDatabaseServices(this IServiceCollection services) 
+        public static IServiceCollection AddDatabaseServices(
+            this IServiceCollection services,
+            IConfiguration configuration) 
         {
-            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
-            var assemblyFolder = Path.GetDirectoryName(assemblyLocation);
-
-            var solutionDir = Path.Combine(assemblyFolder, "..", "..", "..", "..");
-            var dbPath = Path.Combine(solutionDir, "ShazamDB.sqlite");
-
-            var connectionString = $"Data Source={dbPath};";
-
             services.AddDbContext<MusicRecognitionContext>(options =>
-                options.UseSqlite(connectionString));
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
            
             services.AddScoped<ISongRepository, SongRepository>()
                     .AddScoped<IAudioHashRepository, AudioHashRepository>()
@@ -44,7 +40,8 @@ namespace MusicRecognitionApp.Infrastructure.Extensions
                     .AddSingleton<ISpectrogramBuilder, SpectrogramBuilder>() 
                     .AddScoped<IAudioHashService, AudioHashService>()
                     .AddScoped<IRecognizedSongService, RecognizedSongService>()
-                    .AddScoped<ISongService, SongService>();
+                    .AddScoped<ISongService, SongService>()
+                    .AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<DatabaseInitializer>();
 
