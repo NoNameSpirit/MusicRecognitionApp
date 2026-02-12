@@ -3,7 +3,6 @@ using MusicRecognitionApp.Application.Interfaces.Services;
 using MusicRecognitionApp.Core.Models.Audio;
 using MusicRecognitionApp.Infrastructure.Data.Mappers;
 using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
-using System.Diagnostics;
 
 namespace MusicRecognitionApp.Infrastructure.Services.Implementations
 {
@@ -33,7 +32,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             }
         }
 
-        public async Task AddHashesAsync(List<AudioHash> hashes, int songId)
+        public async Task AddHashesAsync(List<AudioHash> hashes, int songId, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -48,8 +47,6 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
                     var entity = EntityToModel.ToAudioHashEntity(hash, songId);
                     await _audioHashRepository.InsertAsync(entity);
                 }
-
-                await _audioHashRepository.SaveChangesAsync();
             }
             catch (Exception ex)
             {

@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System.Linq.Expressions;
+using System.Threading;
 
 namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces
 {
@@ -16,7 +18,7 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces
             int? take = null,
             params string[] includes);
 
-        Task<int> SaveChangesAsync();
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
         DbContext Context { get; }
     }

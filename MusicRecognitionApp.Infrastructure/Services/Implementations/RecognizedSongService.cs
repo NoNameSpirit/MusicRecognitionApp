@@ -19,7 +19,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             _logger = logger;
         }
 
-        public async Task SaveRecognizedSongAsync(int songId, int matches)
+        public async Task SaveRecognizedSongAsync(int songId, int matches, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
                 var recognizedSong = ModelToEntity.ToRecognizedSongEntity(songId, matches);
                 
                 await _recognizedSongRepository.InsertAsync(recognizedSong);
-                await _recognizedSongRepository.SaveChangesAsync();
+                await _recognizedSongRepository.SaveChangesAsync(cancellationToken);
             }
             catch (Exception ex)
             {

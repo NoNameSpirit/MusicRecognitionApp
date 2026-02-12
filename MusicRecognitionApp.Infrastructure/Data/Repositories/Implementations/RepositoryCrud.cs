@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
+using System.Data;
 using System.Linq.Expressions;
 
 namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
@@ -60,9 +61,9 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
         }
 
 
-        public virtual async Task<int> SaveChangesAsync()
+        public virtual async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            return await Context.SaveChangesAsync();
+            return await Context.SaveChangesAsync(cancellationToken);
         }
     }
 }
