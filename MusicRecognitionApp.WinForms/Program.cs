@@ -1,7 +1,9 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 using MusicRecognitionApp.Extensions;
 using MusicRecognitionApp.Forms;
+using MusicRecognitionApp.Infrastructure.Data.Contexts;
 using MusicRecognitionApp.Infrastructure.Extensions;
 using MusicRecognitionApp.Infrastructure.Services;
 
@@ -10,56 +12,28 @@ namespace MusicRecognitionApp
     internal static class Program
     {
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             ApplicationConfiguration.Initialize();
             
-            var serviceProvider = ConfigureServices();
-
-            EnsureDatabaseCreated(serviceProvider);
-
-            using var scope = serviceProvider.CreateScope();
-            MainForm mainForm = scope.ServiceProvider.GetRequiredService<MainForm>(); 
+            using var host = CreateHostBuidler(args).Build();
+            using var formScope = host.Services.CreateScope();
+            
+            MainForm mainForm = formScope.ServiceProvider.GetRequiredService<MainForm>(); 
+            
             System.Windows.Forms.Application.Run(mainForm); 
-        }
+        }   
 
-        private static ServiceProvider ConfigureServices()
+        private static IHostBuilder CreateHostBuidler(string[] args)
         {
-            var services = new ServiceCollection();
-
-            services
-                .AddDatabaseServices()
-                .AddInfrustructureServices()
-                .AddApplicationServices()
-                .AddPresentationServices()
-                .AddLogging(builder =>
-                {
-                    builder.AddDebug();
-                });
-
-            return services.BuildServiceProvider();
-        }
-
-        private static void EnsureDatabaseCreated(ServiceProvider serviceProvider)
-        {
-            try
-            {
-                using var scope = serviceProvider.CreateScope();
-
-                var initializer = scope.ServiceProvider.GetRequiredService<DatabaseInitializer>();
-
-                initializer.EnsureCreated();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    $"Launch error: {ex.Message}{Environment.NewLine}{Environment.NewLine}" +
-                    $"Close the app and try again.",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-                Environment.Exit(1);
-            }
+            return Host.CreateDefaultBuilder(args)
+                       .ConfigureServices((context, services) => 
+                       {
+                            services.AddDatabaseServices(context.Configuration)
+                                    .AddInfrustructureServices()
+                                    .AddApplicationServices()
+                                    .AddPresentationServices();
+                       });
         }
     }
 }

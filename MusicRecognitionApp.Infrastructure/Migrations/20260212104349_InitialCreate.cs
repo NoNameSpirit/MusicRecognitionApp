@@ -15,10 +15,10 @@ namespace MusicRecognitionApp.Infrastructure.Migrations
                 name: "Songs",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(type: "TEXT", nullable: false),
-                    Artist = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Artist = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -29,11 +29,11 @@ namespace MusicRecognitionApp.Infrastructure.Migrations
                 name: "AudioHashes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Hash = table.Column<uint>(type: "INT", nullable: false),
-                    TimeOffset = table.Column<double>(type: "REAL", nullable: false),
-                    SongId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Hash = table.Column<int>(type: "INT", nullable: false),
+                    TimeOffset = table.Column<double>(type: "float", nullable: false),
+                    SongId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -50,11 +50,11 @@ namespace MusicRecognitionApp.Infrastructure.Migrations
                 name: "RecognizedSongs",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    RecognitionDate = table.Column<DateTime>(type: "TEXT", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
-                    Matches = table.Column<int>(type: "INTEGER", nullable: false),
-                    SongId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RecognitionDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    Matches = table.Column<int>(type: "int", nullable: false),
+                    SongId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
