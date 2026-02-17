@@ -6,6 +6,6 @@ namespace MusicRecognitionApp.Application.Services.Interfaces
     {
         event Action<int> AnalysisProgress;
 
-        Task<List<SearchResult>> RecognizeFromMicrophoneAsync(string audioFilePath);
+        Task<List<SearchResult>> RecognizeFromMicrophoneAsync(string audioFilePath, CancellationToken cancellationToken = default);
     }
 }

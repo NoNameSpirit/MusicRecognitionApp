@@ -6,6 +6,8 @@ namespace MusicRecognitionApp.Application.Services.Interfaces
     {
         event Action<int> AnalyzingSession;
 
+        void StopAnalyzing();
+
         Task<List<SearchResult>?> StartAnalyzingAsync(string? recordedAudioFile);
     }
 }

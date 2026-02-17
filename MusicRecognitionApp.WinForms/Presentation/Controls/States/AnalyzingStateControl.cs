@@ -67,6 +67,12 @@ namespace MusicRecognitionApp.Controls
 
                 await _stateManagerService.SetStateAsync(AppState.Result, RecognitionResults);
             }
+            catch (OperationCanceledException)
+            { 
+                _messageBoxService.ShowError($"Analysis has stopped");
+
+                await _stateManagerService.SetStateAsync(AppState.Ready);
+            }
             catch (Exception ex)
             {
                 _messageBoxService.ShowError($"Analysis failed: {ex.Message}");
@@ -77,6 +83,11 @@ namespace MusicRecognitionApp.Controls
             {
                 _sessionService.AnalyzingSession -= UpdateProgress;
             }
+        }
+
+        private void BtnStopRecording_Click(object sender, EventArgs e)
+        {
+            _sessionService.StopAnalyzing();
         }
     }
 }

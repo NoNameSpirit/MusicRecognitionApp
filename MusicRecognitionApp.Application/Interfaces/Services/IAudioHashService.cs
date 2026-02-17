@@ -1,10 +1,7 @@
-﻿using MusicRecognitionApp.Core.Models.Audio;
-using System.Threading;
-
-namespace MusicRecognitionApp.Application.Interfaces.Services
+﻿namespace MusicRecognitionApp.Application.Interfaces.Services
 {
     public interface IAudioHashService
     {
-        Task<List<(int SongId, int Count)>> FindSongMatchesAsync(List<uint> hashValues);
+        Task<List<(int SongId, int Count)>> FindSongMatchesAsync(List<uint> hashValues, CancellationToken cancellationToken = default);
     }
 }

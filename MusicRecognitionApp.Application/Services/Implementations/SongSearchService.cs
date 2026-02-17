@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
-using MusicRecognitionApp.Application.Interfaces.Audio;
 using MusicRecognitionApp.Application.Interfaces.Services;
+using MusicRecognitionApp.Application.Interfaces.UnitOfWork;
 using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Models.Audio;
-using System.Diagnostics;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
 {
@@ -12,22 +11,19 @@ namespace MusicRecognitionApp.Application.Services.Implementations
     {
         private readonly ISongService _songService;
         private readonly IAudioHashService _audioHashService;
-        private readonly IAudioHashGenerator _audioHashGenerator;
         private readonly ILogger<SongSearchService> _logger;
 
         public SongSearchService(
             IAudioHashService audioHashService,
             ISongService songService,
-            IAudioHashGenerator audioHashGenerator,
             ILogger<SongSearchService> logger)
         {
             _audioHashService = audioHashService;
             _songService = songService;
-            _audioHashGenerator = audioHashGenerator;
             _logger = logger;
         }
 
-        public async Task<List<SearchResult>> SearchSong(List<AudioHash> queryHashes)
+        public async Task<List<SearchResult>> SearchSong(List<AudioHash> queryHashes, CancellationToken cancellationToken = default)
         {
             if (queryHashes == null || queryHashes.Count == 0)
                 return new List<SearchResult>();
@@ -35,12 +31,12 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             try
             {
                 var hashValues = queryHashes.Select(h => h.Hash).ToList();
-                var matches = await _audioHashService.FindSongMatchesAsync(hashValues);
+                var matches = await _audioHashService.FindSongMatchesAsync(hashValues, cancellationToken);
 
                 var results = new List<SearchResult>();
                 foreach (var (songId, count) in matches)
                 {
-                    var song = await _songService.GetByIdAsync(songId);
+                    var song = await _songService.GetByIdAsync(songId, cancellationToken);
 
                     if (song != null)
                     {
@@ -58,6 +54,10 @@ namespace MusicRecognitionApp.Application.Services.Implementations
                     .ToList();
 
                 return sortedResults;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception ex)
             {

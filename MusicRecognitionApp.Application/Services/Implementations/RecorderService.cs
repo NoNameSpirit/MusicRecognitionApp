@@ -20,7 +20,6 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             outputFilePath = Path.Combine(exeDirectory, $"recorded_audio_{DateTime.Now:yyyyMMdd_HHmmssfff}.wav");
 
             WaveInEvent? sourceStream = null;
-            using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
             try
             {
@@ -43,18 +42,19 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 
                 for (int i = 0; i < durationSeconds; i++)
                 {
-                    await Task.Delay(1000, cts.Token);
+                    await Task.Delay(1000, cancellationToken);
 
                     int progress = (i + 1) * 100 / durationSeconds;
                     RecordingProgress?.Invoke(progress);
                 }
-                success = !cts.Token.IsCancellationRequested;
+                cancellationToken.ThrowIfCancellationRequested();
 
-                return success ? outputFilePath : null;
+                success = true; 
+                return outputFilePath;
             }
             catch (OperationCanceledException)
             {
-                return null;
+                throw;
             }
             finally
             {

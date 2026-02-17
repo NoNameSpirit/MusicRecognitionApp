@@ -31,10 +31,11 @@ namespace MusicRecognitionApp.Controls
         private void InitializeComponent()
         {
             PanelMain = new Panel();
+            PicRecordingGif = new PictureBox();
             LblProgressPercent = new MaterialSkin.Controls.MaterialLabel();
             LblAnalyzingStatus = new MaterialSkin.Controls.MaterialLabel();
             ProgressBarAnalyzing = new MaterialSkin.Controls.MaterialProgressBar();
-            PicRecordingGif = new PictureBox();
+            BtnStopRecording = new MaterialSkin.Controls.MaterialButton();
             PanelMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)PicRecordingGif).BeginInit();
             SuspendLayout();
@@ -42,6 +43,7 @@ namespace MusicRecognitionApp.Controls
             // PanelMain
             // 
             PanelMain.BackColor = Color.AliceBlue;
+            PanelMain.Controls.Add(BtnStopRecording);
             PanelMain.Controls.Add(PicRecordingGif);
             PanelMain.Controls.Add(LblProgressPercent);
             PanelMain.Controls.Add(LblAnalyzingStatus);
@@ -53,6 +55,17 @@ namespace MusicRecognitionApp.Controls
             PanelMain.Padding = new Padding(14);
             PanelMain.Size = new Size(600, 650);
             PanelMain.TabIndex = 0;
+            // 
+            // PicRecordingGif
+            // 
+            PicRecordingGif.BackColor = Color.Transparent;
+            PicRecordingGif.Image = Resources.Rimuru;
+            PicRecordingGif.Location = new Point(150, 175);
+            PicRecordingGif.Name = "PicRecordingGif";
+            PicRecordingGif.Size = new Size(300, 300);
+            PicRecordingGif.SizeMode = PictureBoxSizeMode.Zoom;
+            PicRecordingGif.TabIndex = 4;
+            PicRecordingGif.TabStop = false;
             // 
             // LblProgressPercent
             // 
@@ -87,16 +100,26 @@ namespace MusicRecognitionApp.Controls
             ProgressBarAnalyzing.Size = new Size(500, 5);
             ProgressBarAnalyzing.TabIndex = 1;
             // 
-            // PicRecordingGif
+            // BtnStopRecording
             // 
-            PicRecordingGif.BackColor = Color.Transparent;
-            PicRecordingGif.Image = Resources.Rimuru;
-            PicRecordingGif.Location = new Point(150, 175);
-            PicRecordingGif.Name = "PicRecordingGif";
-            PicRecordingGif.Size = new Size(300, 300);
-            PicRecordingGif.SizeMode = PictureBoxSizeMode.Zoom;
-            PicRecordingGif.TabIndex = 4;
-            PicRecordingGif.TabStop = false;
+            BtnStopRecording.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            BtnStopRecording.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            BtnStopRecording.Depth = 0;
+            BtnStopRecording.Dock = DockStyle.Bottom;
+            BtnStopRecording.HighEmphasis = true;
+            BtnStopRecording.Icon = null;
+            BtnStopRecording.Location = new Point(14, 600);
+            BtnStopRecording.Margin = new Padding(4, 6, 4, 6);
+            BtnStopRecording.MouseState = MaterialSkin.MouseState.HOVER;
+            BtnStopRecording.Name = "BtnStopRecording";
+            BtnStopRecording.NoAccentTextColor = Color.Empty;
+            BtnStopRecording.Size = new Size(572, 36);
+            BtnStopRecording.TabIndex = 5;
+            BtnStopRecording.Text = "Stop recognition";
+            BtnStopRecording.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            BtnStopRecording.UseAccentColor = false;
+            BtnStopRecording.UseVisualStyleBackColor = true;
+            BtnStopRecording.Click += BtnStopRecording_Click;
             // 
             // AnalyzingStateControl
             // 
@@ -104,6 +127,7 @@ namespace MusicRecognitionApp.Controls
             Name = "AnalyzingStateControl";
             Size = new Size(600, 650);
             PanelMain.ResumeLayout(false);
+            PanelMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)PicRecordingGif).EndInit();
             ResumeLayout(false);
         }
@@ -115,5 +139,6 @@ namespace MusicRecognitionApp.Controls
         private MaterialSkin.Controls.MaterialLabel LblAnalyzingStatus;
         private MaterialSkin.Controls.MaterialProgressBar ProgressBarAnalyzing;
         private PictureBox PicRecordingGif;
+        private MaterialSkin.Controls.MaterialButton BtnStopRecording;
     }
 }

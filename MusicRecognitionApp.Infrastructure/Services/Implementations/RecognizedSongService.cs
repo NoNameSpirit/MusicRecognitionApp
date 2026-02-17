@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using MusicRecognitionApp.Application.Interfaces.Services;
+using MusicRecognitionApp.Application.Interfaces.UnitOfWork;
 using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Infrastructure.Data.Mappers;
 using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
@@ -10,13 +11,16 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
     {
         private readonly IRecognizedSongRepository _recognizedSongRepository;
         private readonly ILogger<RecognizedSongService> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
         public RecognizedSongService(
             IRecognizedSongRepository recognizedSongRepository,
-            ILogger<RecognizedSongService> logger)
+            ILogger<RecognizedSongService> logger,
+            IUnitOfWork unitOfWork)
         {
             _recognizedSongRepository = recognizedSongRepository;
             _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task SaveRecognizedSongAsync(int songId, int matches, CancellationToken cancellationToken = default)
@@ -30,9 +34,14 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
                 }
 
                 var recognizedSong = ModelToEntity.ToRecognizedSongEntity(songId, matches);
-                
-                await _recognizedSongRepository.InsertAsync(recognizedSong);
+
+                await _recognizedSongRepository.InsertAsync(recognizedSong, cancellationToken);
                 await _recognizedSongRepository.SaveChangesAsync(cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                _unitOfWork.Clear();
+                throw;
             }
             catch (Exception ex)
             {

@@ -13,7 +13,7 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
 
         }
 
-        public async Task<List<(int SongId, int Count)>> GetMatchesAsync(IEnumerable<uint> queryHashes)
+        public async Task<List<(int SongId, int Count)>> GetMatchesAsync(IEnumerable<uint> queryHashes, CancellationToken cancellationToken = default)
         {
             var result = await Context.Set<AudioHashEntity>()
                 .Where(h => queryHashes.Contains(h.Hash))
@@ -22,7 +22,7 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
                 .Where(c => c.Count >= 2)
                 .OrderByDescending(el => el.Count)
                 .Take(5)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return result.Select(el => (el.SongId, el.Count)).ToList();
         }

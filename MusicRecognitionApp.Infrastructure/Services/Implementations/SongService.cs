@@ -22,11 +22,11 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             _logger = logger;
         }
 
-        public async Task<SongModel?> GetByIdAsync(int id)
+        public async Task<SongModel?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             try
             {
-                var entity = await _songRepository.GetByIdAsync(id);
+                var entity = await _songRepository.GetByIdAsync(id, cancellationToken);
                 return entity == null ? null : EntityToModel.ToSongModel(entity);
             }
             catch (Exception ex)
@@ -87,7 +87,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
                     });
                 }
 
-                await _songRepository.InsertAsync(song);
+                await _songRepository.InsertAsync(song, cancellationToken);
 
                 var model = EntityToModel.ToSongModel(song);
                 return new SongCreationResult(model, true);

@@ -1,17 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using System.Linq.Expressions;
-using System.Threading;
 
 namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces
 {
     public interface IRepositoryCrud<TEntity> where TEntity : class
     {
-        Task InsertAsync(TEntity entity);
+        Task InsertAsync(TEntity entity, CancellationToken cancellationToken = default);
         void Update(TEntity entity);
         void Delete(TEntity entity);
 
-        Task<TEntity> GetByIdAsync(int id);
+        Task<TEntity> GetByIdAsync(int id, CancellationToken cancellationToken = default);
         Task<List<TEntity>> GetAsync(
             Expression<Func<TEntity, bool>>? filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,

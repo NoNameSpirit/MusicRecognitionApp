@@ -2,6 +2,7 @@
 using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
 using System.Data;
 using System.Linq.Expressions;
+using System.Threading;
 
 namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
 {
@@ -16,9 +17,9 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
             _dbSet = context.Set<TEntity>();
         }
 
-        public virtual async Task InsertAsync(TEntity entity)
+        public virtual async Task InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
-            await _dbSet.AddAsync(entity);
+            await _dbSet.AddAsync(entity, cancellationToken);
         }
 
         public void Update(TEntity entity)
@@ -31,9 +32,9 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
             _dbSet.Remove(entity);
         }
 
-        public virtual async Task<TEntity?> GetByIdAsync(int id)
+        public virtual async Task<TEntity?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            return await _dbSet.FindAsync(id);
+            return await _dbSet.FindAsync(id, cancellationToken);
         }
 
         public async Task<List<TEntity>> GetAsync(

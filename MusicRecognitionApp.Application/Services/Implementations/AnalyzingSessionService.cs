@@ -7,6 +7,8 @@ namespace MusicRecognitionApp.Application.Services.Implementations
     {
         public event Action<int> AnalyzingSession;
 
+        private CancellationTokenSource? _cts;
+
         private readonly IRecognitionService _recognitionService;
         
         public AnalyzingSessionService(IRecognitionService recognitionService)
@@ -20,21 +22,35 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 
             try
             {
+                _cts = new CancellationTokenSource();
+
                 _recognitionService.AnalysisProgress += OnAnalyzingSession;
 
-                RecognitionResults = await _recognitionService.RecognizeFromMicrophoneAsync(recordedAudioFile);
+                RecognitionResults = await _recognitionService.RecognizeFromMicrophoneAsync(recordedAudioFile, _cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             finally
             {
-                _recognitionService.AnalysisProgress -= OnAnalyzingSession;
-            }
+                _cts.Dispose();
+                _cts = null;
 
-            if (File.Exists(recordedAudioFile))
-            {
-                File.Delete(recordedAudioFile);
+                _recognitionService.AnalysisProgress -= OnAnalyzingSession;
+
+                if (File.Exists(recordedAudioFile))
+                {
+                    File.Delete(recordedAudioFile);
+                }
             }
 
             return RecognitionResults;
+        }
+
+        public void StopAnalyzing()
+        {
+            _cts?.Cancel();
         }
 
         private void OnAnalyzingSession(int progress)

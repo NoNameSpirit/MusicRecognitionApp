@@ -19,20 +19,26 @@ namespace MusicRecognitionApp.Application.Services.Implementations
         {
             if (_cts != null)
                 throw new InvalidOperationException("Already recording");
+            
             try
             {
                 _cts = new CancellationTokenSource();
-                _recorderService.RecordingProgress += OnRecordingSession;
-            
-                string? recordedAudioFile = await _recorderService.RecordAudioFromMicrophoneAsync(15, _cts.Token);
                 
+                _recorderService.RecordingProgress += OnRecordingSession;
+
+                string? recordedAudioFile = await _recorderService.RecordAudioFromMicrophoneAsync(15, _cts.Token);
+
                 return recordedAudioFile;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             finally
             {
                 _recorderService.RecordingProgress -= OnRecordingSession;
                 _cts?.Dispose();
-                _cts = null;    
+                _cts = null;
             }
         }
 

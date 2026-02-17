@@ -31,29 +31,29 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             _searchService = searchService;
         }
 
-        public async Task<List<SearchResult>> RecognizeFromMicrophoneAsync(string audioFilePath)
+        public async Task<List<SearchResult>> RecognizeFromMicrophoneAsync(string audioFilePath, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(audioFilePath))
                 return new List<SearchResult>();
 
             AnalysisProgress?.Invoke(10);
             float[] processedAudio = await Task.Run(()
-                => _audioProcessor.PreprocessAudio(audioFilePath));
+                => _audioProcessor.PreprocessAudio(audioFilePath), cancellationToken);
 
             AnalysisProgress?.Invoke(20);
             SpectrogramData spectrogramData = await Task.Run(()
-                => _spectrogramBuilder.ProcessAudio(processedAudio, TargetSampleRate));
+                => _spectrogramBuilder.ProcessAudio(processedAudio, TargetSampleRate), cancellationToken);
 
             AnalysisProgress?.Invoke(40);
             List<Peak> allPeaks = await Task.Run(()
-                => _peakDetector.ProcessPeekDetector(spectrogramData));
+                => _peakDetector.ProcessPeekDetector(spectrogramData), cancellationToken);
 
             AnalysisProgress?.Invoke(50);
             List<AudioHash> queryHashes = await Task.Run(()
-                => _hashGenerator.GenerateHashes(allPeaks));
+                => _hashGenerator.GenerateHashes(allPeaks), cancellationToken);
 
             AnalysisProgress?.Invoke(70);
-            var results = await _searchService.SearchSong(queryHashes);
+            var results = await _searchService.SearchSong(queryHashes, cancellationToken);
 
             AnalysisProgress?.Invoke(100);
             return results;

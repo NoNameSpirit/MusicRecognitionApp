@@ -1,6 +1,7 @@
 ﻿using MusicRecognitionApp.Application.Interfaces.Services;
 using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Models.Business;
+using System.Threading;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
 {
@@ -13,9 +14,9 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             _recognizedSongService = recognizedSongService;
         }
 
-        public async Task SaveRecognizedSongsAsync(int songId, int matches)
+        public async Task SaveRecognizedSongsAsync(int songId, int matches, CancellationToken cancellationToken = default)
         {
-            await _recognizedSongService.SaveRecognizedSongAsync(songId, matches);
+            await _recognizedSongService.SaveRecognizedSongAsync(songId, matches, cancellationToken);
         }
 
         public async Task<List<RecognizedSongModel>> GetRecognizedSongsAsync()

@@ -56,6 +56,12 @@ namespace MusicRecognitionApp.Controls
                     await _stateManagerService.SetStateAsync(AppState.Analyzing, recordedAudioFile);
                 }
             }
+            catch (OperationCanceledException)
+            {
+                _messageBoxService.ShowError($"Recording has stopped");
+
+                await _stateManagerService.SetStateAsync(AppState.Ready);
+            }
             catch (Exception ex)
             {
                 _messageBoxService.ShowError($"Recording failed: {ex.Message}");
