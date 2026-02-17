@@ -8,18 +8,15 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 {
     public class SongImportService : ISongImportService
     {
-        private readonly IAudioHashService _audioHashService;
         private readonly ISongService _songService;
         private readonly ILogger<SongImportService> _logger;
         private readonly IUnitOfWork _unitOfWork;
 
         public SongImportService(
-            IAudioHashService audioHashService,
             ISongService songService,
             ILogger<SongImportService> logger,
             IUnitOfWork unitOfWork)
         {
-            _audioHashService = audioHashService;
             _songService = songService;
             _logger = logger;
             _unitOfWork = unitOfWork;

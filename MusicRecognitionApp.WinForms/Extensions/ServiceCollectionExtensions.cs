@@ -12,11 +12,12 @@ namespace MusicRecognitionApp.Extensions
         {
             services.AddSingleton<IMessageBoxService, MessageBoxService>()
                     .AddSingleton<IAnimationService, AnimationService>()
-                    .AddScoped<IStateRegistry, StateRegistryService>()
-                    .AddScoped<IStateManagerService, StateManagerService>()
-                    .AddScoped<ICardService, CardService>()
-                    .AddScoped<IResultDisplayService, ResultDisplayService>()
-                    .AddTransient<ISongAddingService, SongAddingService>();
+                    .AddSingleton<ICardService, CardService>()
+                    .AddSingleton<IResultDisplayService, ResultDisplayService>()
+                    .AddSingleton<ISongAddingService, SongAddingService>()
+                    .AddSingleton<IStateRegistry, StateRegistryService>()
+                    .AddSingleton<IStateManagerService, StateManagerService>();
+                    
 
             services.AddScoped<MainForm>();
             

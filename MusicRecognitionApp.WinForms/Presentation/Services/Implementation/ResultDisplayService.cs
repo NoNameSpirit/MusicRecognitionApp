@@ -1,4 +1,5 @@
 ﻿using MaterialSkin.Controls;
+using Microsoft.Extensions.DependencyInjection;
 using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
@@ -9,13 +10,14 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
     public class ResultDisplayService : IResultDisplayService
     {
         private readonly ICardService _cardService;
-        private readonly IRecognitionSongService _recognitionSongService;
+        private readonly IServiceScopeFactory _scopeFactory;
+
         public ResultDisplayService(
             ICardService cardService,
-            IRecognitionSongService recognitionSongService)
+            IServiceScopeFactory scopeFactory)
         {
             _cardService = cardService;
-            _recognitionSongService = recognitionSongService;
+            _scopeFactory = scopeFactory;
         }
 
         public void ClearResults(Panel panelResults)
@@ -29,21 +31,26 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
 
         public async Task DisplayResults(Panel panelResults, PictureBox picRecordingGif, List<SearchResult>? results)
         {
-            ClearResults(panelResults);
-
-            if (results == null || results.Count == 0)
+            using (var scope = _scopeFactory.CreateScope())
             {
-                ShowNoResults(panelResults, picRecordingGif);
-                return;
-            }
+                var _recognitionSongService = scope.ServiceProvider.GetRequiredService<IRecognitionSongService>();
 
-            SearchResult bestResult = results.FirstOrDefault()!;
-            if (bestResult.Matches > 0)
-            {
-                await _recognitionSongService.SaveRecognizedSongsAsync(bestResult.Song.Id, bestResult.Matches);
-            }
+                ClearResults(panelResults);
 
-            ShowResult(bestResult, panelResults, picRecordingGif);
+                if (results == null || results.Count == 0)
+                {
+                    ShowNoResults(panelResults, picRecordingGif);
+                    return;
+                }
+
+                SearchResult bestResult = results.FirstOrDefault()!;
+                if (bestResult.Matches > 0)
+                {
+                    await _recognitionSongService.SaveRecognizedSongsAsync(bestResult.Song.Id, bestResult.Matches);
+                }
+
+                ShowResult(bestResult, panelResults, picRecordingGif);
+            }
         }
 
         private void ShowNoResults(Panel panelResults, PictureBox picRecordingGif)

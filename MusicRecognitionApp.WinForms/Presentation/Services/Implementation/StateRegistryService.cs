@@ -10,7 +10,6 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
         private readonly ICardService _cardService;
         private readonly IMessageBoxService _messageBoxService;
         private readonly IAnimationService _animationService;
-        private readonly IRecognitionSongService _recognitionSongService;
         private readonly ISongAddingService _songAddingService;
         private readonly IRecordingSessionService _recordingSessionService;
         private readonly IAnalyzingSessionService _analyzingSessionService;
@@ -21,7 +20,6 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
             IMessageBoxService messageBoxService,
             ICardService cardService,
             IAnimationService animationService,
-            IRecognitionSongService recognitionSongService,
             ISongAddingService songAddingService,
             IRecordingSessionService recordingSessionService,
             IAnalyzingSessionService analyzingSessionService,
@@ -31,7 +29,6 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
             _messageBoxService = messageBoxService;
             _cardService = cardService;
             _animationService = animationService;
-            _recognitionSongService = recognitionSongService;
             _songAddingService = songAddingService;
             _recordingSessionService = recordingSessionService;
             _analyzingSessionService = analyzingSessionService;

@@ -11,9 +11,10 @@ namespace MusicRecognitionApp.Controls
 
         private readonly IStateManagerService _stateManagerService;
         private readonly IMessageBoxService _messageBoxService;
+        private readonly IAnalyzingSessionService _sessionService;
 
-        private IAnalyzingSessionService _sessionService;
         private string? _recordedAudioFile;
+
         public AnalyzingStateControl(
             IStateManagerService stateManagerService,
             IAnalyzingSessionService sessionService,

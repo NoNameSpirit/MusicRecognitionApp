@@ -1,4 +1,5 @@
-﻿using MusicRecognitionApp.Application.Services.Interfaces;
+﻿using Microsoft.Extensions.DependencyInjection;
+using MusicRecognitionApp.Application.Services.Interfaces;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
 {
@@ -8,37 +9,41 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 
         private CancellationTokenSource? _cts;
 
-        private readonly IRecorderService _recorderService;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-        public RecordingSessionService(IRecorderService recorderService)
+        public RecordingSessionService(IServiceScopeFactory scopeFactory)
         {
-            _recorderService = recorderService;
+            _scopeFactory = scopeFactory;
         }
 
         public async Task<string?> StartRecordingAsync()
         {
             if (_cts != null)
                 throw new InvalidOperationException("Already recording");
-            
-            try
+            using (var scope = _scopeFactory.CreateScope())
             {
-                _cts = new CancellationTokenSource();
-                
-                _recorderService.RecordingProgress += OnRecordingSession;
+                var _recorderService = scope.ServiceProvider.GetRequiredService<IRecorderService>();
 
-                string? recordedAudioFile = await _recorderService.RecordAudioFromMicrophoneAsync(15, _cts.Token);
+                try
+                {
+                    _cts = new CancellationTokenSource();
 
-                return recordedAudioFile;
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            finally
-            {
-                _recorderService.RecordingProgress -= OnRecordingSession;
-                _cts?.Dispose();
-                _cts = null;
+                    _recorderService.RecordingProgress += OnRecordingSession;
+
+                    string? recordedAudioFile = await _recorderService.RecordAudioFromMicrophoneAsync(15, _cts.Token);
+
+                    return recordedAudioFile;
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                finally
+                {
+                    _recorderService.RecordingProgress -= OnRecordingSession;
+                    _cts?.Dispose();
+                    _cts = null;
+                }
             }
         }
 

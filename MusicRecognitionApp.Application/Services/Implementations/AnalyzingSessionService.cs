@@ -1,4 +1,5 @@
-﻿using MusicRecognitionApp.Application.Models;
+﻿using Microsoft.Extensions.DependencyInjection;
+using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Application.Services.Interfaces;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
@@ -9,43 +10,48 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 
         private CancellationTokenSource? _cts;
 
-        private readonly IRecognitionService _recognitionService;
+        private readonly IServiceScopeFactory _scopeFactory;
         
-        public AnalyzingSessionService(IRecognitionService recognitionService)
+        public AnalyzingSessionService(IServiceScopeFactory scopeFactory)
         {
-            _recognitionService = recognitionService;
+            _scopeFactory = scopeFactory;
         }
 
         public async Task<List<SearchResult>?> StartAnalyzingAsync(string? recordedAudioFile)
         {
-            List<SearchResult>? RecognitionResults;
-
-            try
+            using (var scope = _scopeFactory.CreateScope())
             {
-                _cts = new CancellationTokenSource();
+                var _recognitionService = scope.ServiceProvider.GetRequiredService<IRecognitionService>();
 
-                _recognitionService.AnalysisProgress += OnAnalyzingSession;
+                List<SearchResult>? RecognitionResults;
 
-                RecognitionResults = await _recognitionService.RecognizeFromMicrophoneAsync(recordedAudioFile, _cts.Token);
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            finally
-            {
-                _cts.Dispose();
-                _cts = null;
-
-                _recognitionService.AnalysisProgress -= OnAnalyzingSession;
-
-                if (File.Exists(recordedAudioFile))
+                try
                 {
-                    File.Delete(recordedAudioFile);
-                }
-            }
+                    _cts = new CancellationTokenSource();
 
-            return RecognitionResults;
+                    _recognitionService.AnalysisProgress += OnAnalyzingSession;
+
+                    RecognitionResults = await _recognitionService.RecognizeFromMicrophoneAsync(recordedAudioFile, _cts.Token);
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                finally
+                {
+                    _cts.Dispose();
+                    _cts = null;
+
+                    _recognitionService.AnalysisProgress -= OnAnalyzingSession;
+
+                    if (File.Exists(recordedAudioFile))
+                    {
+                        File.Delete(recordedAudioFile);
+                    }
+                }
+
+                return RecognitionResults;
+            }
         }
 
         public void StopAnalyzing()

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using MusicRecognitionApp.Application.Interfaces.Services;
-using MusicRecognitionApp.Application.Interfaces.UnitOfWork;
 using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Models.Audio;

@@ -34,11 +34,12 @@ namespace MusicRecognitionApp.Infrastructure.Extensions
 
         public static IServiceCollection AddInfrustructureServices(this IServiceCollection services)
         {
-            services.AddSingleton<IAudioHashGenerator, AudioHashGenerator>() 
-                    .AddSingleton<IAudioProcessor, AudioProcessor>()         
-                    .AddSingleton<IPeakDetector, PeakDetector>()             
-                    .AddSingleton<ISpectrogramBuilder, SpectrogramBuilder>() 
-                    .AddScoped<IAudioHashService, AudioHashService>()
+            services.AddSingleton<IAudioHashGenerator, AudioHashGenerator>()
+                    .AddSingleton<IAudioProcessor, AudioProcessor>()
+                    .AddSingleton<IPeakDetector, PeakDetector>()
+                    .AddSingleton<ISpectrogramBuilder, SpectrogramBuilder>();
+
+            services.AddScoped<IAudioHashService, AudioHashService>()
                     .AddScoped<IRecognizedSongService, RecognizedSongService>()
                     .AddScoped<ISongService, SongService>()
                     .AddScoped<IUnitOfWork, UnitOfWork>();
@@ -50,14 +51,15 @@ namespace MusicRecognitionApp.Infrastructure.Extensions
 
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddSingleton<IAnalyzingSessionService, AnalyzingSessionService>()
+                    .AddSingleton<IRecordingSessionService, RecordingSessionService>()
+                    .AddSingleton<IProcessingAudio, ProcessingAudio>();
+
             services.AddScoped<ISongImportService, SongImportService>()
                     .AddScoped<ISongSearchService, SongSearchService>()
                     .AddScoped<IRecognitionSongService, RecognitionSongService>()
-                    .AddScoped<IAnalyzingSessionService, AnalyzingSessionService>()
-                    .AddScoped<IRecordingSessionService, RecordingSessionService>()
-                    .AddScoped<IRecognitionService, RecognitionService>() 
-                    .AddScoped<IRecorderService, RecorderService>()
-                    .AddScoped<IProcessingAudio, ProcessingAudio>();
+                    .AddScoped<IRecognitionService, RecognitionService>()
+                    .AddScoped<IRecorderService, RecorderService>();
 
             return services;
         }

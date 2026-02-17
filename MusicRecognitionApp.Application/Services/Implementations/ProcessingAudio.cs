@@ -1,4 +1,5 @@
-﻿using MusicRecognitionApp.Application.Interfaces.Audio;
+﻿using Microsoft.Extensions.DependencyInjection;
+using MusicRecognitionApp.Application.Interfaces.Audio;
 using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Models.Audio;
@@ -15,20 +16,20 @@ namespace MusicRecognitionApp.Application.Services.Implementations
         private readonly ISpectrogramBuilder _spectrogramBuilder;
         private readonly IPeakDetector _peakDetector;
         private readonly IAudioHashGenerator _hashGenerator;
-        private readonly ISongImportService _importService;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public ProcessingAudio(
             IAudioProcessor audioProcessor,
             ISpectrogramBuilder spectrogramBuilder,
             IPeakDetector peakDetector,
             IAudioHashGenerator hashGenerator,
-            ISongImportService importService)
+            IServiceScopeFactory scopeFactory)
         {
             _audioProcessor = audioProcessor;
             _spectrogramBuilder = spectrogramBuilder;
             _peakDetector = peakDetector;
             _hashGenerator = hashGenerator;
-            _importService = importService;
+            _scopeFactory = scopeFactory;
         }
 
         public async Task<ImportTracksResult> AddTracksFromFolderAsync(string folderPath)
@@ -111,7 +112,13 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             List<AudioHash> queryHashes = await Task.Run(()
                 => _hashGenerator.GenerateHashes(allPeaks), cancellationToken);
 
-            await _importService.AddSongAsync(title, artist, queryHashes, cancellationToken);
+            using (var scope = _scopeFactory.CreateScope())
+            {
+                var _importService = scope.ServiceProvider.GetRequiredService<ISongImportService>();
+
+                await _importService.AddSongAsync(title, artist, queryHashes, cancellationToken);
+            }
+
         }
     }
 }

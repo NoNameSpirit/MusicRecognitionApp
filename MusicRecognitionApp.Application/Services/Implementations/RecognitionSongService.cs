@@ -1,7 +1,6 @@
 ﻿using MusicRecognitionApp.Application.Interfaces.Services;
 using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Models.Business;
-using System.Threading;
 
 namespace MusicRecognitionApp.Application.Services.Implementations
 {

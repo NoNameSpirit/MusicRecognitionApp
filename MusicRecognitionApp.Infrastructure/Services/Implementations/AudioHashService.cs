@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using MusicRecognitionApp.Application.Interfaces.Services;
-using MusicRecognitionApp.Core.Models.Audio;
-using MusicRecognitionApp.Infrastructure.Data.Mappers;
 using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
 
 namespace MusicRecognitionApp.Infrastructure.Services.Implementations

@@ -1,4 +1,5 @@
 ﻿using MaterialSkin.Controls;
+using Microsoft.Extensions.DependencyInjection;
 using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Presentation.Controls;
@@ -12,11 +13,11 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
         private MaterialButton _btnAuthors;
         private FlowLayoutPanel _panelOfCards;
 
-        private readonly IRecognitionSongService _recognitionSongService;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-        public CardService(IRecognitionSongService recognitionSongService)
+        public CardService(IServiceScopeFactory scopeFactory)
         {
-            _recognitionSongService = recognitionSongService;
+            _scopeFactory = scopeFactory;
         }
 
         public void Initialize(MaterialButton btnSongs, MaterialButton btnAuthors, FlowLayoutPanel panelOfCards)
@@ -28,50 +29,61 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
 
         public async Task ShowSongsAsync()
         {
-            SetBtnsStyles(true);
-            _panelOfCards.Controls.Clear();
-            
-            var songs = await _recognitionSongService.GetRecognizedSongsAsync();
-
-            if (!songs.Any())
+            using (var scope = _scopeFactory.CreateScope())
             {
-                var card = CreateNoInfoCard("There are no recognized tracks");
+                var _recognitionSongService = scope.ServiceProvider.GetRequiredService<IRecognitionSongService>();
 
-                _panelOfCards.Controls.Add(card);
+                SetBtnsStyles(true);
+                _panelOfCards.Controls.Clear();
 
-                return;
+                var songs = await _recognitionSongService.GetRecognizedSongsAsync();
+
+                if (!songs.Any())
+                {
+                    var card = CreateNoInfoCard("There are no recognized tracks");
+
+                    _panelOfCards.Controls.Add(card);
+
+                    return;
+                }
+
+                foreach (var song in songs)
+                {
+                    var songCard = CreateSongCard(song.Song.Title, song.Song.Artist, song.Matches);
+
+                    _panelOfCards.Controls.Add(songCard);
+                }
+                ;
             }
-
-            foreach (var song in songs)
-            {
-                var songCard = CreateSongCard(song.Song.Title, song.Song.Artist, song.Matches);
-
-                _panelOfCards.Controls.Add(songCard);
-            };
         }
 
         public async Task ShowAuthorsAsync()
         {
-            SetBtnsStyles(false);
-            
-            var recognizedArtists = await _recognitionSongService.GetRecognizedArtistsAsync();
-
-            if (!recognizedArtists.Any())
+            using (var scope = _scopeFactory.CreateScope())
             {
-                var card = CreateNoInfoCard("There are no recognized artists");
+                var _recognitionSongService = scope.ServiceProvider.GetRequiredService<IRecognitionSongService>();
 
-                _panelOfCards.Controls.Add(card);
+                SetBtnsStyles(false);
 
-                return;
-            }
+                var recognizedArtists = await _recognitionSongService.GetRecognizedArtistsAsync();
 
-            foreach (var artistStatistic in recognizedArtists)
-            {
-                var authorCard = CreateAuthorCard(
-                    artistStatistic.Artist,
-                    artistStatistic.SongCount);
+                if (!recognizedArtists.Any())
+                {
+                    var card = CreateNoInfoCard("There are no recognized artists");
 
-                _panelOfCards.Controls.Add(authorCard);
+                    _panelOfCards.Controls.Add(card);
+
+                    return;
+                }
+
+                foreach (var artistStatistic in recognizedArtists)
+                {
+                    var authorCard = CreateAuthorCard(
+                        artistStatistic.Artist,
+                        artistStatistic.SongCount);
+
+                    _panelOfCards.Controls.Add(authorCard);
+                }
             }
         }
 
