@@ -37,8 +37,12 @@ namespace MusicRecognitionApp.Application.Services.Implementations
                 return new List<SearchResult>();
 
             AnalysisProgress?.Invoke(10);
-            float[] processedAudio = await Task.Run(()
-                => _audioProcessor.PreprocessAudio(audioFilePath), cancellationToken);
+            float[] processedAudio;
+            using (var stream = File.OpenRead(audioFilePath))
+            {
+                processedAudio = await Task.Run(()
+                    => _audioProcessor.PreprocessAudio(stream), cancellationToken);
+            }
 
             AnalysisProgress?.Invoke(20);
             SpectrogramData spectrogramData = await Task.Run(()

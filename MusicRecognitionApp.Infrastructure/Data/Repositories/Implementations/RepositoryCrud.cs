@@ -54,7 +54,7 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
                 query = query.Where(filter);
 
             if (take != null)
-                query.Take(take.Value);
+                query = query.Take(take.Value);
 
             var orderedQuery = orderBy != null ? orderBy(query) : query;
 

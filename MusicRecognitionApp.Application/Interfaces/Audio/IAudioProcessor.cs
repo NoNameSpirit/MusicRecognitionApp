@@ -2,6 +2,6 @@
 {
     public interface IAudioProcessor
     {
-        public float[] PreprocessAudio(string filePath);
+        public float[] PreprocessAudio(Stream audioStream);
     }
 }

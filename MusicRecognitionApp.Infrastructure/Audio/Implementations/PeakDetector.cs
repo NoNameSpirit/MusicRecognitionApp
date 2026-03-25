@@ -59,9 +59,6 @@ namespace MusicRecognitionApp.Infrastructure.Audio.Implementations
                     int t = centerT + dt;
                     int f = centerF + df;
 
-                    if (t < 0 || t >= spectrogram.GetLength(0) ||
-                        f < 0 || f >= spectrogram.GetLength(1)) continue;
-
                     if (spectrogram[t, f] >= centerValue)
                         return false;
                 }

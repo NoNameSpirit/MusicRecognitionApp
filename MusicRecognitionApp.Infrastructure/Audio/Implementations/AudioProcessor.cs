@@ -1,5 +1,4 @@
-﻿using FftSharp;
-using MusicRecognitionApp.Application.Interfaces.Audio;
+﻿using MusicRecognitionApp.Application.Interfaces.Audio;
 using NAudio.Dsp;
 using NAudio.Wave;
 
@@ -7,51 +6,56 @@ namespace MusicRecognitionApp.Infrastructure.Audio.Implementations
 {
     public class AudioProcessor : IAudioProcessor
     {
-        public float[] PreprocessAudio(string filePath)
+        public float[] PreprocessAudio(Stream stream)
         {
-            float[] samples = LoadAudioFile(filePath, out int channels, out int sampleRate);
+            float[] samples = LoadAudioFile(stream, out int channels, out int sampleRate);
             samples = ConvertToMono(samples, channels);
             samples = ApplyLowPassFilter(samples, sampleRate, 5000f);
             samples = DownsampleAudio(samples, sampleRate, 4);
             return samples;
         }
 
-        private float[] LoadAudioFile(string filePath, out int channels, out int sampleRate)
+        private float[] LoadAudioFile(Stream stream, out int channels, out int sampleRate)
         {
-            using (var audioFileReader = new AudioFileReader(filePath))
+            using (var reader = new WaveFileReader(stream))
             {
-                channels = audioFileReader.WaveFormat.Channels;
+                channels = reader.WaveFormat.Channels;
+                sampleRate = reader.WaveFormat.SampleRate;
 
-                sampleRate = audioFileReader.WaveFormat.SampleRate;
+                var sampleProvider = reader.ToSampleProvider();
+                List<float> samples = new List<float>();
+                float[] buffer = new float[reader.WaveFormat.SampleRate * channels];
+                
+                int read;
+                while ((read = sampleProvider.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    samples.AddRange(buffer.Take(read));
+                }
 
-                int totalSamples = (int)(audioFileReader.Length / (audioFileReader.WaveFormat.BitsPerSample / 8));
-
-                var audioSamples = new float[totalSamples];
-
-                audioFileReader.Read(audioSamples, 0, totalSamples);
-                return audioSamples;
+                return samples.ToArray();
             }
         }
 
-        private float[] ConvertToMono(float[] stereoSamples, int channels)
+        private float[] ConvertToMono(float[] samples, int channels)
         {
             if (channels == 1)
-                return stereoSamples;
+                return samples;
 
-            if (channels == 2)
+            int monoLength = samples.Length / channels;
+            float[] monoSamples = new float[monoLength];
+
+            for (int i = 0; i < monoLength; i++)
             {
-                int monoLength = stereoSamples.Length / 2;
-                float[] monoSamples = new float[monoLength];
-
-                for (int i = 0; i < monoLength; i++)
+                float sum = 0.0f;
+                for (int j = 0; j < channels; j++)
                 {
-                    monoSamples[i] = (stereoSamples[i * 2] + stereoSamples[i * 2 + 1]) / 2.0f;
+                    sum += samples[i * channels + j];
                 }
 
-                return monoSamples;
+                monoSamples[i] = sum / channels;
             }
 
-            throw new NotSupportedException("Only mono/stereo");
+            return monoSamples;
         }
 
         private float[] ApplyLowPassFilter(float[] samples, int sampleRate, float cutoffFreency = 5000f)

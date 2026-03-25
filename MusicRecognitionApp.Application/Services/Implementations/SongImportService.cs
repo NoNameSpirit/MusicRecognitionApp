@@ -27,7 +27,7 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             try
             {
                 var result = await _songService.CreateAsync(title, artist, hashes, cancellationToken);
-               
+
                 if (result.IsNew)
                 {
                     await _unitOfWork.SaveAsync(cancellationToken);
@@ -35,7 +35,7 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             }
             catch (OperationCanceledException)
             {
-                _unitOfWork.Clear(); 
+                _unitOfWork.Clear();
                 throw;
             }
             catch (Exception ex)

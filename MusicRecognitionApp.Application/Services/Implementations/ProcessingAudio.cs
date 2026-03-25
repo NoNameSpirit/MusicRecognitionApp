@@ -97,8 +97,12 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 
         public async Task AddTrackAsync(string audioFilePath, string title, string artist, CancellationToken cancellationToken = default)
         {
-            float[] processedAudio = await Task.Run(() 
-                => _audioProcessor.PreprocessAudio(audioFilePath), cancellationToken);
+            float[] processedAudio;
+            using (var stream = File.OpenRead(audioFilePath))
+            {
+                processedAudio = await Task.Run(()
+                    => _audioProcessor.PreprocessAudio(stream), cancellationToken);
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
             SpectrogramData spectrogramData = await Task.Run(()
@@ -118,7 +122,6 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 
                 await _importService.AddSongAsync(title, artist, queryHashes, cancellationToken);
             }
-
         }
     }
 }

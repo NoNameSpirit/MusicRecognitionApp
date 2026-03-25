@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MusicRecognitionApp.Application.Interfaces.UnitOfWork;
+﻿using MusicRecognitionApp.Application.Interfaces.UnitOfWork;
 using MusicRecognitionApp.Infrastructure.Data.Contexts;
 
 namespace MusicRecognitionApp.Infrastructure.Data
