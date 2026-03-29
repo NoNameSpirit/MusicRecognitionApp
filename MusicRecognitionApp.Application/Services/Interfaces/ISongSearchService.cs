@@ -5,6 +5,6 @@ namespace MusicRecognitionApp.Application.Services.Interfaces
 {
     public interface ISongSearchService
     {
-        Task<List<SearchResult>> SearchSong(List<AudioHash> queryHashes, CancellationToken cancellationToken = default);
+        Task<List<SearchResult>> SearchSongAsync(List<AudioHash> queryHashes, CancellationToken cancellationToken = default);
     }
 }

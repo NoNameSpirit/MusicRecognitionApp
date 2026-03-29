@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicRecognitionApp.Infrast
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicRecognitionApp.Blazor", "MusicRecognitionApp.Blazor\MusicRecognitionApp.Blazor.csproj", "{40D01D88-A167-4571-A17D-36D97013F3AF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicRecognitionApp.Test", "MusicRecognitionApp.Test\MusicRecognitionApp.Test.csproj", "{BB5EF8CF-2151-452A-9A8E-A57B0514F660}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{40D01D88-A167-4571-A17D-36D97013F3AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40D01D88-A167-4571-A17D-36D97013F3AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40D01D88-A167-4571-A17D-36D97013F3AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB5EF8CF-2151-452A-9A8E-A57B0514F660}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB5EF8CF-2151-452A-9A8E-A57B0514F660}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB5EF8CF-2151-452A-9A8E-A57B0514F660}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB5EF8CF-2151-452A-9A8E-A57B0514F660}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

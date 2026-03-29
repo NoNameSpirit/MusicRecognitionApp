@@ -22,7 +22,7 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             _logger = logger;
         }
 
-        public async Task<List<SearchResult>> SearchSong(List<AudioHash> queryHashes, CancellationToken cancellationToken = default)
+        public async Task<List<SearchResult>> SearchSongAsync(List<AudioHash> queryHashes, CancellationToken cancellationToken = default)
         {
             if (queryHashes == null || queryHashes.Count == 0)
                 return new List<SearchResult>();

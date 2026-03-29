@@ -57,7 +57,7 @@ namespace MusicRecognitionApp.Application.Services.Implementations
                 => _hashGenerator.GenerateHashes(allPeaks), cancellationToken);
 
             AnalysisProgress?.Invoke(70);
-            var results = await _searchService.SearchSong(queryHashes, cancellationToken);
+            var results = await _searchService.SearchSongAsync(queryHashes, cancellationToken);
 
             AnalysisProgress?.Invoke(100);
             return results;

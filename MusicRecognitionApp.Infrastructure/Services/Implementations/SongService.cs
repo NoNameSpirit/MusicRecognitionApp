@@ -65,18 +65,17 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
                 var songResult = await GetByTitleAndArtistAsync(title, artist);
                 if (songResult != null)
                 {
-                    _logger.LogInformation("Song already exists: '{Title}' by '{Artist}'", title, artist);
+                    _logger.LogInformation("Song already exists: '{Title}' by '{Artist}'", songResult.Title, songResult.Artist);
                     return new SongCreationResult(songResult, false);
                 }
 
                 if (hashes == null || hashes.Count == 0)
                 {
-                    _logger.LogWarning("No hashes to add for song Artist - Title: ", songResult.Artist, songResult.Title);
+                    _logger.LogWarning("No hashes to add for song Artist - Title: ", artist, title);
                     return new SongCreationResult(songResult, false);
                 }
 
                 var song = new SongEntity { Title = title, Artist = artist };
-
 
                 foreach (AudioHash hash in hashes)
                 {

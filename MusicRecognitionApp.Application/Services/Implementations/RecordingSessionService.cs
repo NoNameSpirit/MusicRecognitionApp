@@ -20,6 +20,7 @@ namespace MusicRecognitionApp.Application.Services.Implementations
         {
             if (_cts != null)
                 throw new InvalidOperationException("Already recording");
+
             using (var scope = _scopeFactory.CreateScope())
             {
                 var _recorderService = scope.ServiceProvider.GetRequiredService<IRecorderService>();
