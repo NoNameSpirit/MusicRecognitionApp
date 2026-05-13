@@ -53,7 +53,6 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
 
                     _panelOfCards.Controls.Add(songCard);
                 }
-                ;
             }
         }
 

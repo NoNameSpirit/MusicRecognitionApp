@@ -95,7 +95,7 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
             //Arrange
             var title = "Title";
             var artist = "Artist";
-            _repoMock.Setup(r => r.GetSongByTitleAndArtistAsync(It.IsAny<string>(), It.IsAny<string>()))
+            _repoMock.Setup(r => r.GetSongByTitleAndArtistAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((SongEntity?)null);
 
             //Act
@@ -110,7 +110,7 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
         {
             //Arrange
             var entity = new SongEntity { Title = "Title", Artist = "Artist" };
-            _repoMock.Setup(r => r.GetSongByTitleAndArtistAsync(It.IsAny<string>(), It.IsAny<string>()))
+            _repoMock.Setup(r => r.GetSongByTitleAndArtistAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(entity);
 
             //Act
@@ -120,7 +120,8 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
             _repoMock.Verify(r
                 => r.GetSongByTitleAndArtistAsync(
                     entity.Title, 
-                    entity.Artist),
+                    entity.Artist, 
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
         }
 
@@ -129,7 +130,7 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
         {
             //Arrange
             var entity = new SongEntity { Title = "Title", Artist = "Artist" };
-            _repoMock.Setup(r => r.GetSongByTitleAndArtistAsync(It.IsAny<string>(), It.IsAny<string>()))
+            _repoMock.Setup(r => r.GetSongByTitleAndArtistAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception());
 
             //Act
@@ -140,7 +141,8 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
             _repoMock.Verify(r
                 => r.GetSongByTitleAndArtistAsync(
                     entity.Title,
-                    entity.Artist),
+                    entity.Artist,
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
             _loggerMock.Verify(
                 l => l.Log(
@@ -187,7 +189,7 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
         {
             // Arrange
             var entity = new SongEntity { Title = "Title", Artist = "Artist" };
-            _repoMock.Setup(r => r.GetSongByTitleAndArtistAsync(entity.Title, entity.Artist))
+            _repoMock.Setup(r => r.GetSongByTitleAndArtistAsync(entity.Title, entity.Artist, It.IsAny<CancellationToken>()))
                      .ReturnsAsync(entity);
 
             // Act
@@ -203,7 +205,7 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
         {
             // Arrange
             var entity = new SongEntity { Title = "Title", Artist = "Artist" };
-            _repoMock.Setup(r => r.GetSongByTitleAndArtistAsync(It.IsAny<string>(), It.IsAny<string>()))
+            _repoMock.Setup(r => r.GetSongByTitleAndArtistAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                      .ReturnsAsync((SongEntity?)null);
 
             // Act
@@ -227,7 +229,7 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
         {
             // Arrange
             var entity = new SongEntity { Title = "Title", Artist = "Artist" };
-            _repoMock.Setup(r => r.GetSongByTitleAndArtistAsync(It.IsAny<string>(), It.IsAny<string>()))
+            _repoMock.Setup(r => r.GetSongByTitleAndArtistAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                      .ReturnsAsync((SongEntity?)null);
 
             var hashes = new List<AudioHash> { new AudioHash(123, 1.5, 0) };

@@ -100,6 +100,33 @@ namespace MusicRecognitionApp.Infrastructure.Migrations
                     b.ToTable("Songs", (string)null);
                 });
 
+            modelBuilder.Entity("MusicRecognitionApp.Infrastructure.Data.Entities.UserEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "Username" }, "IX_Users_Username");
+
+                    b.ToTable("Users", (string)null);
+                });
+
             modelBuilder.Entity("MusicRecognitionApp.Infrastructure.Data.Entities.AudioHashEntity", b =>
                 {
                     b.HasOne("MusicRecognitionApp.Infrastructure.Data.Entities.SongEntity", "Song")

@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MusicRecognitionApp.Infrastructure.Data.Contexts;
+﻿using MusicRecognitionApp.Infrastructure.Data.Contexts;
 using MusicRecognitionApp.Infrastructure.Data.Entities;
 using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
 
@@ -13,11 +12,12 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
 
         }
 
-        public async Task<SongEntity?> GetSongByTitleAndArtistAsync(string title, string artist)
+        public async Task<SongEntity?> GetSongByTitleAndArtistAsync(string title, string artist, CancellationToken cancellationToken = default)
         {
             var songs = await GetAsync(
                 filter: s => s.Title == title && s.Artist == artist,
-                take: 1);
+                take: 1,
+                cancellationToken: cancellationToken);
 
             return songs.FirstOrDefault();
         }

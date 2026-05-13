@@ -136,7 +136,7 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
                     Song = new() { Title = "Song1", Artist = "Artist1" } 
                 }
             };
-            _repoMock.Setup(r => r.GetAllOrderedByDateAsync())
+            _repoMock.Setup(r => r.GetAllOrderedByDateAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(entities);
 
             // Act
@@ -159,7 +159,8 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
         public async Task GetRecognizedSongsAsync_Exception_EmptyListAndLogs()
         {
             // Arrange
-            _repoMock.Setup(r => r.GetAllOrderedByDateAsync()).ThrowsAsync(new Exception("DB Error"));
+            _repoMock.Setup(r => r.GetAllOrderedByDateAsync(It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("DB Error"));
 
             // Act
             var result = await _recognizedSongService.GetRecognizedSongsAsync();
@@ -188,7 +189,7 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
                     SongCount = 10 
                 } 
             };
-            _repoMock.Setup(r => r.GetArtistsStatisticsAsync())
+            _repoMock.Setup(r => r.GetArtistsStatisticsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(stats);
 
             // Act
@@ -203,7 +204,7 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
         public async Task GetArtistsStatisticsAsync_Exception_EmptyListAndLogs()
         {
             // Arrange
-            _repoMock.Setup(r => r.GetArtistsStatisticsAsync())
+            _repoMock.Setup(r => r.GetArtistsStatisticsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("DB Error"));
 
             // Act

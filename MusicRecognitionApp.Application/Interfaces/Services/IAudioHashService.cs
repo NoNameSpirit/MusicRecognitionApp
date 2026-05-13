@@ -1,7 +1,9 @@
-﻿namespace MusicRecognitionApp.Application.Interfaces.Services
+﻿using MusicRecognitionApp.Core.Models.Dto;
+
+namespace MusicRecognitionApp.Application.Interfaces.Services
 {
     public interface IAudioHashService
     {
-        Task<List<(int SongId, int Count)>> FindSongMatchesAsync(List<uint> hashValues, CancellationToken cancellationToken = default);
+        Task<List<SongMatchDto>> FindSongMatchesAsync(List<uint> hashValues, CancellationToken cancellationToken = default);
     }
 }

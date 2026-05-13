@@ -1,13 +1,19 @@
 using MudBlazor.Services;
 using MusicRecognitionApp.Blazor.Components;
+using MusicRecognitionApp.Blazor.Components.Pages.Table.Model;
+using MusicRecognitionApp.Blazor.Components.Pages.Table.PageTableProvider;
+using MusicRecognitionApp.Blazor.Extensions;
 using MusicRecognitionApp.Infrastructure.Data.Contexts;
+using MusicRecognitionApp.Infrastructure.Data.Entities;
 using MusicRecognitionApp.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<ITableDetailProvider<RecognizedSongEntity>, TrackDetailProvider>();
 
 builder.Services.AddDatabaseServices(builder.Configuration)
                 .AddInfrustructureServices()
-                .AddApplicationServices();
+                .AddApplicationServices()
+                .AddAuthServices(builder.Configuration);
 
 builder.Services.AddMudServices();
 
@@ -32,6 +38,9 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

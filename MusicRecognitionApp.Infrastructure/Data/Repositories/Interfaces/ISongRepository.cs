@@ -4,6 +4,6 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces
 {
     public interface ISongRepository : IRepositoryCrud<SongEntity>
     {
-        Task<SongEntity?> GetSongByTitleAndArtistAsync(string title, string artist);
+        Task<SongEntity?> GetSongByTitleAndArtistAsync(string title, string artist, CancellationToken cancellationToken = default);
     }
 }

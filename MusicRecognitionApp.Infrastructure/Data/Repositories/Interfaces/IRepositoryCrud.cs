@@ -14,6 +14,7 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces
             Expression<Func<TEntity, bool>>? filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             int? take = null,
+            CancellationToken cancellationToken = default,
             params string[] includes);
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

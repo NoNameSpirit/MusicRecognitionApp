@@ -2,7 +2,6 @@
 using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
 using System.Data;
 using System.Linq.Expressions;
-using System.Threading;
 
 namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
 {
@@ -41,6 +40,7 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
             Expression<Func<TEntity, bool>>? filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             int? take = null,
+            CancellationToken cancellationToken = default,
             params string[] includes)
         {
             IQueryable<TEntity> query = _dbSet;
@@ -58,7 +58,7 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
 
             var orderedQuery = orderBy != null ? orderBy(query) : query;
 
-            return await orderedQuery.ToListAsync();
+            return await orderedQuery.ToListAsync(cancellationToken);
         }
 
 

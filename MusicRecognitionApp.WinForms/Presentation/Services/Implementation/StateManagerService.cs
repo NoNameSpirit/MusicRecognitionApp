@@ -13,8 +13,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
         private readonly IStateRegistry _stateRegistryService;
         
         public StateManagerService(
-            IStateRegistry stateRegistryService,
-            IServiceProvider serviceProvider)
+            IStateRegistry stateRegistryService)
         {
             _stateRegistryService = stateRegistryService;
         }

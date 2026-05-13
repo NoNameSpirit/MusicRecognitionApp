@@ -1,35 +1,32 @@
 ﻿using Microsoft.AspNetCore.Components;
-using MusicRecognitionApp.Application.Services.Interfaces;
-using MusicRecognitionApp.Core.Models.Business;
+using MusicRecognitionApp.Blazor.Components.Pages.Table.Model;
+using MusicRecognitionApp.Infrastructure.Data.Entities;
 
 namespace MusicRecognitionApp.Blazor.Components.Pages.Library
 {
-    public partial class HistoryTab : ComponentBase
+    public partial class HistoryTab : CancellableComponentBase
     {
-        [Inject] private IRecognitionSongService RecognitionSongService { get; set; } = null!;
+        [Inject] private ITableDetailProvider<RecognizedSongEntity> Provider { get; set; } = null!;
 
-        protected List<RecognizedSongModel> _recognizedSongs;
-        protected string SearchQuery { get; set; } = "";
+        private IEnumerable<RecognizedSongEntity>? _items;
+        private string? _searchQuery = null;
 
-        protected IEnumerable<RecognizedSongModel> FilteredSongs
+        protected override void OnInitialized()
         {
-            get 
-            {
-                if (_recognizedSongs == null)
-                    return Enumerable.Empty<RecognizedSongModel>();
-                if (string.IsNullOrEmpty(SearchQuery))
-                    return _recognizedSongs;
-
-                var q = SearchQuery.Trim().ToLowerInvariant();
-                return _recognizedSongs.Where(x =>
-                    x.Song.Title.Contains(q, StringComparison.OrdinalIgnoreCase) ||
-                    x.Song.Artist.Contains(q, StringComparison.OrdinalIgnoreCase));
-            }
+            LoadData();
         }
 
-        protected override async Task OnInitializedAsync()
+        private void OnSearch(string text)
         {
-            _recognizedSongs = await RecognitionSongService.GetRecognizedSongsAsync();
+            _searchQuery = text;
+            LoadData();
+        }
+
+        private void LoadData()
+        {
+            var query = Provider.GetQueryableAll();
+            query = Provider.SearchByName(query, _searchQuery);
+            _items = query.ToList();
         }
     }
 }

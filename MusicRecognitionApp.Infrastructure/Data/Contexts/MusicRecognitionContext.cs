@@ -10,6 +10,7 @@ namespace MusicRecognitionApp.Infrastructure.Data.Contexts
         {
         }
 
+        public DbSet<UserEntity> Users { get; set; } = null!;
         public DbSet<SongEntity> Songs { get; set; } = null!;
         public DbSet<RecognizedSongEntity> RecognizedSongs { get; set; } = null!;
         public DbSet<AudioHashEntity> AudioHashes { get; set; } = null!;
@@ -58,6 +59,12 @@ namespace MusicRecognitionApp.Infrastructure.Data.Contexts
 
                 entity.Property(e => e.RecognitionDate)
                       .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            });
+
+            modelBuilder.Entity<UserEntity>(entity => {
+                entity.ToTable("Users");
+
+                entity.HasIndex(e => e.Username, "IX_Users_Username");
             });
         }
     }

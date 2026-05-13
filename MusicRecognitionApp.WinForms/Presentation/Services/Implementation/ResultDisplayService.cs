@@ -29,7 +29,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
             panelResults.Controls.Clear();
         }
 
-        public async Task DisplayResults(Panel panelResults, PictureBox picRecordingGif, List<SearchResult>? results)
+        public async Task DisplayResults(Panel panelResults, PictureBox picRecordingGif, List<SearchResult>? results, CancellationToken cancellationToken = default)
         {
             using (var scope = _scopeFactory.CreateScope())
             {
@@ -46,7 +46,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
                 SearchResult bestResult = results.FirstOrDefault()!;
                 if (bestResult.Matches > 0)
                 {
-                    await _recognitionSongService.SaveRecognizedSongsAsync(bestResult.Song.Id, bestResult.Matches);
+                    await _recognitionSongService.SaveRecognizedSongsAsync(bestResult.Song.Id, bestResult.Matches, cancellationToken);
                 }
 
                 ShowResult(bestResult, panelResults, picRecordingGif);

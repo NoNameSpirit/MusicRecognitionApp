@@ -30,18 +30,18 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             try
             {
                 var hashValues = queryHashes.Select(h => h.Hash).ToList();
-                var matches = await _audioHashService.FindSongMatchesAsync(hashValues, cancellationToken);
+                var songMatchDtos = await _audioHashService.FindSongMatchesAsync(hashValues, cancellationToken);
 
                 var results = new List<SearchResult>();
-                foreach (var (songId, count) in matches)
+                foreach (var songMatchDto in songMatchDtos)
                 {
-                    var song = await _songService.GetByIdAsync(songId, cancellationToken);
+                    var song = await _songService.GetByIdAsync(songMatchDto.SongId, cancellationToken);
 
                     if (song != null)
                     {
-                        var confidence = (double)count / queryHashes.Count;
+                        var confidence = (double)songMatchDto.Count / queryHashes.Count;
 
-                        var result = new SearchResult(song, count, confidence);
+                        var result = new SearchResult(song, songMatchDto.Count, confidence);
 
                         results.Add(result);
                     }

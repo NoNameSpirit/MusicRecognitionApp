@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
+using MusicRecognitionApp.Core.Models.Dto;
 using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
 using MusicRecognitionApp.Infrastructure.Services.Implementations;
 
@@ -24,8 +25,11 @@ namespace MusicRecognitionApp.Test.Services
         {
             // Arrange
             var hashes = new List<uint> { 1, 2, 3 };
-            var expectedMatches = new List<(int SongId, int Count)> { (1, 5), (2, 3) };
-
+            var expectedMatches = new List<SongMatchDto>
+            {
+                new SongMatchDto() {SongId = 1, Count = 5 },
+                new SongMatchDto() {SongId = 2, Count = 3 },
+            };
             _repoMock.Setup(r => r.GetMatchesAsync(hashes, It.IsAny<CancellationToken>()))
                      .ReturnsAsync(expectedMatches);
 

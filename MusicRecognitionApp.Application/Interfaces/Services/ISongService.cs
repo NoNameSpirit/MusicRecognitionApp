@@ -7,7 +7,7 @@ namespace MusicRecognitionApp.Application.Interfaces.Services
     public interface ISongService
     {
         Task<SongModel?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
-        Task<SongModel?> GetByTitleAndArtistAsync(string title, string artist);
+        Task<SongModel?> GetByTitleAndArtistAsync(string title, string artist, CancellationToken cancellationToken = default);
         Task<SongCreationResult> CreateAsync(string title, string artist, 
             List<AudioHash> hashes, CancellationToken cancellationToken = default);
     }

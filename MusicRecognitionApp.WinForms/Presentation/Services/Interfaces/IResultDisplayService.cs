@@ -6,6 +6,6 @@ namespace MusicRecognitionApp.Presentation.Services.Interfaces
     {
         void ClearResults(Panel panelResults);
 
-        Task DisplayResults(Panel panelResults, PictureBox picRecordingGif, List<SearchResult>? results);
+        Task DisplayResults(Panel panelResults, PictureBox picRecordingGif, List<SearchResult>? results, CancellationToken cancellationToken = default);
     }
 }

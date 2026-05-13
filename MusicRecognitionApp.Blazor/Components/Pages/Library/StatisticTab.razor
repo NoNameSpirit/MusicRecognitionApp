@@ -1,10 +1,14 @@
 ﻿@using MusicRecognitionApp.Core.Models.Business
-
-<MudTextField @bind-Value="SearchQuery"
-              Placeholder="Search by artist..."
-              Adornment="Adornment.Start"
-              AdornmentIcon="@Icons.Material.Filled.Search"
-              Class="mb-4" />
+<MudToolBar>
+    <MudTextField T="string" 
+                  ValueChanged="@OnSearchAsync"
+                  Placeholder="Search by artist..."
+                  Adornment="Adornment.Start"
+                  AdornmentIcon="@Icons.Material.Filled.Search"
+                  IconSize="Size.Medium" 
+                  Class="mt-1 mr-3" 
+                  Style="max-width:250px;"/>
+</MudToolBar>
 
 @if (_artistStats == null)
 {
@@ -12,7 +16,7 @@
 }
 else
 {
-    <MudTable Items="@FilteredStats" Striped="true" Hover="true" FixedHeader="true">
+    <MudTable Items="@_artistStats" Striped="true" Hover="true" FixedHeader="true">
         <ColGroup>
             <col style="width: 50%;" />
             <col style="width: 50%;" />

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -24,6 +24,7 @@
     <ProjectReference Include="..\MusicRecognitionApp.Application\MusicRecognitionApp.Application.csproj" />
     <ProjectReference Include="..\MusicRecognitionApp.Core\MusicRecognitionApp.Core.csproj" />
     <ProjectReference Include="..\MusicRecognitionApp.Infrastructure\MusicRecognitionApp.Infrastructure.csproj" />
+    <ProjectReference Include="..\MusicRecognitionApp.WinForms\MusicRecognitionApp.WinForms.csproj" />
   </ItemGroup>
 
   <ItemGroup>

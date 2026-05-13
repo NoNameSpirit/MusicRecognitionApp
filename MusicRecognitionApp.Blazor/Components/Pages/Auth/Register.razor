@@ -1,0 +1,33 @@
+﻿@page "/register"
+
+<MudContainer MaxWidth="MaxWidth.Small">
+    <MudPaper Elevation="2" Class="pa-6">
+        <MudText Typo="Typo.h5" Align="Align.Center" Class="mb-4">Registration</MudText>
+    
+        <MudForm @bind-Errors="@_errors" Model="@_model">
+            <MudTextField @bind-Value="_model.Username"
+                          Label="Username"
+                          Variant="Variant.Outlined" 
+                          Validation = "@ValidationUsername" />
+
+            <MudTextField @bind-Value="_model.Password" 
+                          Label="Password" 
+                          Variant="Variant.Outlined" 
+                          InputType="InputType.Password" 
+                          Class="mt-4" 
+                          Validation = "@ValidationPassword" />
+            
+            <MudButton OnClick="HandleRegister"
+                       Color="Color.Primary" 
+                       Variant="Variant.Filled" 
+                       FullWidth="true" 
+                       Class="mt-6">
+                       Register
+            </MudButton>
+        </MudForm>
+        
+        <MudText Align="Align.Center" Class="mt-4">
+            <MudLink Href="/login">Already have an account? Login</MudLink>
+        </MudText>
+    </MudPaper>
+</MudContainer>

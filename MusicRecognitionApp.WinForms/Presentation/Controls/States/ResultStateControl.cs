@@ -1,6 +1,5 @@
 ﻿using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Core.Enums;
-using MusicRecognitionApp.Presentation.Services.Implementation;
 using MusicRecognitionApp.Presentation.Services.Interfaces;
 
 namespace MusicRecognitionApp.Controls

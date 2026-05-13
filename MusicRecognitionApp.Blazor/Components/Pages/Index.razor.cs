@@ -4,7 +4,7 @@ using MusicRecognitionApp.Blazor.Components.Pages.Dialogs;
 
 namespace MusicRecognitionApp.Blazor.Components.Pages
 {
-    partial class Index : ComponentBase
+    partial class Index : CancellableComponentBase
     {
         [Inject] private IDialogService DialogService { get; set; } = default!;
 

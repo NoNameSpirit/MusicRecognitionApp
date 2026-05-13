@@ -36,13 +36,17 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             }
         }
 
-        public async Task<SongModel?> GetByTitleAndArtistAsync(string title, string artist)
+        public async Task<SongModel?> GetByTitleAndArtistAsync(string title, string artist, CancellationToken cancellationToken = default)
         {
             try
             {
-                var entity = await _songRepository.GetSongByTitleAndArtistAsync(title, artist);
+                var entity = await _songRepository.GetSongByTitleAndArtistAsync(title, artist, cancellationToken);
 
                 return entity == null ? null : EntityToModel.ToSongModel(entity);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -62,7 +66,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
                 if (string.IsNullOrWhiteSpace(artist))
                     throw new ArgumentException("Artist cannot be empty", nameof(artist));
 
-                var songResult = await GetByTitleAndArtistAsync(title, artist);
+                var songResult = await GetByTitleAndArtistAsync(title, artist, cancellationToken);
                 if (songResult != null)
                 {
                     _logger.LogInformation("Song already exists: '{Title}' by '{Artist}'", songResult.Title, songResult.Artist);

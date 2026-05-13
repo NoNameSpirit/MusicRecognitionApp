@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using MusicRecognitionApp.Application.Interfaces.Services;
+using MusicRecognitionApp.Core.Models.Dto;
 using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
 
 namespace MusicRecognitionApp.Infrastructure.Services.Implementations
@@ -17,7 +18,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             _logger = logger;
         }
 
-        public async Task<List<(int SongId, int Count)>> FindSongMatchesAsync(List<uint> hashValues, CancellationToken cancellationToken = default)
+        public async Task<List<SongMatchDto>> FindSongMatchesAsync(List<uint> hashValues, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -30,7 +31,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while getting song matches for {HashCount} hashes", hashValues?.Count ?? 0);
-                return new List<(int, int)>();
+                return new List<SongMatchDto>();
             }
         }
     }

@@ -1,34 +1,30 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MusicRecognitionApp.Application.Services.Interfaces;
 using MusicRecognitionApp.Core.Models.Business;
-using System.Linq.Expressions;
 
 namespace MusicRecognitionApp.Blazor.Components.Pages.Library
 {
-    public partial class StatisticTab : ComponentBase
+    public partial class StatisticTab : CancellableComponentBase
     {
         [Inject] private IRecognitionSongService RecognitionSongService { get; set; } = null!;
-        
+
         protected List<ArtistStatisticModel>? _artistStats;
         protected string SearchQuery { get; set; } = "";
 
-        protected IEnumerable<ArtistStatisticModel> FilteredStats
+        protected async override Task OnInitializedAsync()
         {
-            get
-            {
-                if (_artistStats == null) return Enumerable.Empty<ArtistStatisticModel>();
-                if (string.IsNullOrWhiteSpace(SearchQuery))
-                    return _artistStats;
-
-                var q = SearchQuery.Trim().ToLowerInvariant();
-                return _artistStats.Where(x =>
-                    x.Artist.Contains(q, StringComparison.OrdinalIgnoreCase));
-            }
+            await LoadDataAsync();
         }
 
-        protected override async Task OnInitializedAsync()
+        private async Task OnSearchAsync(string text)
         {
-            _artistStats = await RecognitionSongService.GetRecognizedArtistsAsync();
+            SearchQuery = text;
+            await LoadDataAsync();
+        }
+
+        private async Task LoadDataAsync()
+        {
+            _artistStats = await RecognitionSongService.GetRecognizedArtistsAsync(SearchQuery, Ct);
         }
     }
 }

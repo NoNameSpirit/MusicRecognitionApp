@@ -1,43 +1,42 @@
 ﻿@using MusicRecognitionApp.Core.Models.Business
 
-<MudTextField @bind-Value="SearchQuery"
-              Placeholder="Search by title or artist"
-              Adornment="Adornment.Start"
-              AdornmentIcon="@Icons.Material.Filled.Search"
-              Class="mb-4" />
+<MudToolBar>
+    <MudTextField T="string" 
+                  ValueChanged="@OnSearch" 
+                  Placeholder="Search by title or artist" 
+                  Adornment="Adornment.Start"
+                  AdornmentIcon="@Icons.Material.Filled.Search" 
+                  IconSize="Size.Medium" 
+                  Class="mt-1 mr-3" 
+                  Style="max-width:250px;"/>
+    <MudSpacer />
+</MudToolBar>
 
-@if (_recognizedSongs == null)
+
+@if (_items == null)
 {
     <MudProgressCircular Indeterminate="true" Color="Color.Primary" Class="mt-8" />
 }
 else
 {
-    <MudTable Items="@FilteredSongs" Hover="true" Striped="true" FixedHeader="true">
+    <MudTable Items="@_items" Hover="true" Striped="true" FixedHeader="true">
         <ColGroup>
-            <col style="width: 45%;" />
-            <col style="width: 25%;" />
-            <col style="width: 15%;" />
-            <col style="width: 15%;" />
+            @foreach(var col in Provider.Columns)
+            {
+                <col style="@col.WidthValuePercent%;" />
+            }
         </ColGroup>
         <HeaderContent>
-            <MudTh>
-                <MudTableSortLabel T="RecognizedSongModel" SortBy="x => x.Song.Title">Title</MudTableSortLabel>
-            </MudTh>
-            <MudTh>
-                <MudTableSortLabel T="RecognizedSongModel" SortBy="x => x.Song.Artist">Artist</MudTableSortLabel>
-            </MudTh>
-            <MudTh>
-                <MudTableSortLabel T="RecognizedSongModel" SortBy="x => x.Matches">Matches</MudTableSortLabel>
-            </MudTh>
-            <MudTh>
-                <MudTableSortLabel T="RecognizedSongModel" SortBy="x => x.RecognitionDate">Date</MudTableSortLabel>
-            </MudTh>
+            @foreach(var col in Provider.Columns)
+            {
+                <MudTh>@col.Name</MudTh>
+            }
         </HeaderContent>
         <RowTemplate>
-            <MudTd>@context.Song.Title</MudTd>
-            <MudTd>@context.Song.Artist</MudTd>
-            <MudTd>@context.Matches</MudTd>
-            <MudTd>@context.RecognitionDate.ToString("g")</MudTd>
+            @foreach (var col in Provider.Columns)
+            {
+                <MudTd>@col.ValueSelector(context)</MudTd>
+            }
         </RowTemplate>
         <NoRecordsContent>
             <MudText>No recognition history yet.</MudText>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MusicRecognitionApp.Core.Models.Dto;
 using MusicRecognitionApp.Infrastructure.Data.Contexts;
 using MusicRecognitionApp.Infrastructure.Data.Entities;
 using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
@@ -13,7 +14,7 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
 
         }
 
-        public async Task<List<(int SongId, int Count)>> GetMatchesAsync(IEnumerable<uint> queryHashes, CancellationToken cancellationToken = default)
+        public async Task<List<SongMatchDto>> GetMatchesAsync(IEnumerable<uint> queryHashes, CancellationToken cancellationToken = default)
         {
             var result = await Context.Set<AudioHashEntity>()
                 .Where(h => queryHashes.Contains(h.Hash))
@@ -24,7 +25,7 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
                 .Take(5)
                 .ToListAsync(cancellationToken);
 
-            return result.Select(el => (el.SongId, el.Count)).ToList();
+            return result.Select(el => new SongMatchDto() { SongId = el.SongId, Count = el.Count }).ToList();
         }
     }
 }

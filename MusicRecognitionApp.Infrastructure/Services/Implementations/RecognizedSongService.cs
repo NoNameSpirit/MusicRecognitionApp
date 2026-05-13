@@ -50,15 +50,19 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             }
         }
 
-        public async Task<List<RecognizedSongModel>> GetRecognizedSongsAsync()
+        public async Task<List<RecognizedSongModel>> GetRecognizedSongsAsync(CancellationToken cancellationToken = default)
         {
             try
             {
-                var recognizedSongEntity = await _recognizedSongRepository.GetAllOrderedByDateAsync();
+                var recognizedSongEntity = await _recognizedSongRepository.GetAllOrderedByDateAsync(cancellationToken);
 
                 return recognizedSongEntity
                     .Select(EntityToModel.ToRecognizedSongModel)
                     .ToList();
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -67,11 +71,15 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             }
         }
 
-        public async Task<List<ArtistStatisticModel>> GetArtistsStatisticsAsync()
+        public async Task<List<ArtistStatisticModel>> GetArtistsStatisticsAsync(string? search = null, CancellationToken cancellationToken = default)
         {
             try
             {
-                return await _recognizedSongRepository.GetArtistsStatisticsAsync();
+                return await _recognizedSongRepository.GetArtistsStatisticsAsync(search, cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception ex)
             {

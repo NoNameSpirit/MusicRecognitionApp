@@ -8,16 +8,30 @@ namespace MusicRecognitionApp.Infrastructure.Audio.Implementations
     {
         public float[] PreprocessAudio(Stream stream)
         {
-            float[] samples = LoadAudioFile(stream, out int channels, out int sampleRate);
-            samples = ConvertToMono(samples, channels);
-            samples = ApplyLowPassFilter(samples, sampleRate, 5000f);
-            samples = DownsampleAudio(samples, sampleRate, 4);
-            return samples;
+            string tempFileName = Path.GetTempFileName();
+            try
+            {
+                using (var fs = File.Create(tempFileName))
+                {
+                    stream.CopyTo(fs);
+                }
+
+                float[] samples = LoadAudioFile(tempFileName, out int channels, out int sampleRate);
+                samples = ConvertToMono(samples, channels);
+                samples = ApplyLowPassFilter(samples, sampleRate, 5000f);
+                samples = DownsampleAudio(samples, sampleRate, 4);
+                return samples;
+            }
+            finally
+            {
+                if (File.Exists(tempFileName)) 
+                    File.Delete(tempFileName);
+            }
         }
 
-        private float[] LoadAudioFile(Stream stream, out int channels, out int sampleRate)
+        private float[] LoadAudioFile(string path, out int channels, out int sampleRate)
         {
-            using (var reader = new WaveFileReader(stream))
+            using (var reader = new MediaFoundationReader(path))
             {
                 channels = reader.WaveFormat.Channels;
                 sampleRate = reader.WaveFormat.SampleRate;

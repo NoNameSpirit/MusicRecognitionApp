@@ -5,6 +5,7 @@ using MusicRecognitionApp.Application.Interfaces.Services;
 using MusicRecognitionApp.Application.Services.Implementations;
 using MusicRecognitionApp.Core.Models.Audio;
 using MusicRecognitionApp.Core.Models.Business;
+using MusicRecognitionApp.Core.Models.Dto;
 
 namespace MusicRecognitionApp.Test.Application.Services
 {
@@ -52,13 +53,13 @@ namespace MusicRecognitionApp.Test.Application.Services
                 new AudioHash(200, 0, 0),
                 new AudioHash(300, 0, 0)
             };
-            var matchesFromRepo = new List<(int SongId, int Count)>
+            var songMatchDtos = new List<SongMatchDto>
             {
-                (1, 3),
-                (2, 1)
+                new SongMatchDto() { SongId = 1, Count = 3},
+                new SongMatchDto() { SongId = 2, Count = 1},
             };
             _audioHashServiceMock.Setup(a => a.FindSongMatchesAsync(It.IsAny<List<uint>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(matchesFromRepo);
+                .ReturnsAsync(songMatchDtos);
 
             var song1 = new SongModel
             {
@@ -102,13 +103,13 @@ namespace MusicRecognitionApp.Test.Application.Services
             { 
                 new AudioHash(100, 0, 0) 
             };
-            var matchesFromRepo = new List<(int SongId, int Count)> 
-            { 
-                (999, 1) 
+            var songMatchDtos = new List<SongMatchDto>
+            {
+                new SongMatchDto() { SongId = 999, Count = 1},
             };
 
             _audioHashServiceMock.Setup(a => a.FindSongMatchesAsync(It.IsAny<List<uint>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(matchesFromRepo);
+                .ReturnsAsync(songMatchDtos);
             _songServiceMock.Setup(s => s.GetByIdAsync(999, It.IsAny<CancellationToken>()))
                 .ReturnsAsync((SongModel?)null);
 

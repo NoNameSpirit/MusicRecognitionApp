@@ -5,11 +5,16 @@
 <MudPaper Elevation="1">
     <MudToolBar>
         <MudSpacer />
-        <MudButton StartIcon="@Icons.Material.Filled.Add"
-                   Color="Color.Primary"
-                   OnClick="OpenAddTrackDialog">
-            Add Track
-        </MudButton>
+        
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <MudButton StartIcon="@Icons.Material.Filled.Add"
+                           Color="Color.Primary"
+                           OnClick="OpenAddTrackDialog">
+                 Add Track
+                </MudButton>
+            </Authorized>
+        </AuthorizeView>
     </MudToolBar>
     <MudTabs Centered="true" Border="true" Rounded="true" AlwaysShowScrollButtons="true">
         <MudTabPanel Text="History">
