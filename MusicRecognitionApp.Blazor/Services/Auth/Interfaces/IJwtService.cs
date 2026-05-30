@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace MusicRecognitionApp.Infrastructure.Auth
+namespace MusicRecognitionApp.Blazor.Services.Auth.Interfaces
 {
     public interface IJwtService
     {

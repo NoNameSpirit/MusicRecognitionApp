@@ -1,6 +1,7 @@
 ﻿using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Core.Models.Audio;
 using MusicRecognitionApp.Core.Models.Business;
+using MusicRecognitionApp.Core.Models.Dto;
 using MusicRecognitionApp.Infrastructure.Data.Entities;
 
 namespace MusicRecognitionApp.Infrastructure.Data.Mappers
@@ -63,6 +64,15 @@ namespace MusicRecognitionApp.Infrastructure.Data.Mappers
         public static AudioHash ToAudioHash(AudioHashEntity entity)
         {
             return new AudioHash(entity.Hash, entity.TimeOffset, entity.SongId);
+        }
+
+        public static UserModel ToUserModel(UserEntity entity)
+        {
+            return new UserModel
+            { 
+                Username = entity.Username,
+                Role = entity.Role,
+            };
         }
     }
 }

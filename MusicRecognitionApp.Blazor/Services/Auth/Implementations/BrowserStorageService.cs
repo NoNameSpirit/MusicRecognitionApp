@@ -1,7 +1,8 @@
 ﻿using Microsoft.JSInterop;
+using MusicRecognitionApp.Blazor.Services.Auth.Interfaces;
 using System.Text.Json;
 
-namespace MusicRecognitionApp.Blazor.Services.Auth
+namespace MusicRecognitionApp.Blazor.Services.Auth.Implementations
 {
     public class BrowserStorageService : IBrowserStorageService
     {
@@ -53,11 +54,11 @@ namespace MusicRecognitionApp.Blazor.Services.Auth
 
             return _jsRuntime.InvokeVoidAsync("eval", $"document.cookie = \"{cookieString}\"");
         }
-        
+
         public async ValueTask<string?> GetCookieAsync(string name)
         {
             var allCookies = await _jsRuntime.InvokeAsync<string>("eval", "document.cookie");
-            if (string.IsNullOrEmpty(allCookies)) 
+            if (string.IsNullOrEmpty(allCookies))
                 return null;
 
             var cookies = allCookies.Split(';');

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
-using MusicRecognitionApp.Application.Services.Interfaces; 
+using MusicRecognitionApp.Application.Services.Interfaces;
 
 namespace MusicRecognitionApp.Blazor.Components.Pages.Dialogs
 {
@@ -59,7 +59,7 @@ namespace MusicRecognitionApp.Blazor.Components.Pages.Dialogs
                     Snackbar.Add("Access Denied: Admins only.", Severity.Error);
                     return;
                 }
-                    
+
                 using (var stream = _selectedFile.OpenReadStream(oneMB * maxAmountOfMB))
                 using (var fs = new FileStream(tempPath, FileMode.Create))
                 {

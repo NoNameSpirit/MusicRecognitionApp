@@ -46,7 +46,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
                 SearchResult bestResult = results.FirstOrDefault()!;
                 if (bestResult.Matches > 0)
                 {
-                    await _recognitionSongService.SaveRecognizedSongsAsync(bestResult.Song.Id, bestResult.Matches, cancellationToken);
+                    await _recognitionSongService.SaveRecognizedSongAsync(bestResult.Song.Id, bestResult.Matches, cancellationToken);
                 }
 
                 ShowResult(bestResult, panelResults, picRecordingGif);

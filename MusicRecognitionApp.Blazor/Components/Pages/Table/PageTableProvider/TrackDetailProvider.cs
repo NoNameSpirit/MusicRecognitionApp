@@ -43,7 +43,7 @@ namespace MusicRecognitionApp.Blazor.Components.Pages.Table.PageTableProvider
                 return items;
 
             return items.Where(r =>
-                r.Song.Title.Contains(searchString) || 
+                r.Song.Title.Contains(searchString) ||
                 r.Song.Artist.Contains(searchString));
         }
     }

@@ -69,7 +69,7 @@ namespace MusicRecognitionApp.Controls
                 await _stateManagerService.SetStateAsync(AppState.Result, RecognitionResults);
             }
             catch (OperationCanceledException)
-            { 
+            {
                 _messageBoxService.ShowError($"Analysis has stopped");
 
                 await _stateManagerService.SetStateAsync(AppState.Ready);

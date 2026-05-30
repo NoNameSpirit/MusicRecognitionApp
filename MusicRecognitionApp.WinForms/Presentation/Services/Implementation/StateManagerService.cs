@@ -8,10 +8,10 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
     {
         private AppState _currentState;
         private Dictionary<AppState, UserControl> _states = new();
-        private MainForm _form; 
+        private MainForm _form;
 
         private readonly IStateRegistry _stateRegistryService;
-        
+
         public StateManagerService(
             IStateRegistry stateRegistryService)
         {
@@ -30,7 +30,7 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
 
         private async Task SetStateInternalAsync(AppState newState, object? stateData)
         {
-            
+
             if (_states.ContainsKey(_currentState))
                 _form.SetVisibility(_states[_currentState], false);
 

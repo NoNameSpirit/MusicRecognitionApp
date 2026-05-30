@@ -6,14 +6,14 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 {
     public class RecognitionSongService : IRecognitionSongService
     {
-        private readonly IRecognizedSongService _recognizedSongService;
+        private readonly IDbRecognizedSongService _recognizedSongService;
 
-        public RecognitionSongService(IRecognizedSongService recognizedSongService)
+        public RecognitionSongService(IDbRecognizedSongService recognizedSongService)
         {
             _recognizedSongService = recognizedSongService;
         }
 
-        public async Task SaveRecognizedSongsAsync(int songId, int matches, CancellationToken cancellationToken = default)
+        public async Task SaveRecognizedSongAsync(int songId, int matches, CancellationToken cancellationToken = default)
         {
             await _recognizedSongService.SaveRecognizedSongAsync(songId, matches, cancellationToken);
         }

@@ -56,9 +56,9 @@ namespace MusicRecognitionApp.Test.Application.Services
                 .Returns(new List<AudioHash>());
             _importServiceMock.Setup(
                 i => i.AddSongAsync(
-                    It.IsAny<string>(), 
-                    It.IsAny<string>(), 
-                    It.IsAny<List<AudioHash>>(), 
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<List<AudioHash>>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
         }
@@ -80,10 +80,10 @@ namespace MusicRecognitionApp.Test.Application.Services
             result.Errors.Should().ContainSingle(e => e.Contains("Folder doesn't exist"));
             _importServiceMock.Verify(
                 i => i.AddSongAsync(
-                    It.IsAny<string>(), 
-                    It.IsAny<string>(), 
-                    It.IsAny<List<AudioHash>>(), 
-                    It.IsAny<CancellationToken>()), 
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<List<AudioHash>>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Never);
         }
 
@@ -146,21 +146,21 @@ namespace MusicRecognitionApp.Test.Application.Services
 
                 _importServiceMock.Verify(
                     i => i.AddSongAsync(
-                        "Song1", 
-                        "ArtistName", 
-                        It.IsAny<List<AudioHash>>(), 
-                        It.IsAny<CancellationToken>()), 
+                        "Song1",
+                        "ArtistName",
+                        It.IsAny<List<AudioHash>>(),
+                        It.IsAny<CancellationToken>()),
                     Times.Once);
                 _importServiceMock.Verify(
                     i => i.AddSongAsync(
-                        "Song2", 
-                        "ArtistName", 
-                        It.IsAny<List<AudioHash>>(), 
-                        It.IsAny<CancellationToken>()), 
+                        "Song2",
+                        "ArtistName",
+                        It.IsAny<List<AudioHash>>(),
+                        It.IsAny<CancellationToken>()),
                     Times.Once);
 
                 progressSteps.Should().ContainInOrder(new[] { 0, 50, 100 });
-                _scopeFactoryMock.Verify(f => f.CreateScope(), 
+                _scopeFactoryMock.Verify(f => f.CreateScope(),
                     Times.Exactly(2));
             }
             finally
@@ -182,9 +182,9 @@ namespace MusicRecognitionApp.Test.Application.Services
 
             _importServiceMock.SetupSequence(
                 i => i.AddSongAsync(
-                    It.IsAny<string>(), 
-                    It.IsAny<string>(), 
-                    It.IsAny<List<AudioHash>>(), 
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<List<AudioHash>>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("DB Error"))
                 .Returns(Task.CompletedTask);
@@ -201,10 +201,10 @@ namespace MusicRecognitionApp.Test.Application.Services
 
                 _importServiceMock.Verify(
                     i => i.AddSongAsync(
-                        It.IsAny<string>(), 
-                        It.IsAny<string>(), 
-                        It.IsAny<List<AudioHash>>(), 
-                        It.IsAny<CancellationToken>()), 
+                        It.IsAny<string>(),
+                        It.IsAny<string>(),
+                        It.IsAny<List<AudioHash>>(),
+                        It.IsAny<CancellationToken>()),
                     Times.Exactly(2));
             }
             finally

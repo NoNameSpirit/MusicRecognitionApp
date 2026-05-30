@@ -8,7 +8,7 @@ namespace MusicRecognitionApp.Forms
     {
         private readonly IMessageBoxService _messageBoxService;
         private readonly IStateManagerService _stateManagerService;
-        
+
         public MainForm(
             IMessageBoxService messageBoxService,
             IStateManagerService stateManagerService)
@@ -29,7 +29,7 @@ namespace MusicRecognitionApp.Forms
                 e.Cancel = true;
             }
         }
-        
+
         private async void MainForm_Load(object sender, EventArgs e)
         {
             _stateManagerService.Initialize(this);

@@ -15,7 +15,7 @@ namespace MusicRecognitionApp.Presentation.Services.Interfaces
         NoInfoCard ShowNoSongsCard();
 
         SongCard CreateResultCard(SearchResult searchResultModel);
-        
+
         NoInfoCard CreateNoResultsCard();
     }
 }

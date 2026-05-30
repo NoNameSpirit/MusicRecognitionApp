@@ -9,7 +9,7 @@ namespace MusicRecognitionApp.Controls
         private readonly IStateManagerService _stateManagerService;
         private readonly IMessageBoxService _messageBoxService;
         private IRecordingSessionService _sessionService;
-        
+
         public RecordingStateControl(
             IStateManagerService stateManagerService,
             IRecordingSessionService sessionService,
@@ -30,11 +30,11 @@ namespace MusicRecognitionApp.Controls
         protected override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
-        
+
             if (Visible)
             {
                 ProgressBarRecording.Value = 0;
-                
+
                 _ = StartRecordingAsync();
             }
         }

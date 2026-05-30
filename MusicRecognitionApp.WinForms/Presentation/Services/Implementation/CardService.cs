@@ -88,13 +88,13 @@ namespace MusicRecognitionApp.Presentation.Services.Implementation
 
         public NoInfoCard ShowNoSongsCard()
             => CreateNoInfoCard("There are no recognized tracks");
-        
+
         public NoInfoCard CreateNoResultsCard()
             => CreateNoInfoCard($"Nothing is recognized {Environment.NewLine}Try again");
 
         public SongCard CreateResultCard(SearchResult searchResultModel)
             => CreateSongCard(searchResultModel.Song.Title, searchResultModel.Song.Artist, searchResultModel.Matches);
-        
+
         private SongCard CreateSongCard(string title, string artist, int matches)
             => new SongCard(title, artist, matches);
 

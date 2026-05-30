@@ -24,7 +24,7 @@ namespace MusicRecognitionApp.Infrastructure.Audio.Implementations
             }
             finally
             {
-                if (File.Exists(tempFileName)) 
+                if (File.Exists(tempFileName))
                     File.Delete(tempFileName);
             }
         }
@@ -39,7 +39,7 @@ namespace MusicRecognitionApp.Infrastructure.Audio.Implementations
                 var sampleProvider = reader.ToSampleProvider();
                 List<float> samples = new List<float>();
                 float[] buffer = new float[reader.WaveFormat.SampleRate * channels];
-                
+
                 int read;
                 while ((read = sampleProvider.Read(buffer, 0, buffer.Length)) > 0)
                 {

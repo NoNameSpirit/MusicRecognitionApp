@@ -1,11 +1,8 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MusicRecognitionApp.Extensions;
-using MusicRecognitionApp.Forms;
-using MusicRecognitionApp.Infrastructure.Data.Contexts;
 using MusicRecognitionApp.Infrastructure.Extensions;
-using MusicRecognitionApp.Infrastructure.Services;
+using MusicRecognitionApp.WinForms.Presentation.Forms;
 
 namespace MusicRecognitionApp
 {
@@ -15,24 +12,25 @@ namespace MusicRecognitionApp
         static void Main(string[] args)
         {
             ApplicationConfiguration.Initialize();
-            
+
             using var host = CreateHostBuidler(args).Build();
             using var formScope = host.Services.CreateScope();
-            
-            MainForm mainForm = formScope.ServiceProvider.GetRequiredService<MainForm>(); 
-            
-            System.Windows.Forms.Application.Run(mainForm); 
-        }   
+
+            LoginForm loginForm = formScope.ServiceProvider.GetRequiredService<LoginForm>();
+
+            System.Windows.Forms.Application.Run(loginForm);
+        }
 
         private static IHostBuilder CreateHostBuidler(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
-                       .ConfigureServices((context, services) => 
+                       .ConfigureServices((context, services) =>
                        {
-                            services.AddDatabaseServices(context.Configuration)
-                                    .AddInfrustructureServices()
-                                    .AddApplicationServices()
-                                    .AddPresentationServices();
+                           services.AddCoreServices()
+                                   .AddDatabaseServices(context.Configuration)
+                                   .AddInfrustructureServices()
+                                   .AddApplicationServices()
+                                   .AddPresentationServices();
                        });
         }
     }

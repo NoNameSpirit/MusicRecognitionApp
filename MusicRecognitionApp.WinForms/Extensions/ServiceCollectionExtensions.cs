@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MusicRecognitionApp.Forms;
-using MusicRecognitionApp.Presentation.Services.Interfaces;
-using MusicRecognitionApp.Presentation.Services.Implementation;
 using MusicRecognitionApp.Presentation;
+using MusicRecognitionApp.Presentation.Services.Implementation;
+using MusicRecognitionApp.Presentation.Services.Interfaces;
+using MusicRecognitionApp.WinForms.Presentation.Forms;
 
 namespace MusicRecognitionApp.Extensions
 {
@@ -17,10 +18,13 @@ namespace MusicRecognitionApp.Extensions
                     .AddSingleton<ISongAddingService, SongAddingService>()
                     .AddSingleton<IStateRegistry, StateRegistryService>()
                     .AddSingleton<IStateManagerService, StateManagerService>();
-                    
 
-            services.AddScoped<MainForm>();
-            
+
+            services.AddTransient<BaseForm>()
+                    .AddTransient<MainForm>()
+                    .AddTransient<LoginForm>()
+                    .AddTransient<RegistrationForm>();
+
             services.AddScoped<IApplicationForm, MainForm>();
 
             return services;

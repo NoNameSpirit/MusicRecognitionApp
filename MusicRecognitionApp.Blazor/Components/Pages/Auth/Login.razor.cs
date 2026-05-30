@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using MusicRecognitionApp.Blazor.Services.Auth;
+using MusicRecognitionApp.Blazor.Services.Auth.Implementations;
+using MusicRecognitionApp.Core.Auth.Services.Interfaces;
 using MusicRecognitionApp.Core.Models.Dto;
 
 namespace MusicRecognitionApp.Blazor.Components.Pages.Auth
@@ -10,6 +11,7 @@ namespace MusicRecognitionApp.Blazor.Components.Pages.Auth
         [Inject] private NavigationManager Navigation { get; set; } = null!;
         [Inject] private ISnackbar Snackbar { get; set; } = null!;
         [Inject] private BlazorAppLoginService LoginService { get; set; } = null!;
+        [Inject] private IAuthUserValidator UserValidator { get; set; } = null!;
 
         private UserDto _model = new UserDto();
         private string[] _errors = [];
@@ -19,32 +21,24 @@ namespace MusicRecognitionApp.Blazor.Components.Pages.Auth
             if (_errors.Length != 0)
                 return;
 
-            var success = await LoginService.LoginAsync(_model.Username, _model.Password);
-
-            if (success)
+            try
             {
-                Snackbar.Add($"Welcome, {_model.Username}!", Severity.Success);
-                Navigation.NavigateTo("/");
+                var result = await LoginService.LoginAsync(_model.Username, _model.Password);
+
+                if (result.IsSuccess)
+                {
+                    Snackbar.Add($"Welcome, {result.User.Username}!", Severity.Success);
+                    Navigation.NavigateTo("/");
+                }
+                else
+                {
+                    Snackbar.Add(result.Error, Severity.Error);
+                } 
             }
-            else
+            catch (Exception ex)
             {
-                Snackbar.Add("Incorrect username or password.", Severity.Error);
+                Snackbar.Add($"Login error: {ex.Message}", Severity.Error);
             }
-        }
-
-        private IEnumerable<string> ValidationUsername(string username)
-        {
-            if (string.IsNullOrEmpty(username))
-                yield return "Username is required";
-
-            if (username.Length < 5)
-                yield return "Username must be greater than 5 symbols";
-        }
-
-        private IEnumerable<string> ValidationPassword(string password)
-        {
-            if (string.IsNullOrEmpty(password))
-                yield return "Password is required";
         }
     }
 }

@@ -49,9 +49,9 @@ namespace MusicRecognitionApp.Test.Application.Services
 
             // Assert
             result.Should().BeEmpty();
-            _audioProcessorMock.Verify(p => p.PreprocessAudio(It.IsAny<Stream>()), 
+            _audioProcessorMock.Verify(p => p.PreprocessAudio(It.IsAny<Stream>()),
                 Times.Never);
-            _searchServiceMock.Verify(s => s.SearchSongAsync(It.IsAny<List<AudioHash>>(), It.IsAny<CancellationToken>()), 
+            _searchServiceMock.Verify(s => s.SearchSongAsync(It.IsAny<List<AudioHash>>(), It.IsAny<CancellationToken>()),
                 Times.Never);
         }
 
@@ -64,24 +64,24 @@ namespace MusicRecognitionApp.Test.Application.Services
 
             var processedAudio = new float[] { 1.0f, 2.0f };
             var spectrogramData = new SpectrogramData();
-            var peaks = new List<Peak> 
-            { 
-                new Peak 
-                { 
-                    TimeIndex = 1, 
-                    FrequencyIndex = 2, 
-                    TimeSeconds = 0.1, 
-                    FrequencyHz = 440, 
-                    Magnitude = 1.0 
-                } 
+            var peaks = new List<Peak>
+            {
+                new Peak
+                {
+                    TimeIndex = 1,
+                    FrequencyIndex = 2,
+                    TimeSeconds = 0.1,
+                    FrequencyHz = 440,
+                    Magnitude = 1.0
+                }
             };
-            var hashes = new List<AudioHash> 
-            { 
-                new AudioHash(123, 0.1, 0) 
+            var hashes = new List<AudioHash>
+            {
+                new AudioHash(123, 0.1, 0)
             };
-            var searchResults = new List<SearchResult> 
-            { 
-                new SearchResult(new SongModel(), 1, 0.9) 
+            var searchResults = new List<SearchResult>
+            {
+                new SearchResult(new SongModel(), 1, 0.9)
             };
 
             _audioProcessorMock.Setup(p => p.PreprocessAudio(It.IsAny<Stream>()))
@@ -104,15 +104,15 @@ namespace MusicRecognitionApp.Test.Application.Services
                 result.Should().HaveCount(1);
                 result.Should().BeEquivalentTo(searchResults);
 
-                _audioProcessorMock.Verify(p => p.PreprocessAudio(It.IsAny<Stream>()), 
+                _audioProcessorMock.Verify(p => p.PreprocessAudio(It.IsAny<Stream>()),
                     Times.Once);
-                _spectrogramBuilderMock.Verify(s => s.ProcessAudio(processedAudio, TargetSampleRate), 
+                _spectrogramBuilderMock.Verify(s => s.ProcessAudio(processedAudio, TargetSampleRate),
                     Times.Once);
-                _peakDetectorMock.Verify(p => p.ProcessPeekDetector(spectrogramData), 
+                _peakDetectorMock.Verify(p => p.ProcessPeekDetector(spectrogramData),
                     Times.Once);
-                _hashGeneratorMock.Verify(h => h.GenerateHashes(peaks, 0), 
+                _hashGeneratorMock.Verify(h => h.GenerateHashes(peaks, 0),
                     Times.Once);
-                _searchServiceMock.Verify(s => s.SearchSongAsync(hashes, It.IsAny<CancellationToken>()), 
+                _searchServiceMock.Verify(s => s.SearchSongAsync(hashes, It.IsAny<CancellationToken>()),
                     Times.Once);
             }
             finally
@@ -132,18 +132,18 @@ namespace MusicRecognitionApp.Test.Application.Services
                 .Returns(new float[] { 1.0f });
             _spectrogramBuilderMock.Setup(s => s.ProcessAudio(It.IsAny<float[]>(), It.IsAny<int>()))
                 .Throws(new Exception("FFT Error"));
-            
+
             try
             {
                 // Act & Assert
                 await Assert.ThrowsAsync<Exception>(async () =>
                     await _recognitionService.RecognizeFromMicrophoneAsync(tempFile));
 
-                _peakDetectorMock.Verify(p => p.ProcessPeekDetector(It.IsAny<SpectrogramData>()), 
+                _peakDetectorMock.Verify(p => p.ProcessPeekDetector(It.IsAny<SpectrogramData>()),
                     Times.Never);
-                _hashGeneratorMock.Verify(h => h.GenerateHashes(It.IsAny<List<Peak>>(), It.IsAny<int>()), 
+                _hashGeneratorMock.Verify(h => h.GenerateHashes(It.IsAny<List<Peak>>(), It.IsAny<int>()),
                     Times.Never);
-                _searchServiceMock.Verify(s => s.SearchSongAsync(It.IsAny<List<AudioHash>>(), It.IsAny<CancellationToken>()), 
+                _searchServiceMock.Verify(s => s.SearchSongAsync(It.IsAny<List<AudioHash>>(), It.IsAny<CancellationToken>()),
                     Times.Never);
             }
             finally

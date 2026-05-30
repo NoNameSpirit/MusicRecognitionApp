@@ -1,8 +1,8 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Components.Authorization;
-using MusicRecognitionApp.Infrastructure.Auth;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+using MusicRecognitionApp.Blazor.Services.Auth.Interfaces;
+using System.Security.Claims;
 
-namespace MusicRecognitionApp.Blazor.Services.Auth
+namespace MusicRecognitionApp.Blazor.Services.Auth.Implementations
 {
     public class BlazorAuthStateProvider : AuthenticationStateProvider
     {
@@ -56,7 +56,7 @@ namespace MusicRecognitionApp.Blazor.Services.Auth
         public async Task MarkUserAsAuthenticatedAsync(string token)
         {
             var principal = _jwtService.ValidateToken(token);
-            if (principal == null) 
+            if (principal == null)
                 return;
 
             await _storage.SetAsync("auth_token", token);

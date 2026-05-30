@@ -7,7 +7,7 @@ namespace MusicRecognitionApp.Controls
     public partial class ResultStateControl : UserControl, IStateWithData
     {
         private List<SearchResult> _results;
-        
+
         private readonly IStateManagerService _stateManagerService;
         private readonly IResultDisplayService _resultDisplayService;
         private readonly IMessageBoxService _messageBoxService;
@@ -16,7 +16,7 @@ namespace MusicRecognitionApp.Controls
             IStateManagerService stateManagerService,
             IResultDisplayService resultDisplayService,
             IMessageBoxService messageBoxService)
-        {   
+        {
             _stateManagerService = stateManagerService;
             _resultDisplayService = resultDisplayService;
             _messageBoxService = messageBoxService;

@@ -4,7 +4,7 @@ namespace MusicRecognitionApp.Application.Services.Interfaces
 {
     public interface IRecognitionSongService
     {
-        Task SaveRecognizedSongsAsync(int songId, int matches, CancellationToken cancellationToken = default);
+        Task SaveRecognizedSongAsync(int songId, int matches, CancellationToken cancellationToken = default);
 
         Task<List<RecognizedSongModel>> GetRecognizedSongsAsync(CancellationToken cancellationToken = default);
 

@@ -27,7 +27,7 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
         {
             return await GetAsync(
                 orderBy: q => q.OrderByDescending(r => r.RecognitionDate),
-                cancellationToken: cancellationToken, 
+                cancellationToken: cancellationToken,
                 includes: "Song");
         }
 

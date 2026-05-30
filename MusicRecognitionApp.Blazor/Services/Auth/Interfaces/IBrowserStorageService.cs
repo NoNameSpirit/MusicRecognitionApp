@@ -1,4 +1,4 @@
-﻿namespace MusicRecognitionApp.Blazor.Services.Auth
+﻿namespace MusicRecognitionApp.Blazor.Services.Auth.Interfaces
 {
     public interface IBrowserStorageService
     {

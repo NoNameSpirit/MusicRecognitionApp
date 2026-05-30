@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
-using MusicRecognitionApp.Blazor.Services.Auth;
+using MusicRecognitionApp.Blazor.Services.Auth.Implementations;
+using MusicRecognitionApp.Blazor.Services.Auth.Interfaces;
 using MusicRecognitionApp.Core.Models.Auth;
-using MusicRecognitionApp.Infrastructure.Auth;
 
 namespace MusicRecognitionApp.Blazor.Extensions
 {
@@ -20,9 +20,8 @@ namespace MusicRecognitionApp.Blazor.Extensions
                         config.AccessDeniedPath = "/";
                     });
 
-            services.AddScoped<IBrowserStorageService, BrowserStorageService>()
-                    .AddScoped<IJwtService, JwtService>()
-                    .AddScoped<IUserService, UserService>()
+            services.AddSingleton<IJwtService, JwtService>()
+                    .AddScoped<IBrowserStorageService, BrowserStorageService>()
                     .AddScoped<AuthenticationStateProvider, BlazorAuthStateProvider>()
                     .AddScoped<BlazorAppLoginService>();
 

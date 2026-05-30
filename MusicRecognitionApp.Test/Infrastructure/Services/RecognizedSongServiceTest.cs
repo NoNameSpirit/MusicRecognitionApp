@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
-using MusicRecognitionApp.Application.Interfaces.UnitOfWork;
 using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Infrastructure.Data.Entities;
 using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
@@ -12,16 +11,14 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
     public class RecognizedSongServiceTest
     {
         private readonly Mock<IRecognizedSongRepository> _repoMock;
-        private readonly Mock<ILogger<RecognizedSongService>> _loggerMock;
-        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-        private readonly RecognizedSongService _recognizedSongService;
+        private readonly Mock<ILogger<DbRecognizedSongService>> _loggerMock;
+        private readonly DbRecognizedSongService _recognizedSongService;
 
         public RecognizedSongServiceTest()
         {
             _repoMock = new Mock<IRecognizedSongRepository>();
-            _loggerMock = new Mock<ILogger<RecognizedSongService>>();
-            _unitOfWorkMock = new Mock<IUnitOfWork>();
-             _recognizedSongService = new RecognizedSongService(_repoMock.Object, _loggerMock.Object, _unitOfWorkMock.Object);
+            _loggerMock = new Mock<ILogger<DbRecognizedSongService>>();
+            _recognizedSongService = new DbRecognizedSongService(_repoMock.Object, _loggerMock.Object);
         }
 
         #region SaveRecognizedSongAsync Tests
@@ -44,7 +41,7 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
                 l => l.Log(
                     LogLevel.Warning,
                     It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((o,t) => o.ToString().Contains("Skipping save")),
+                    It.Is<It.IsAnyType>((o, t) => o.ToString().Contains("Skipping save")),
                     It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Once);
@@ -66,14 +63,13 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
             await _recognizedSongService.SaveRecognizedSongAsync(songId, matches);
 
             //Assert
-            _repoMock.Verify(r 
+            _repoMock.Verify(r
                 => r.InsertAsync(
                     It.Is<RecognizedSongEntity>(r => r.SongId == songId && r.Matches == matches),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
 
             _repoMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-            _unitOfWorkMock.Verify(u => u.Clear(), Times.Never);
         }
 
         [Fact]
@@ -87,13 +83,12 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
                 .ThrowsAsync(new OperationCanceledException());
 
             //Act
-            await Assert.ThrowsAsync<OperationCanceledException>(async () 
+            await Assert.ThrowsAsync<OperationCanceledException>(async ()
                 => await _recognizedSongService.SaveRecognizedSongAsync(songId, matches));
 
             //Assert
             _repoMock.Verify(r => r.InsertAsync(It.IsAny<RecognizedSongEntity>(), It.IsAny<CancellationToken>()), Times.Once);
             _repoMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
-            _unitOfWorkMock.Verify(u => u.Clear(), Times.Once);
         }
 
         [Fact]
@@ -115,7 +110,6 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
             //Assert
             _repoMock.Verify(r => r.InsertAsync(It.IsAny<RecognizedSongEntity>(), It.IsAny<CancellationToken>()), Times.Once);
             _repoMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-            _unitOfWorkMock.Verify(u => u.Clear(), Times.Once);
         }
 
         #endregion
@@ -128,12 +122,12 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
             // Arrange
             var entities = new List<RecognizedSongEntity>
             {
-                new() { 
-                    Id = 1, 
-                    SongId = 10, 
-                    Matches = 5, 
-                    RecognitionDate = DateTime.UtcNow, 
-                    Song = new() { Title = "Song1", Artist = "Artist1" } 
+                new() {
+                    Id = 1,
+                    SongId = 10,
+                    Matches = 5,
+                    RecognitionDate = DateTime.UtcNow,
+                    Song = new() { Title = "Song1", Artist = "Artist1" }
                 }
             };
             _repoMock.Setup(r => r.GetAllOrderedByDateAsync(It.IsAny<CancellationToken>()))
@@ -147,11 +141,11 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
             result[0].Song.Title.Should().Be("Song1");
             _loggerMock.Verify(
                 l => l.Log(
-                    LogLevel.Error, 
-                    It.IsAny<EventId>(), 
-                    It.IsAny<It.IsAnyType>(), 
-                    It.IsAny<Exception>(), 
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()), 
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Never);
         }
 
@@ -182,12 +176,12 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
         public async Task GetArtistsStatisticsAsync_ExistsStatsInDb_Stats()
         {
             // Arrange
-            var stats = new List<ArtistStatisticModel> 
+            var stats = new List<ArtistStatisticModel>
             {
-                new() { 
-                    Artist = "Queen", 
-                    SongCount = 10 
-                } 
+                new() {
+                    Artist = "Queen",
+                    SongCount = 10
+                }
             };
             _repoMock.Setup(r => r.GetArtistsStatisticsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(stats);
@@ -214,10 +208,10 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
             result.Should().BeEmpty();
             _loggerMock.Verify(
                 l => l.Log(
-                    LogLevel.Error, 
+                    LogLevel.Error,
                     It.IsAny<EventId>(),
                     It.Is<It.IsAnyType>((v, c) => v.ToString().Contains("Error retrieving artist statistics")),
-                    It.IsAny<Exception>(), 
+                    It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Once);
         }

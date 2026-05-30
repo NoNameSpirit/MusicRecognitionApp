@@ -7,15 +7,13 @@
         <MudForm @bind-Errors="@_errors" Model="@_model">
             <MudTextField @bind-Value="_model.Username"
                           Label="Username"
-                          Variant="Variant.Outlined" 
-                          Validation = "@ValidationUsername" />
+                          Variant="Variant.Outlined" />
 
             <MudTextField @bind-Value="_model.Password" 
                           Label="Password" 
                           Variant="Variant.Outlined" 
                           InputType="InputType.Password" 
-                          Class="mt-4" 
-                          Validation = "@ValidationPassword" />
+                          Class="mt-4" />
             
             <MudButton OnClick="HandleLogin"
                        Color="Color.Primary" 

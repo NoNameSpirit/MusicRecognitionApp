@@ -5,14 +5,14 @@ using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
 
 namespace MusicRecognitionApp.Infrastructure.Services.Implementations
 {
-    public class AudioHashService : IAudioHashService
+    public class DbAudioHashService : IDbAudioHashService
     {
         private readonly IAudioHashRepository _audioHashRepository;
-        private readonly ILogger<AudioHashService> _logger;
+        private readonly ILogger<DbAudioHashService> _logger;
 
-        public AudioHashService(
+        public DbAudioHashService(
             IAudioHashRepository audioHashRepository,
-            ILogger<AudioHashService> logger)
+            ILogger<DbAudioHashService> logger)
         {
             _audioHashRepository = audioHashRepository;
             _logger = logger;
@@ -30,7 +30,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while getting song matches for {HashCount} hashes", hashValues?.Count ?? 0);
+                _logger.LogError(ex, $"Error while getting song matches for {hashValues?.Count ?? 0} hashes");
                 return new List<SongMatchDto>();
             }
         }

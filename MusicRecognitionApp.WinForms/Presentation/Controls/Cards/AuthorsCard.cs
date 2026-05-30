@@ -9,7 +9,7 @@
             InitializeComponent();
 
             string title = $"Tracks recognized: {trackCount}";
-            
+
             this.lblTitle.Text = TruncateText(title, 40);
             this.lblArtist.Text = TruncateText(artist, 30);
 
@@ -21,15 +21,15 @@
             btnCopy.Click += OnCopyButtonClick;
         }
 
-        private void OnCopyButtonClick(object sender, EventArgs e) 
+        private void OnCopyButtonClick(object sender, EventArgs e)
         {
             string? text = btnCopy.Tag?.ToString();
             if (!string.IsNullOrEmpty(text))
             {
-                Clipboard.SetText(text);    
+                Clipboard.SetText(text);
             }
 
-            notificationToolTip.Show("Copied", btnCopy);             
+            notificationToolTip.Show("Copied", btnCopy);
 
             CopyRequest?.Invoke(this, EventArgs.Empty);
         }

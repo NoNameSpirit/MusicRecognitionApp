@@ -10,7 +10,8 @@ using MusicRecognitionApp.Infrastructure.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<ITableDetailProvider<RecognizedSongEntity>, TrackDetailProvider>();
 
-builder.Services.AddDatabaseServices(builder.Configuration)
+builder.Services.AddCoreServices()
+                .AddDatabaseServices(builder.Configuration)
                 .AddInfrustructureServices()
                 .AddApplicationServices()
                 .AddAuthServices(builder.Configuration);

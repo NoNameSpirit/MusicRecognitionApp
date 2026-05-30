@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using MusicRecognitionApp.Core.Models.Audio;
 using MusicRecognitionApp.Infrastructure.Audio.Implementations;
-using System.Drawing;
 
 namespace MusicRecognitionApp.Test.Infrastructure.Audio
 {

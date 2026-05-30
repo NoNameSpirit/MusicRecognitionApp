@@ -11,16 +11,16 @@ namespace MusicRecognitionApp.Test.Application.Services
 {
     public class SongSearchServiceTest
     {
-        private readonly Mock<ISongService> _songServiceMock;
-        private readonly Mock<IAudioHashService> _audioHashServiceMock;
+        private readonly Mock<IDbSongService> _songServiceMock;
+        private readonly Mock<IDbAudioHashService> _dbAudioHashServiceMock;
         private readonly Mock<ILogger<SongSearchService>> _loggerMock;
         private readonly SongSearchService _songSearchService;
         public SongSearchServiceTest()
         {
-            _audioHashServiceMock = new Mock<IAudioHashService>();
-            _songServiceMock = new Mock<ISongService>();
+            _dbAudioHashServiceMock = new Mock<IDbAudioHashService>();
+            _songServiceMock = new Mock<IDbSongService>();
             _loggerMock = new Mock<ILogger<SongSearchService>>();
-            _songSearchService = new SongSearchService(_audioHashServiceMock.Object, _songServiceMock.Object, _loggerMock.Object);
+            _songSearchService = new SongSearchService(_dbAudioHashServiceMock.Object, _songServiceMock.Object, _loggerMock.Object);
         }
 
         #region SearchSong Tests
@@ -36,7 +36,7 @@ namespace MusicRecognitionApp.Test.Application.Services
 
             //Assert
             result.Should().BeEmpty();
-            _audioHashServiceMock.Verify(a
+            _dbAudioHashServiceMock.Verify(a
                 => a.FindSongMatchesAsync(
                     It.IsAny<List<uint>>(),
                     It.IsAny<CancellationToken>()),
@@ -58,7 +58,7 @@ namespace MusicRecognitionApp.Test.Application.Services
                 new SongMatchDto() { SongId = 1, Count = 3},
                 new SongMatchDto() { SongId = 2, Count = 1},
             };
-            _audioHashServiceMock.Setup(a => a.FindSongMatchesAsync(It.IsAny<List<uint>>(), It.IsAny<CancellationToken>()))
+            _dbAudioHashServiceMock.Setup(a => a.FindSongMatchesAsync(It.IsAny<List<uint>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(songMatchDtos);
 
             var song1 = new SongModel
@@ -99,16 +99,16 @@ namespace MusicRecognitionApp.Test.Application.Services
         public async Task SearchSong_SongNotFoundById_SkipsMissingSong()
         {
             // Arrange
-            var queryHashes = new List<AudioHash> 
-            { 
-                new AudioHash(100, 0, 0) 
+            var queryHashes = new List<AudioHash>
+            {
+                new AudioHash(100, 0, 0)
             };
             var songMatchDtos = new List<SongMatchDto>
             {
                 new SongMatchDto() { SongId = 999, Count = 1},
             };
 
-            _audioHashServiceMock.Setup(a => a.FindSongMatchesAsync(It.IsAny<List<uint>>(), It.IsAny<CancellationToken>()))
+            _dbAudioHashServiceMock.Setup(a => a.FindSongMatchesAsync(It.IsAny<List<uint>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(songMatchDtos);
             _songServiceMock.Setup(s => s.GetByIdAsync(999, It.IsAny<CancellationToken>()))
                 .ReturnsAsync((SongModel?)null);
@@ -118,10 +118,10 @@ namespace MusicRecognitionApp.Test.Application.Services
 
             // Assert
             result.Should().BeEmpty();
-            _songServiceMock.Verify(s 
+            _songServiceMock.Verify(s
                 => s.GetByIdAsync(
-                    999, 
-                    It.IsAny<CancellationToken>()), 
+                    999,
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
         }
 
@@ -129,12 +129,12 @@ namespace MusicRecognitionApp.Test.Application.Services
         public async Task SearchSong_GeneralError_EmptyListAndLogs()
         {
             // Arrange
-            var queryHashes = new List<AudioHash> 
-            { 
-                new AudioHash(100, 0, 0) 
+            var queryHashes = new List<AudioHash>
+            {
+                new AudioHash(100, 0, 0)
             };
 
-            _audioHashServiceMock.Setup(a => a.FindSongMatchesAsync(It.IsAny<List<uint>>(), It.IsAny<CancellationToken>()))
+            _dbAudioHashServiceMock.Setup(a => a.FindSongMatchesAsync(It.IsAny<List<uint>>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("Search Failure"));
 
             // Act
@@ -144,10 +144,10 @@ namespace MusicRecognitionApp.Test.Application.Services
             result.Should().BeEmpty();
             _loggerMock.Verify(
                 l => l.Log(
-                    LogLevel.Error, 
+                    LogLevel.Error,
                     It.IsAny<EventId>(),
                     It.Is<It.IsAnyType>((v, c) => v.ToString().Contains("Exception while searching a song")),
-                    It.IsAny<Exception>(), 
+                    It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Once);
         }
@@ -156,11 +156,11 @@ namespace MusicRecognitionApp.Test.Application.Services
         public async Task SearchSong_OperationCanceled_ThrowsWithoutLogging()
         {
             // Arrange
-            var queryHashes = new List<AudioHash> 
-            { 
-                new AudioHash(100, 0, 0) 
+            var queryHashes = new List<AudioHash>
+            {
+                new AudioHash(100, 0, 0)
             };
-            _audioHashServiceMock.Setup(a => a.FindSongMatchesAsync(It.IsAny<List<uint>>(), It.IsAny<CancellationToken>()))
+            _dbAudioHashServiceMock.Setup(a => a.FindSongMatchesAsync(It.IsAny<List<uint>>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new OperationCanceledException());
 
             // Act & Assert
@@ -169,13 +169,13 @@ namespace MusicRecognitionApp.Test.Application.Services
 
             _loggerMock.Verify(
                 l => l.Log(
-                    LogLevel.Error, 
-                    It.IsAny<EventId>(), 
-                    It.IsAny<It.IsAnyType>(), 
-                    It.IsAny<Exception>(), 
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Never);
-        } 
+        }
 
         #endregion
     }

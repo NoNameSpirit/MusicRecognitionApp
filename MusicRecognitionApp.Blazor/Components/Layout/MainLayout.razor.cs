@@ -1,24 +1,24 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using MusicRecognitionApp.Blazor.Services.Auth;
+using MusicRecognitionApp.Blazor.Services.Auth.Implementations;
 
 namespace MusicRecognitionApp.Blazor.Components.Layout
 {
     public partial class MainLayout : LayoutComponentBase
     {
         [Inject] private NavigationManager Navigation { get; set; } = null!;
-        [Inject] private BlazorAppLoginService LoginServic { get; set; } = null!;
+        [Inject] private BlazorAppLoginService LoginService { get; set; } = null!;
         [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = null!;
 
         protected override void OnInitialized()
         {
             AuthStateProvider.AuthenticationStateChanged += _
-                => InvokeAsync(StateHasChanged); 
+                => InvokeAsync(StateHasChanged);
         }
 
         private async Task Logout()
         {
-            await LoginServic.LogoutAsync();
+            await LoginService.LogoutAsync();
             Navigation.NavigateTo("/");
         }
 

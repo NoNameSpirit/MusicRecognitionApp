@@ -1,26 +1,22 @@
 ﻿using Microsoft.Extensions.Logging;
 using MusicRecognitionApp.Application.Interfaces.Services;
-using MusicRecognitionApp.Application.Interfaces.UnitOfWork;
 using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Infrastructure.Data.Mappers;
 using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
 
 namespace MusicRecognitionApp.Infrastructure.Services.Implementations
 {
-    public class RecognizedSongService : IRecognizedSongService
+    public class DbRecognizedSongService : IDbRecognizedSongService
     {
         private readonly IRecognizedSongRepository _recognizedSongRepository;
-        private readonly ILogger<RecognizedSongService> _logger;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<DbRecognizedSongService> _logger;
 
-        public RecognizedSongService(
+        public DbRecognizedSongService(
             IRecognizedSongRepository recognizedSongRepository,
-            ILogger<RecognizedSongService> logger,
-            IUnitOfWork unitOfWork)
+            ILogger<DbRecognizedSongService> logger)
         {
             _recognizedSongRepository = recognizedSongRepository;
             _logger = logger;
-            _unitOfWork = unitOfWork;
         }
 
         public async Task SaveRecognizedSongAsync(int songId, int matches, CancellationToken cancellationToken = default)
@@ -29,7 +25,7 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             {
                 if (matches < 1)
                 {
-                    _logger.LogWarning("Skipping save: {Matches} matches for song {SongId}", matches, songId);
+                    _logger.LogWarning($"Skipping save: {matches} matches for song {songId}");
                     return;
                 }
 
@@ -40,12 +36,11 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             }
             catch (OperationCanceledException)
             {
-                _unitOfWork.Clear();
                 throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to save recognized song {SongId} with {Matches} matches", songId, matches);
+                _logger.LogError(ex, $"Failed to save recognized song {songId} with {matches} matches");
                 throw;
             }
         }

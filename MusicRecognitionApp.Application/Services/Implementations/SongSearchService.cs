@@ -8,16 +8,16 @@ namespace MusicRecognitionApp.Application.Services.Implementations
 {
     public class SongSearchService : ISongSearchService
     {
-        private readonly ISongService _songService;
-        private readonly IAudioHashService _audioHashService;
+        private readonly IDbSongService _songService;
+        private readonly IDbAudioHashService _dbAudioHashService;
         private readonly ILogger<SongSearchService> _logger;
 
         public SongSearchService(
-            IAudioHashService audioHashService,
-            ISongService songService,
+            IDbAudioHashService audioHashService,
+            IDbSongService songService,
             ILogger<SongSearchService> logger)
         {
-            _audioHashService = audioHashService;
+            _dbAudioHashService = audioHashService;
             _songService = songService;
             _logger = logger;
         }
@@ -30,7 +30,7 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             try
             {
                 var hashValues = queryHashes.Select(h => h.Hash).ToList();
-                var songMatchDtos = await _audioHashService.FindSongMatchesAsync(hashValues, cancellationToken);
+                var songMatchDtos = await _dbAudioHashService.FindSongMatchesAsync(hashValues, cancellationToken);
 
                 var results = new List<SearchResult>();
                 foreach (var songMatchDto in songMatchDtos)

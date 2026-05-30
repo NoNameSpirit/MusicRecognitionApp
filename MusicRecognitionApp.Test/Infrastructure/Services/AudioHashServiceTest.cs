@@ -10,14 +10,14 @@ namespace MusicRecognitionApp.Test.Services
     public class AudioHashServiceTest
     {
         private readonly Mock<IAudioHashRepository> _repoMock;
-        private readonly Mock<ILogger<AudioHashService>> _loggerMock;
-        private readonly AudioHashService _service;
+        private readonly Mock<ILogger<DbAudioHashService>> _loggerMock;
+        private readonly DbAudioHashService _service;
 
         public AudioHashServiceTest()
         {
             _repoMock = new Mock<IAudioHashRepository>();
-            _loggerMock = new Mock<ILogger<AudioHashService>>();
-            _service = new AudioHashService(_repoMock.Object, _loggerMock.Object);
+            _loggerMock = new Mock<ILogger<DbAudioHashService>>();
+            _service = new DbAudioHashService(_repoMock.Object, _loggerMock.Object);
         }
 
         [Fact]
@@ -77,10 +77,10 @@ namespace MusicRecognitionApp.Test.Services
 
             _loggerMock.Verify(
                 l => l.Log(
-                    LogLevel.Error, 
-                    It.IsAny<EventId>(), 
-                    It.IsAny<It.IsAnyType>(), 
-                    It.IsAny<Exception>(), 
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Never);
         }

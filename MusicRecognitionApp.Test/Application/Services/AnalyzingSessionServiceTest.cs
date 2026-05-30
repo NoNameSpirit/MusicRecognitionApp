@@ -41,9 +41,9 @@ namespace MusicRecognitionApp.Tests.Application.Services
         {
             // Arrange
             var tempFile = Path.GetTempFileName();
-            var expectedResults = new List<SearchResult> 
-            { 
-                new SearchResult(new SongModel(), 1, 0.9) 
+            var expectedResults = new List<SearchResult>
+            {
+                new SearchResult(new SongModel(), 1, 0.9)
             };
             _RecognitionServiceMock.Setup(r => r.RecognizeFromMicrophoneAsync(tempFile, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResults);
@@ -56,7 +56,7 @@ namespace MusicRecognitionApp.Tests.Application.Services
                 // Assert
                 result.Should().BeEquivalentTo(expectedResults);
                 File.Exists(tempFile).Should().BeFalse("File must be deleted after success");
-                _RecognitionServiceMock.Verify(r => r.RecognizeFromMicrophoneAsync(tempFile, It.IsAny<CancellationToken>()), 
+                _RecognitionServiceMock.Verify(r => r.RecognizeFromMicrophoneAsync(tempFile, It.IsAny<CancellationToken>()),
                     Times.Once);
             }
             finally
@@ -107,7 +107,7 @@ namespace MusicRecognitionApp.Tests.Application.Services
             try
             {
                 // Act & Assert
-                await Assert.ThrowsAsync<Exception>(async () => 
+                await Assert.ThrowsAsync<Exception>(async () =>
                     await _analyzingSessionService.StartAnalyzingAsync(tempFile));
 
                 File.Exists(tempFile).Should().BeFalse("File must be deleted when an exception occurs");
@@ -130,7 +130,7 @@ namespace MusicRecognitionApp.Tests.Application.Services
                 .ReturnsAsync(new List<SearchResult>());
 
             bool eventInvokedAfterComplete = false;
-            _analyzingSessionService.AnalyzingSession += (p) 
+            _analyzingSessionService.AnalyzingSession += (p)
                 => eventInvokedAfterComplete = true;
 
             try

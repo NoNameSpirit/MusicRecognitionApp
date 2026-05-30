@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using MusicRecognitionApp.Application.Interfaces.Services;
-using MusicRecognitionApp.Application.Models;
 using MusicRecognitionApp.Core.Models.Audio;
 using MusicRecognitionApp.Core.Models.Business;
 using MusicRecognitionApp.Infrastructure.Data.Entities;
@@ -9,14 +8,14 @@ using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
 
 namespace MusicRecognitionApp.Infrastructure.Services.Implementations
 {
-    public class SongService : ISongService
+    public class DbSongService : IDbSongService
     {
         private readonly ISongRepository _songRepository;
-        private readonly ILogger<SongService> _logger;
+        private readonly ILogger<DbSongService> _logger;
 
-        public SongService(
+        public DbSongService(
             ISongRepository songRepository,
-            ILogger<SongService> logger)
+            ILogger<DbSongService> logger)
         {
             _songRepository = songRepository;
             _logger = logger;
@@ -50,12 +49,12 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting song by title '{Title}' and artist '{Artist}'", title, artist); 
+                _logger.LogError(ex, $"Error getting song by title '{title}' and artist '{artist}'");
                 return null;
             }
         }
 
-        public async Task<SongCreationResult> CreateAsync(string title, string artist, 
+        public async Task CreateAsync(string title, string artist,
             List<AudioHash> hashes, CancellationToken cancellationToken = default)
         {
             try
@@ -70,20 +69,19 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
                 if (songResult != null)
                 {
                     _logger.LogInformation("Song already exists: '{Title}' by '{Artist}'", songResult.Title, songResult.Artist);
-                    return new SongCreationResult(songResult, false);
+                    return;
                 }
 
                 if (hashes == null || hashes.Count == 0)
                 {
                     _logger.LogWarning("No hashes to add for song Artist - Title: ", artist, title);
-                    return new SongCreationResult(songResult, false);
+                    return;
                 }
 
                 var song = new SongEntity { Title = title, Artist = artist };
-
                 foreach (AudioHash hash in hashes)
                 {
-                    song.AudioHashes.Add(new AudioHashEntity 
+                    song.AudioHashes.Add(new AudioHashEntity
                     {
                         Hash = hash.Hash,
                         TimeOffset = hash.TimeOffset,
@@ -91,13 +89,11 @@ namespace MusicRecognitionApp.Infrastructure.Services.Implementations
                 }
 
                 await _songRepository.InsertAsync(song, cancellationToken);
-
-                var model = EntityToModel.ToSongModel(song);
-                return new SongCreationResult(model, true);
+                await _songRepository.SaveChangesAsync(cancellationToken);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error creating song '{Title}' by '{Artist}'", title, artist); 
+                _logger.LogError(ex, $"Error creating song '{title}' by '{artist}'");
                 throw;
             }
         }

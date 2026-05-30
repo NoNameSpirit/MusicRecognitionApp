@@ -46,7 +46,7 @@ namespace MusicRecognitionApp.Test.Application.Services
 
             // Assert
             result.Should().Be(expectedFile);
-            _recorderServiceMock.Verify(r => r.RecordAudioFromMicrophoneAsync(15, It.IsAny<CancellationToken>()), 
+            _recorderServiceMock.Verify(r => r.RecordAudioFromMicrophoneAsync(15, It.IsAny<CancellationToken>()),
                 Times.Once);
         }
 
@@ -77,7 +77,7 @@ namespace MusicRecognitionApp.Test.Application.Services
                 .ThrowsAsync(new OperationCanceledException());
 
             // Act & Assert
-            await Assert.ThrowsAsync<OperationCanceledException>(async () 
+            await Assert.ThrowsAsync<OperationCanceledException>(async ()
                 => await _recordingSessionService.StartRecordingAsync());
         }
 
@@ -90,7 +90,7 @@ namespace MusicRecognitionApp.Test.Application.Services
                 .ThrowsAsync(exception);
 
             // Act & Assert
-            await Assert.ThrowsAsync<Exception>(async () 
+            await Assert.ThrowsAsync<Exception>(async ()
                 => await _recordingSessionService.StartRecordingAsync());
         }
 

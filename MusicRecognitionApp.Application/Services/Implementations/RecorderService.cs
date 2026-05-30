@@ -49,7 +49,7 @@ namespace MusicRecognitionApp.Application.Services.Implementations
                 }
                 cancellationToken.ThrowIfCancellationRequested();
 
-                success = true; 
+                success = true;
                 return outputFilePath;
             }
             catch (OperationCanceledException)
@@ -58,7 +58,7 @@ namespace MusicRecognitionApp.Application.Services.Implementations
             }
             finally
             {
-                if(sourceStream != null) 
+                if (sourceStream != null)
                 {
                     sourceStream.DataAvailable -= OnDataAvailable;
                     sourceStream.Dispose();

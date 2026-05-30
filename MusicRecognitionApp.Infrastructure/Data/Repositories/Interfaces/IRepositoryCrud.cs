@@ -18,6 +18,7 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces
             params string[] includes);
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        Task<bool> IsExists(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default);
 
         DbContext Context { get; }
     }

@@ -11,14 +11,14 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
     public class SongServiceTest
     {
         private readonly Mock<ISongRepository> _repoMock;
-        private readonly Mock<ILogger<SongService>> _loggerMock;
-        private readonly SongService _service;
+        private readonly Mock<ILogger<DbSongService>> _loggerMock;
+        private readonly DbSongService _service;
 
         public SongServiceTest()
         {
             _repoMock = new Mock<ISongRepository>();
-            _loggerMock = new Mock<ILogger<SongService>>();
-            _service = new SongService(_repoMock.Object, _loggerMock.Object);
+            _loggerMock = new Mock<ILogger<DbSongService>>();
+            _service = new DbSongService(_repoMock.Object, _loggerMock.Object);
         }
 
         #region GetByIdAsync Tests
@@ -50,10 +50,10 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
             var result = await _service.GetByIdAsync(entity.Id);
 
             //Assert
-            _repoMock.Verify(r 
+            _repoMock.Verify(r
                 => r.GetByIdAsync(
-                    1, 
-                    It.IsAny<CancellationToken>()), 
+                    1,
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
         }
 
@@ -77,8 +77,8 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
                 Times.Once);
             _loggerMock.Verify(
                 l => l.Log(
-                    LogLevel.Error, 
-                    It.IsAny<EventId>(), 
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
                     It.Is<It.IsAnyType>((v, c) => v.ToString().Contains("Error getting song by ID")),
                     It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception, string>>()),
@@ -119,8 +119,8 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
             //Assert
             _repoMock.Verify(r
                 => r.GetSongByTitleAndArtistAsync(
-                    entity.Title, 
-                    entity.Artist, 
+                    entity.Title,
+                    entity.Artist,
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }
@@ -193,10 +193,9 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
                      .ReturnsAsync(entity);
 
             // Act
-            var result = await _service.CreateAsync(entity.Title, entity.Artist, new List<AudioHash>());
+            await _service.CreateAsync(entity.Title, entity.Artist, new List<AudioHash>());
 
             // Assert
-            result.IsNew.Should().BeFalse();
             _repoMock.Verify(r => r.InsertAsync(It.IsAny<SongEntity>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
@@ -209,10 +208,9 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
                      .ReturnsAsync((SongEntity?)null);
 
             // Act
-            var result = await _service.CreateAsync(entity.Title, entity.Artist, new List<AudioHash>());
+            await _service.CreateAsync(entity.Title, entity.Artist, new List<AudioHash>());
 
             // Assert
-            result.IsNew.Should().BeFalse();
             _repoMock.Verify(r => r.InsertAsync(It.IsAny<SongEntity>(), It.IsAny<CancellationToken>()), Times.Never);
             _loggerMock.Verify(
                 l => l.Log(
@@ -235,14 +233,13 @@ namespace MusicRecognitionApp.Test.Infrastructure.Services
             var hashes = new List<AudioHash> { new AudioHash(123, 1.5, 0) };
 
             // Act
-            var result = await _service.CreateAsync(entity.Title, entity.Artist, hashes);
+            await _service.CreateAsync(entity.Title, entity.Artist, hashes);
 
             // Assert
-            result.IsNew.Should().BeTrue();
             _repoMock.Verify(r => r.InsertAsync(
-                It.Is<SongEntity>(s => 
-                    s.Title == entity.Title && 
-                    s.Artist == entity.Artist && 
+                It.Is<SongEntity>(s =>
+                    s.Title == entity.Title &&
+                    s.Artist == entity.Artist &&
                     s.AudioHashes.Count == 1),
                 It.IsAny<CancellationToken>()),
                 Times.Once);

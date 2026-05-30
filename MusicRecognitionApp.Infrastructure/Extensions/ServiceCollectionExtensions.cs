@@ -3,11 +3,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MusicRecognitionApp.Application.Interfaces.Audio;
 using MusicRecognitionApp.Application.Interfaces.Services;
-using MusicRecognitionApp.Application.Interfaces.UnitOfWork;
+using MusicRecognitionApp.Application.Services.Auth;
 using MusicRecognitionApp.Application.Services.Implementations;
 using MusicRecognitionApp.Application.Services.Interfaces;
+using MusicRecognitionApp.Core.Auth.Services.Implementation;
+using MusicRecognitionApp.Core.Auth.Services.Interfaces;
 using MusicRecognitionApp.Infrastructure.Audio.Implementations;
-using MusicRecognitionApp.Infrastructure.Data;
 using MusicRecognitionApp.Infrastructure.Data.Contexts;
 using MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations;
 using MusicRecognitionApp.Infrastructure.Data.Repositories.Interfaces;
@@ -20,14 +21,15 @@ namespace MusicRecognitionApp.Infrastructure.Extensions
     {
         public static IServiceCollection AddDatabaseServices(
             this IServiceCollection services,
-            IConfiguration configuration) 
+            IConfiguration configuration)
         {
             services.AddDbContext<MusicRecognitionContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-           
+
             services.AddScoped<ISongRepository, SongRepository>()
                     .AddScoped<IAudioHashRepository, AudioHashRepository>()
-                    .AddScoped<IRecognizedSongRepository, RecognizedSongRepository>();
+                    .AddScoped<IRecognizedSongRepository, RecognizedSongRepository>()
+                    .AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }
@@ -39,11 +41,11 @@ namespace MusicRecognitionApp.Infrastructure.Extensions
                     .AddSingleton<IPeakDetector, PeakDetector>()
                     .AddSingleton<ISpectrogramBuilder, SpectrogramBuilder>();
 
-            services.AddScoped<IAudioHashService, AudioHashService>()
-                    .AddScoped<IRecognizedSongService, RecognizedSongService>()
-                    .AddScoped<ISongService, SongService>()
-                    .AddScoped<IUnitOfWork, UnitOfWork>();
-
+            services.AddScoped<IDbAudioHashService, DbAudioHashService>()
+                    .AddScoped<IDbRecognizedSongService, DbRecognizedSongService>()
+                    .AddScoped<IDbSongService, DbSongService>()
+                    .AddScoped<IDbUserService, DbUserService>();
+            
             services.AddScoped<DatabaseInitializer>();
 
             return services;
@@ -60,6 +62,16 @@ namespace MusicRecognitionApp.Infrastructure.Extensions
                     .AddScoped<IRecognitionSongService, RecognitionSongService>()
                     .AddScoped<IRecognitionService, RecognitionService>()
                     .AddScoped<IRecorderService, RecorderService>();
+
+            services.AddScoped<IUserService, UserService>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddCoreServices(this IServiceCollection services)
+        {
+            services.AddSingleton<IPasswordHasher, PasswordHasher>()
+                    .AddSingleton<IAuthUserValidator, AuthUserValidator>();
 
             return services;
         }

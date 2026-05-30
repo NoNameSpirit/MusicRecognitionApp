@@ -61,7 +61,8 @@ namespace MusicRecognitionApp.Infrastructure.Data.Contexts
                       .HasDefaultValueSql("CURRENT_TIMESTAMP");
             });
 
-            modelBuilder.Entity<UserEntity>(entity => {
+            modelBuilder.Entity<UserEntity>(entity =>
+            {
                 entity.ToTable("Users");
 
                 entity.HasIndex(e => e.Username, "IX_Users_Username");

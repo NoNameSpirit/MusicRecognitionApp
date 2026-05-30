@@ -11,7 +11,7 @@ namespace MusicRecognitionApp.Application.Services.Implementations
         private CancellationTokenSource? _cts;
 
         private readonly IServiceScopeFactory _scopeFactory;
-        
+
         public AnalyzingSessionService(IServiceScopeFactory scopeFactory)
         {
             _scopeFactory = scopeFactory;

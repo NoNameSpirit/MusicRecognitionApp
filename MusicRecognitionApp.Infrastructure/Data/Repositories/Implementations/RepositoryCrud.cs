@@ -66,5 +66,10 @@ namespace MusicRecognitionApp.Infrastructure.Data.Repositories.Implementations
         {
             return await Context.SaveChangesAsync(cancellationToken);
         }
+
+        public virtual async Task<bool> IsExists(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        {
+            return await _dbSet.AnyAsync(predicate, cancellationToken);
+        }
     }
 }
